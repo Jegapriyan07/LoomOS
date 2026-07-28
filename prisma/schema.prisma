@@ -1,0 +1,86 @@
+// LoomOS identity + auth (Prisma + SQLite)
+// Domain data (requirements, payments, wallets) remains in data/loomos-store.json for now.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum UserRole {
+  WEAVER
+  BUYER
+  COOP_ADMIN
+}
+
+model Cooperative {
+  id         String          @id
+  name       String
+  shortName  String
+  region     String
+  flavor     String
+  disclaimer String
+  createdAt  DateTime        @default(now())
+  weavers    WeaverProfile[]
+}
+
+model User {
+  id        String         @id
+  phone     String         @unique
+  name      String
+  role      UserRole
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  weaver    WeaverProfile?
+  buyer     BuyerProfile?
+  sessions  Session[]
+}
+
+model WeaverProfile {
+  id              String       @id
+  userId          String       @unique
+  cooperativeId   String
+  region          String
+  primaryLanguage String
+  /// JSON array of category labels
+  categoriesJson  String       @default("[]")
+  givenName       String
+  user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cooperative     Cooperative  @relation(fields: [cooperativeId], references: [id])
+}
+
+model BuyerProfile {
+  id           String @id
+  userId       String @unique
+  region       String
+  businessName String
+  email        String?
+  user         User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model OtpChallenge {
+  id         String    @id @default(cuid())
+  phone      String
+  codeHash   String
+  role       UserRole
+  expiresAt  DateTime
+  attempts   Int       @default(0)
+  consumedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([phone, role])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}

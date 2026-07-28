@@ -24,6 +24,12 @@
 .DS_Store
 *.pem
 
+# sqlite
+/prisma/dev.db
+/prisma/dev.db-journal
+*.db
+*.db-journal
+
 # debug
 npm-debug.log*
 yarn-debug.log*
@@ -39,3 +45,5 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+/src/generated/prisma

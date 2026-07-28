@@ -1,0 +1,367 @@
+{
+  "buyerRequirements": [
+    {
+      "id": "req-001",
+      "buyerId": "buyer-demo-001",
+      "buyerName": "Saffron Thread Boutique (demo — fictional)",
+      "categoryId": "cotton-saree",
+      "region": "Tamil Nadu",
+      "quantity": 12,
+      "neededBy": "2026-10-15",
+      "status": "open",
+      "notes": "Demo Mode seed requirement — fictional",
+      "createdAt": "2026-07-28T11:09:30.403Z"
+    },
+    {
+      "id": "req-002",
+      "buyerId": "buyer-demo-002",
+      "buyerName": "Festival Cloth Desk (demo — fictional)",
+      "categoryId": "cotton-saree",
+      "region": "Tamil Nadu",
+      "quantity": 8,
+      "neededBy": "2026-11-01",
+      "status": "open",
+      "notes": "Demo Mode seed requirement — fictional",
+      "createdAt": "2026-07-28T11:09:30.403Z"
+    },
+    {
+      "id": "req-003",
+      "buyerId": "buyer-demo-001",
+      "buyerName": "Saffron Thread Boutique (demo — fictional)",
+      "categoryId": "silk-saree",
+      "region": "Tamil Nadu",
+      "quantity": 10,
+      "neededBy": "2026-12-01",
+      "status": "open",
+      "notes": "Demo Mode seed requirement — fictional",
+      "createdAt": "2026-07-28T11:09:30.403Z"
+    },
+    {
+      "id": "req-004",
+      "buyerId": "buyer-demo-003",
+      "buyerName": "Loom Link Resellers (demo — fictional)",
+      "categoryId": "stole-dupatta",
+      "region": "Tamil Nadu",
+      "quantity": 24,
+      "neededBy": "2026-09-20",
+      "priceMin": 450,
+      "priceMax": 750,
+      "status": "open",
+      "notes": "Simulated — Loom Link Resellers gift-set stoles for online drop (fictional).",
+      "createdAt": "2026-07-28T11:24:34.618Z"
+    },
+    {
+      "id": "req-005",
+      "buyerId": "buyer-demo-002",
+      "buyerName": "Festival Cloth Desk (demo — fictional)",
+      "categoryId": "dhoti-angavastram",
+      "region": "Tamil Nadu",
+      "quantity": 15,
+      "neededBy": "2026-10-05",
+      "priceMin": 600,
+      "priceMax": 950,
+      "status": "open",
+      "notes": "Simulated — Festival Cloth Desk temple-season dhoti set (fictional).",
+      "createdAt": "2026-07-28T11:24:34.618Z"
+    }
+  ],
+  "manualTrends": [],
+  "ledgerOrders": [],
+  "paymentOrders": [
+    {
+      "id": "ord-hist-001",
+      "weaverId": "weaver-demo-001",
+      "buyerId": "buyer-demo-001",
+      "category": "cotton-saree",
+      "amount": 18000,
+      "advanceAmount": 5000,
+      "state": "settlement_released",
+      "createdAt": "2026-05-01T10:00:00.000Z",
+      "dispatchedAt": "2026-05-20T10:00:00.000Z",
+      "expectedSettlementAt": "2026-05-21",
+      "settledAt": "2026-05-21T12:00:00.000Z",
+      "stateHistory": [
+        {
+          "state": "order_created",
+          "at": "2026-05-01T10:00:00.000Z"
+        },
+        {
+          "state": "settlement_released",
+          "at": "2026-05-21T12:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "ord-hist-002",
+      "weaverId": "weaver-demo-001",
+      "buyerId": "buyer-demo-001",
+      "category": "cotton-saree",
+      "amount": 12000,
+      "advanceAmount": 4000,
+      "state": "settlement_released",
+      "createdAt": "2026-06-01T10:00:00.000Z",
+      "dispatchedAt": "2026-06-18T10:00:00.000Z",
+      "expectedSettlementAt": "2026-06-19",
+      "settledAt": "2026-06-19T09:00:00.000Z",
+      "stateHistory": [
+        {
+          "state": "order_created",
+          "at": "2026-06-01T10:00:00.000Z"
+        },
+        {
+          "state": "settlement_released",
+          "at": "2026-06-19T09:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "ord-hist-003",
+      "weaverId": "weaver-demo-001",
+      "buyerId": "buyer-demo-001",
+      "category": "silk-saree",
+      "amount": 32000,
+      "advanceAmount": 10000,
+      "state": "settlement_released",
+      "createdAt": "2026-04-10T10:00:00.000Z",
+      "dispatchedAt": "2026-05-05T10:00:00.000Z",
+      "expectedSettlementAt": "2026-05-06",
+      "settledAt": "2026-05-06T11:00:00.000Z",
+      "stateHistory": [
+        {
+          "state": "order_created",
+          "at": "2026-04-10T10:00:00.000Z"
+        },
+        {
+          "state": "settlement_released",
+          "at": "2026-05-06T11:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "ord-walk-001",
+      "weaverId": "weaver-demo-001",
+      "buyerId": "buyer-demo-001",
+      "category": "cotton-saree",
+      "amount": 15000,
+      "advanceAmount": 4500,
+      "state": "order_created",
+      "createdAt": "2026-07-28T11:09:30.403Z",
+      "stateHistory": [
+        {
+          "state": "order_created",
+          "at": "2026-07-28T11:09:30.403Z"
+        }
+      ]
+    },
+    {
+      "id": "ord-selvi-001",
+      "weaverId": "weaver-demo-002",
+      "buyerId": "buyer-demo-002",
+      "category": "cotton-saree",
+      "amount": 9000,
+      "advanceAmount": 3000,
+      "state": "production_in_progress",
+      "createdAt": "2026-07-28T11:09:30.403Z",
+      "stateHistory": [
+        {
+          "state": "order_created",
+          "at": "2026-07-28T11:09:30.403Z"
+        },
+        {
+          "state": "production_in_progress",
+          "at": "2026-07-28T11:09:30.403Z"
+        }
+      ]
+    },
+    {
+      "id": "ord-selvi-002",
+      "weaverId": "weaver-demo-002",
+      "buyerId": "buyer-demo-001",
+      "category": "stole-dupatta",
+      "amount": 4000,
+      "advanceAmount": 1000,
+      "state": "advance_paid_escrow_held",
+      "createdAt": "2026-07-28T11:09:30.403Z",
+      "stateHistory": [
+        {
+          "state": "order_created",
+          "at": "2026-07-28T11:09:30.403Z"
+        },
+        {
+          "state": "advance_paid_escrow_held",
+          "at": "2026-07-28T11:09:30.403Z"
+        }
+      ]
+    },
+    {
+      "id": "ord-kamala-001",
+      "weaverId": "weaver-demo-003",
+      "buyerId": "buyer-demo-001",
+      "category": "silk-saree",
+      "amount": 28000,
+      "advanceAmount": 8000,
+      "state": "dispatched",
+      "createdAt": "2026-07-28T11:09:30.403Z",
+      "dispatchedAt": "2026-07-28T11:09:30.403Z",
+      "expectedSettlementAt": "2026-07-29",
+      "stateHistory": [
+        {
+          "state": "order_created",
+          "at": "2026-07-28T11:09:30.403Z"
+        },
+        {
+          "state": "dispatched",
+          "at": "2026-07-28T11:09:30.403Z"
+        }
+      ]
+    },
+    {
+      "id": "ord-lakshmi-001",
+      "weaverId": "weaver-demo-004",
+      "buyerId": "buyer-demo-003",
+      "category": "stole-dupatta",
+      "amount": 7200,
+      "advanceAmount": 2200,
+      "state": "advance_paid_escrow_held",
+      "createdAt": "2026-07-28T11:36:46.116Z",
+      "stateHistory": [
+        {
+          "state": "order_created",
+          "at": "2026-07-28T11:36:46.116Z"
+        },
+        {
+          "state": "advance_paid_escrow_held",
+          "at": "2026-07-28T11:36:46.116Z"
+        }
+      ]
+    },
+    {
+      "id": "ord-lakshmi-002",
+      "weaverId": "weaver-demo-004",
+      "buyerId": "buyer-demo-002",
+      "category": "dhoti-angavastram",
+      "amount": 11000,
+      "advanceAmount": 3500,
+      "state": "settlement_released",
+      "createdAt": "2026-06-10T10:00:00.000Z",
+      "dispatchedAt": "2026-06-28T10:00:00.000Z",
+      "expectedSettlementAt": "2026-06-29",
+      "settledAt": "2026-06-29T11:00:00.000Z",
+      "stateHistory": [
+        {
+          "state": "order_created",
+          "at": "2026-06-10T10:00:00.000Z"
+        },
+        {
+          "state": "settlement_released",
+          "at": "2026-06-29T11:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "ord-lakshmi-003",
+      "weaverId": "weaver-demo-004",
+      "buyerId": "buyer-demo-001",
+      "category": "cotton-saree",
+      "amount": 13500,
+      "advanceAmount": 4000,
+      "state": "production_in_progress",
+      "createdAt": "2026-07-28T11:36:46.116Z",
+      "stateHistory": [
+        {
+          "state": "order_created",
+          "at": "2026-07-28T11:36:46.116Z"
+        },
+        {
+          "state": "production_in_progress",
+          "at": "2026-07-28T11:36:46.116Z"
+        }
+      ]
+    },
+    {
+      "id": "ord-selvi-003",
+      "weaverId": "weaver-demo-002",
+      "buyerId": "buyer-demo-002",
+      "category": "cotton-saree",
+      "amount": 16000,
+      "advanceAmount": 5000,
+      "state": "settlement_released",
+      "createdAt": "2026-05-12T10:00:00.000Z",
+      "dispatchedAt": "2026-05-30T10:00:00.000Z",
+      "expectedSettlementAt": "2026-05-31",
+      "settledAt": "2026-05-31T12:00:00.000Z",
+      "stateHistory": [
+        {
+          "state": "order_created",
+          "at": "2026-05-12T10:00:00.000Z"
+        },
+        {
+          "state": "settlement_released",
+          "at": "2026-05-31T12:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "ord-kamala-002",
+      "weaverId": "weaver-demo-003",
+      "buyerId": "buyer-demo-002",
+      "category": "dhoti-angavastram",
+      "amount": 9500,
+      "advanceAmount": 2800,
+      "state": "settlement_released",
+      "createdAt": "2026-04-08T10:00:00.000Z",
+      "dispatchedAt": "2026-04-22T10:00:00.000Z",
+      "expectedSettlementAt": "2026-04-23",
+      "settledAt": "2026-04-23T09:00:00.000Z",
+      "stateHistory": [
+        {
+          "state": "order_created",
+          "at": "2026-04-08T10:00:00.000Z"
+        },
+        {
+          "state": "settlement_released",
+          "at": "2026-04-23T09:00:00.000Z"
+        }
+      ]
+    }
+  ],
+  "disputes": [],
+  "buyers": [
+    {
+      "id": "buyer-demo-001",
+      "name": "Saffron Thread Boutique (demo — fictional)",
+      "region": "Tamil Nadu",
+      "email": "saffron@demo.loom"
+    },
+    {
+      "id": "buyer-demo-002",
+      "name": "Festival Cloth Desk (demo — fictional)",
+      "region": "Tamil Nadu",
+      "email": "festival@demo.loom"
+    }
+  ],
+  "wallets": [
+    {
+      "weaverId": "weaver-demo-001",
+      "available": 62000,
+      "reserve": 0,
+      "reserveFloor": 2000,
+      "surplusSavePercent": 40,
+      "updatedAt": "2026-07-28T11:15:57.940Z"
+    }
+  ],
+  "walletCredits": [
+    {
+      "weaverId": "weaver-demo-001",
+      "orderId": "ord-hist-001"
+    },
+    {
+      "weaverId": "weaver-demo-001",
+      "orderId": "ord-hist-002"
+    },
+    {
+      "weaverId": "weaver-demo-001",
+      "orderId": "ord-hist-003"
+    }
+  ]
+}

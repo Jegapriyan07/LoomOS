@@ -1,26 +1,102 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+  LoomOS design tokens
+  Option A (default): indigo vat & turmeric — data-palette="indigo-vat"
+  Option B: lac red & forest — data-palette="lac-forest"
+  Switch by setting data-palette on <html>.
+*/
+
+:root,
+[data-palette="indigo-vat"] {
+  --loom-bg: #f3efe6;
+  --loom-surface: #fffdf8;
+  --loom-ink: #1a1f24;
+  --loom-muted: #5c6570;
+  --loom-primary: #1e3a5f;
+  --loom-primary-soft: #d9e3f0;
+  --loom-accent: #c4920a;
+  --loom-accent-soft: #f5e6b8;
+  --loom-success: #2f6b4f;
+  --loom-success-soft: #d8ebe0;
+  --loom-warning: #9a5b12;
+  --loom-warning-soft: #f3e0c4;
+  --loom-danger: #8f2f2f;
+  --loom-danger-soft: #f3d6d6;
+  --loom-border: #d9d2c4;
+  --loom-tab-inactive: #5c6570;
+  --loom-shadow: 0 1px 0 rgba(26, 31, 36, 0.06);
+}
+
+[data-palette="lac-forest"] {
+  --loom-bg: #eef1ee;
+  --loom-surface: #fbfcfb;
+  --loom-ink: #1a211c;
+  --loom-muted: #5a645c;
+  --loom-primary: #9b2c2c;
+  --loom-primary-soft: #f0d6d6;
+  --loom-accent: #1f4d3a;
+  --loom-accent-soft: #d4e8de;
+  --loom-success: #1f4d3a;
+  --loom-success-soft: #d4e8de;
+  --loom-warning: #9a5b12;
+  --loom-warning-soft: #f3e0c4;
+  --loom-danger: #7a1f1f;
+  --loom-danger-soft: #f0d0d0;
+  --loom-border: #cfd6d1;
+  --loom-tab-inactive: #5a645c;
+  --loom-shadow: 0 1px 0 rgba(26, 33, 28, 0.06);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-loom-bg: var(--loom-bg);
+  --color-loom-surface: var(--loom-surface);
+  --color-loom-ink: var(--loom-ink);
+  --color-loom-muted: var(--loom-muted);
+  --color-loom-primary: var(--loom-primary);
+  --color-loom-primary-soft: var(--loom-primary-soft);
+  --color-loom-accent: var(--loom-accent);
+  --color-loom-accent-soft: var(--loom-accent-soft);
+  --color-loom-success: var(--loom-success);
+  --color-loom-success-soft: var(--loom-success-soft);
+  --color-loom-warning: var(--loom-warning);
+  --color-loom-warning-soft: var(--loom-warning-soft);
+  --color-loom-danger: var(--loom-danger);
+  --color-loom-danger-soft: var(--loom-danger-soft);
+  --color-loom-border: var(--loom-border);
+  --color-loom-tab-inactive: var(--loom-tab-inactive);
+  --font-sans: var(--font-loom-sans);
+  --font-display: var(--font-loom-display);
+  --text-weaver: 1.125rem;
+  --text-weaver-lg: 1.375rem;
+  --text-weaver-xl: 1.75rem;
+  --spacing-tap: 3rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  background: var(--loom-bg);
+  color: var(--loom-ink);
+  font-family: var(--font-loom-sans), system-ui, sans-serif;
+  font-size: 1.125rem; /* 18px weaver-facing default */
+  line-height: 1.45;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Minimum readable body text for weaver UI */
+.weaver-text {
+  font-size: max(1rem, 16px);
+}
+
+.weaver-text-lg {
+  font-size: 1.125rem;
 }
