@@ -38,7 +38,7 @@ import { DEMAND_CATEGORIES } from "@/lib/demand/types";
 const DATA_DIR = path.join(process.cwd(), "data");
 const STORE_PATH = path.join(DATA_DIR, "loomos-store.json");
 
-/** Relabel demo buyer names; OTP auth lives in SQLite (no passwords). */
+/** Relabel demo buyer names; OTP auth lives in Postgres (no passwords). */
 function mergeBuyerProfiles(
   existing: BuyerProfile[],
   seeded: BuyerProfile[],

@@ -1,5 +1,5 @@
 /**
- * Seed identity into SQLite — same fictional Demo Mode people as before,
+ * Seed identity into PostgreSQL — same fictional Demo Mode people as before,
  * with stable ids so JSON payment/wallet rows still match.
  *
  * Demo phones (OTP always 123456 for demo weavers):
@@ -7,26 +7,19 @@
  *   Buyers:  9100000001 Saffron, 9100000002 Festival, 9100000003 Loom Link
  */
 import "dotenv/config";
-import fs from "node:fs";
-import path from "node:path";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient, UserRole } from "../src/generated/prisma/client";
 
-function resolveDatabaseUrl(): string {
-  const localDir =
-    process.env.LOOMOS_DATA_DIR ||
-    path.join(
-      process.env.LOCALAPPDATA || process.env.HOME || process.cwd(),
-      "LoomOS",
-    );
-  fs.mkdirSync(localDir, { recursive: true });
-  const dbFile = path.join(localDir, "dev.db");
-  return `file:${dbFile.replace(/\\/g, "/")}`;
+const connectionString = process.env.DATABASE_URL?.trim();
+if (!connectionString || connectionString.startsWith("file:")) {
+  console.error(
+    "Set DATABASE_URL to a PostgreSQL connection string before seeding.",
+  );
+  process.exit(1);
 }
 
-const dbUrl = resolveDatabaseUrl();
-console.log("Seeding", dbUrl);
-const adapter = new PrismaBetterSqlite3({ url: dbUrl });
+console.log("Seeding PostgreSQL…");
+const adapter = new PrismaPg({ connectionString });
 const prisma = new PrismaClient({ adapter });
 
 async function main() {

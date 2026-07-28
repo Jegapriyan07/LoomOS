@@ -1,5 +1,6 @@
-// LoomOS identity + auth (Prisma + SQLite)
+// LoomOS identity + auth (Prisma + PostgreSQL)
 // Domain data (requirements, payments, wallets) remains in data/loomos-store.json for now.
+// Vercel requires Postgres — SQLite/better-sqlite3 cannot run on serverless.
 
 generator client {
   provider = "prisma-client"
@@ -7,7 +8,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
 enum UserRole {

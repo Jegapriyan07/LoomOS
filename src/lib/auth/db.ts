@@ -1,38 +1,38 @@
-import fs from "node:fs";
-import path from "node:path";
-import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@/generated/prisma/client";
 
 const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 
-/**
- * Prefer a local (non-OneDrive) path so SQLite does not hang under sync locks
- * when phones hit the API over LAN.
- */
-function resolveDatabaseUrl(): string {
-  if (process.env.DATABASE_URL?.startsWith("file:") && process.env.LOOMOS_FORCE_DB_URL === "1") {
-    return process.env.DATABASE_URL;
-  }
-
-  const localDir =
-    process.env.LOOMOS_DATA_DIR ||
-    path.join(
-      process.env.LOCALAPPDATA || process.env.HOME || process.cwd(),
-      "LoomOS",
+function requireDatabaseUrl(): string {
+  const url = process.env.DATABASE_URL?.trim();
+  if (!url) {
+    throw new Error(
+      "DATABASE_URL is required. Use a PostgreSQL URL (Neon, Prisma Postgres, or Vercel Postgres).",
     );
-  fs.mkdirSync(localDir, { recursive: true });
-  const dbFile = path.join(localDir, "dev.db");
-  // Prisma SQLite URLs need forward slashes
-  const normalized = dbFile.replace(/\\/g, "/");
-  return `file:${normalized}`;
+  }
+  if (url.startsWith("file:")) {
+    throw new Error(
+      "SQLite file: URLs are not supported on this build. Set DATABASE_URL to a PostgreSQL connection string.",
+    );
+  }
+  if (
+    !url.startsWith("postgres://") &&
+    !url.startsWith("postgresql://") &&
+    !url.startsWith("prisma+postgres://")
+  ) {
+    throw new Error(
+      "DATABASE_URL must be a PostgreSQL connection string (postgres:// or postgresql://).",
+    );
+  }
+  return url;
 }
 
 function createPrismaClient(): PrismaClient {
-  const url = resolveDatabaseUrl();
+  const connectionString = requireDatabaseUrl();
   if (process.env.NODE_ENV !== "production") {
-    console.info(`[LoomOS] Prisma SQLite → ${url}`);
+    console.info("[LoomOS] Prisma PostgreSQL connected");
   }
-  const adapter = new PrismaBetterSqlite3({ url });
+  const adapter = new PrismaPg({ connectionString });
   return new PrismaClient({ adapter });
 }
 

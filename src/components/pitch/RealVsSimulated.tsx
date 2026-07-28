@@ -6,7 +6,7 @@
 const ROWS: { area: string; real: string; simulated: string }[] = [
   {
     area: "Identity & auth",
-    real: "SQLite (Prisma) for co-ops/weavers/buyers; phone OTP + httpOnly session cookie",
+    real: "PostgreSQL (Prisma) for co-ops/weavers/buyers; phone OTP + httpOnly session cookie",
     simulated:
       "SMS not wired — Dev OTP shown in UI/server log; seed people remain fictional Demo Mode",
   },
@@ -101,7 +101,7 @@ export function RealVsSimulated() {
       <p className="mt-4 text-xs leading-snug text-[#5c6570]">
         People &amp; orgs in this build (Meena, Selvi, Kamala, Saffron Thread
         Boutique, Nila Loom Circle) are labeled fictional Demo Mode — not real
-        persons or cooperatives. Auth uses real SQLite + phone OTP (Dev OTP /
+        persons or cooperatives. Auth uses real PostgreSQL + phone OTP (Dev OTP /
         SMS not wired). LoomOS does not claim RBI licensing,
         NHDC/ONDC/Bhashini integration, or a credit score / CIBIL product.
       </p>

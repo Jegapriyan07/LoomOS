@@ -46,8 +46,17 @@ export async function POST(request: Request) {
         : "OTP sent by SMS.",
     });
   } catch (e) {
+    const message = e instanceof Error ? e.message : "Failed to send OTP";
+    console.error("[otp/send]", message);
+    const isConfig =
+      /DATABASE_URL|PostgreSQL|SQLite file/i.test(message) ||
+      message.includes("Can't reach database");
     return NextResponse.json(
-      { error: e instanceof Error ? e.message : "Failed to send OTP" },
+      {
+        error: isConfig
+          ? "Server database is not configured. Set DATABASE_URL (PostgreSQL) in Vercel env vars and redeploy."
+          : message,
+      },
       { status: 500 },
     );
   }
