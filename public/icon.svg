@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="LoomOS">
+  <rect width="512" height="512" rx="96" fill="#1e3a5f"/>
+  <rect x="96" y="140" width="320" height="40" rx="8" fill="#f7f3ea"/>
+  <rect x="96" y="220" width="320" height="40" rx="8" fill="#c4a35a"/>
+  <rect x="96" y="300" width="320" height="40" rx="8" fill="#f7f3ea"/>
+  <circle cx="256" cy="360" r="28" fill="#e8d5a3"/>
+</svg>

@@ -12,9 +12,24 @@ const ROWS: { area: string; real: string; simulated: string }[] = [
   },
   {
     area: "Demand score & Home advice",
-    real: "Formula + Why? panel; Buyer Signal from our requirement store",
+    real: "Formula + Why? + standee reason tags; Buyer Signal from requirement store; Master Weaver rules + market-extra in score",
     simulated:
-      "Festival calendar hardcoded; Trends = manual admin entry (not live Google Trends API)",
+      "Festival calendar hardcoded; yarn/tenders/exhibitions = demo seed (not live APIs); Trends = manual admin",
+  },
+  {
+    area: "Master weaver knowledge",
+    real: "Curated heuristic rules scored into the decision engine + Why? panel",
+    simulated: "Not a live interview corpus — seeded traditional-practice / risk rules",
+  },
+  {
+    area: "Stock & resources",
+    real: "Per-weaver yarn/finished counts editable on Plan; nudges Home score",
+    simulated: "Demo inventory quantities — not a warehouse system",
+  },
+  {
+    area: "Offline / PWA",
+    real: "Service worker caches app shell + last successful API JSON",
+    simulated: "First visit still needs network; no full offline-first sync",
   },
   {
     area: "Production plan dates",

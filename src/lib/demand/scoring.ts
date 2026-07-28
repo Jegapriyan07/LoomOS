@@ -1,5 +1,7 @@
 import { parseDateOnly, toDateOnly } from "@/lib/production-defaults";
 import { PUBLIC_FESTIVAL_CALENDAR } from "@/lib/demand/public-festivals";
+import { computeMarketExtraSignal } from "@/lib/demand/market-signals";
+import { computeMasterWeaverSignal } from "@/lib/demand/master-weaver";
 import {
   DEMAND_CATEGORIES,
   DEMAND_WEIGHTS,
@@ -55,11 +57,6 @@ export function computeBuyerSignal(
 
 /**
  * Seasonal Proximity (0–100) — closeness to nearest relevant public calendar event.
- *
- * Explicit mapping:
- *   daysUntil = days until event start (upcoming only)
- *   SeasonalProximity = clamp(0, 100, round(100 × (1 − daysUntil / 90)))
- *   → today/start = 100; 90+ days out = 0
  */
 export function computeSeasonalProximity(
   categoryId: DemandCategoryId,
@@ -90,7 +87,7 @@ export function computeSeasonalProximity(
     } else if (today < start) {
       daysUntil = Math.round((start.getTime() - today.getTime()) / 86_400_000);
     } else {
-      continue; // past event
+      continue;
     }
     if (!best || daysUntil < best.daysUntil) {
       best = {
@@ -152,14 +149,7 @@ export function computeSeasonalProximity(
 }
 
 /**
- * Historical Signal (0–100):
- *   1) Cooperative ledger past orders for category+region, if any
- *   2) Else manual regional interest (hand-refreshed from public Google Trends site)
- *   3) Else 0 — never fabricate
- *
- * Ledger mapping (when present):
- *   Historical = min(100, totalLedgerUnits)
- *   (simple, transparent; co-op can replace via CSV)
+ * Historical Signal (0–100): ledger → manual Trends → 0.
  */
 export function computeHistoricalSignal(
   ledgerOrders: LedgerOrder[],
@@ -272,18 +262,65 @@ export function scoreCategory(args: {
   );
   const seasonal = computeSeasonalProximity(categoryId, region, asOf);
   const historical = computeHistoricalSignal(ledgerOrders, manualTrend);
+  const market = computeMarketExtraSignal(categoryId, region, asOf);
+  const master = computeMasterWeaverSignal(categoryId, region);
+
+  const marketFactor: DemandFactorBreakdown = {
+    id: "marketExtra",
+    label: "Market signals",
+    weight: DEMAND_WEIGHTS.marketExtra,
+    rawScore: market.score,
+    weightedContribution: round1(DEMAND_WEIGHTS.marketExtra * market.score),
+    inputs: market.inputs,
+    note: "Yarn / exhibitions / tenders from Demo seed — not live market APIs.",
+  };
+
+  const masterFactor: DemandFactorBreakdown = {
+    id: "masterWeaver",
+    label: "Master weaver knowledge",
+    weight: DEMAND_WEIGHTS.masterWeaver,
+    rawScore: master.score,
+    weightedContribution: round1(DEMAND_WEIGHTS.masterWeaver * master.score),
+    inputs: [
+      {
+        name: "Expert preference score",
+        value: String(master.score),
+      },
+      {
+        name: "Traditional practice",
+        value: master.tradition ?? "No matching rule",
+      },
+      {
+        name: "Timing wisdom",
+        value: master.timingWisdom ?? "—",
+      },
+      {
+        name: "Risk avoidance",
+        value: master.riskAvoidance ?? "—",
+      },
+    ],
+    note: "Curated heuristic rules — not a live master-weaver interview feed.",
+  };
 
   const demandScore = Math.round(
     DEMAND_WEIGHTS.buyer * buyer.score +
       DEMAND_WEIGHTS.seasonal * seasonal.score +
-      DEMAND_WEIGHTS.historical * historical.score,
+      DEMAND_WEIGHTS.historical * historical.score +
+      DEMAND_WEIGHTS.marketExtra * market.score +
+      DEMAND_WEIGHTS.masterWeaver * master.score,
   );
 
   return {
     categoryId,
     categoryLabel: label,
     demandScore: clamp(0, 100, demandScore),
-    factors: [buyer.factor, seasonal.factor, historical.factor],
+    factors: [
+      buyer.factor,
+      seasonal.factor,
+      historical.factor,
+      marketFactor,
+      masterFactor,
+    ],
   };
 }
 

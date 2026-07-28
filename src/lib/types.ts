@@ -5,6 +5,8 @@
 import type {
   DemandCategoryId,
   DemandFactorBreakdown,
+  DailyAction,
+  EngineReasonTag,
 } from "@/lib/demand/types";
 import { DEMO_WEAVER_PROFILE } from "@/lib/demo/cluster";
 
@@ -35,6 +37,10 @@ export type Recommendation = {
   reasonFactors: string[];
   formulaSummary: string;
   generatedAt: string;
+  /** Standee-style checkmark reasons */
+  reasonTags: EngineReasonTag[];
+  /** Daily Action Plan — What should I do today? */
+  dailyActions: DailyAction[];
 };
 
 /**

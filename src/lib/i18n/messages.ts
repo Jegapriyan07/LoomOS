@@ -225,13 +225,14 @@ const en: Catalog = {
   "voice.ask": "Voice ask",
   "voice.a11yLabel": "Voice accessibility",
   "chat.title": "Loom assistant",
-  "chat.subtitle": "Summarizes your advice, money, and orders.",
+  "chat.subtitle":
+    "Tap a daily question — answers use your advice, orders, money, and stock.",
   "chat.placeholder": "Ask about today, money, or orders…",
   "chat.send": "Send",
   "chat.summarize": "Summarize everything",
   "chat.thinking": "Thinking…",
   "chat.emptyHint":
-    "Tap “Summarize everything” or ask by text or voice for a plain overview.",
+    "Tap one of the five questions above, or Summarize everything.",
   "chat.you": "You",
   "chat.assistant": "Assistant",
   "chat.error": "Could not build a summary right now. Try again.",

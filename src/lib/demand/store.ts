@@ -34,6 +34,7 @@ import {
   clusterMeta,
 } from "@/lib/coop/dashboard";
 import { DEMAND_CATEGORIES } from "@/lib/demand/types";
+import { defaultStockFor, type WeaverStock } from "@/lib/demand/stock";
 
 /** Bundled seed (read-only on Vercel under /var/task). */
 const BUNDLED_STORE_PATH = path.join(process.cwd(), "data", "loomos-store.json");
@@ -402,6 +403,12 @@ function seedStore(): LoomStore {
     ...seedPaymentSlice(),
     wallets: [],
     walletCredits: [],
+    weaverStock: [
+      defaultStockFor("weaver-demo-001"),
+      defaultStockFor("weaver-demo-002"),
+      defaultStockFor("weaver-demo-003"),
+      defaultStockFor("weaver-demo-004"),
+    ],
   };
 }
 
@@ -453,6 +460,14 @@ function normalizeStore(raw: Partial<LoomStore>): LoomStore {
     ...paymentSlice,
     wallets: raw.wallets ?? [],
     walletCredits: raw.walletCredits ?? [],
+    weaverStock: (() => {
+      const existing = raw.weaverStock ?? [];
+      const byId = new Map(existing.map((s) => [s.weaverId, s]));
+      for (const seed of base.weaverStock) {
+        if (!byId.has(seed.weaverId)) byId.set(seed.weaverId, seed);
+      }
+      return [...byId.values()];
+    })(),
   };
 }
 
@@ -507,7 +522,8 @@ function storeNeedsMigration(parsed: Partial<LoomStore>): boolean {
         o.id === "ord-lakshmi-001" ||
         (o.weaverId === "weaver-demo-004" && o.id.startsWith("sim-")),
     ) ||
-    !(parsed.buyerRequirements ?? []).some((r) => r.id === "req-004")
+    !(parsed.buyerRequirements ?? []).some((r) => r.id === "req-004") ||
+    !parsed.weaverStock
   );
 }
 
@@ -611,6 +627,48 @@ export async function getManualTrend(
         t.region.toLowerCase() === region.toLowerCase(),
     ) ?? null
   );
+}
+
+export async function getWeaverStock(weaverId: string): Promise<WeaverStock> {
+  const store = await readStore();
+  const existing = store.weaverStock.find((s) => s.weaverId === weaverId);
+  if (existing) return existing;
+  const created = defaultStockFor(weaverId);
+  store.weaverStock.push(created);
+  await writeStore(store);
+  return created;
+}
+
+export async function upsertWeaverStock(
+  patch: Partial<WeaverStock> & { weaverId: string },
+): Promise<WeaverStock> {
+  const store = await readStore();
+  const idx = store.weaverStock.findIndex((s) => s.weaverId === patch.weaverId);
+  const base =
+    idx >= 0 ? store.weaverStock[idx]! : defaultStockFor(patch.weaverId);
+  const next: WeaverStock = {
+    ...base,
+    weaverId: patch.weaverId,
+    updatedAt: new Date().toISOString(),
+  };
+  const keys = [
+    "yarnCottonKg",
+    "yarnSilkKg",
+    "finishedCottonSaree",
+    "finishedSilkSaree",
+    "finishedStole",
+    "finishedDhoti",
+  ] as const;
+  for (const key of keys) {
+    const v = patch[key];
+    if (typeof v === "number" && Number.isFinite(v) && v >= 0) {
+      next[key] = v;
+    }
+  }
+  if (idx >= 0) store.weaverStock[idx] = next;
+  else store.weaverStock.push(next);
+  await writeStore(store);
+  return next;
 }
 
 export async function replaceLedgerOrders(

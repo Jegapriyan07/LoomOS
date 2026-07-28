@@ -19,19 +19,21 @@ type Me = {
 };
 
 /**
- * Gates weaver shell — Nesavu-style login when signed out;
- * full chrome when signed in as WEAVER.
+ * Gates weaver shell — show login immediately; auth check runs in background.
+ * Never leave "Checking sign-in…" stuck on screen.
  */
 export function WeaverAuthGate({ children }: { children: React.ReactNode }) {
   const [me, setMe] = useState<Me>({ authenticated: false });
   const [loadError, setLoadError] = useState<string | null>(null);
-  const [checking, setChecking] = useState(true);
+  // Never block the login UI on "Checking sign-in…"
+  const [checking, setChecking] = useState(false);
 
   async function refresh() {
     setLoadError(null);
+    setChecking(true);
     try {
       const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 5_000);
+      const timer = setTimeout(() => controller.abort(), 6_000);
       const res = await fetch("/api/auth/me", {
         cache: "no-store",
         credentials: "include",
@@ -51,7 +53,7 @@ export function WeaverAuthGate({ children }: { children: React.ReactNode }) {
     } catch (e) {
       setLoadError(
         e instanceof Error && e.name === "AbortError"
-          ? "Sign-in check timed out. Pull to refresh, or tap Continue."
+          ? "Sign-in check timed out. Tap a demo login or Continue."
           : "Could not reach the server. Refresh and try again.",
       );
       setMe({ authenticated: false });
@@ -62,17 +64,21 @@ export function WeaverAuthGate({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     void refresh();
+    const failSafe = window.setTimeout(() => setChecking(false), 3_000);
+    return () => window.clearTimeout(failSafe);
   }, []);
 
-  // Warm shared API cache once after login so tab switches don't wait on Neon
   useEffect(() => {
     if (!me.authenticated || me.user?.role !== "WEAVER") return;
-    void Promise.allSettled([
-      cachedJson("/api/auth/me"),
-      cachedJson("/api/orders"),
-      cachedJson("/api/recommendations/today"),
-      cachedJson("/api/admin/requirements"),
-    ]);
+    const t = window.setTimeout(() => {
+      void Promise.allSettled([
+        cachedJson("/api/auth/me"),
+        cachedJson("/api/orders"),
+        cachedJson("/api/recommendations/today"),
+        cachedJson("/api/admin/requirements"),
+      ]);
+    }, 0);
+    return () => window.clearTimeout(t);
   }, [me.authenticated, me.user?.role]);
 
   if (!me.authenticated || me.user?.role !== "WEAVER") {

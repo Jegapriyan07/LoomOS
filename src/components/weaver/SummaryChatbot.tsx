@@ -5,12 +5,16 @@ import { Bot, Mic, Send, Volume2 } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
 import {
   answerChat,
+  answerFiveQuestion,
   buildSnapshot,
   summarizeOverall,
+  type FiveQuestionId,
   type LoomSnapshot,
 } from "@/lib/chat/assistant";
 import type { Recommendation } from "@/lib/types";
 import type { PaymentOrder } from "@/lib/payments/types";
+import type { WeaverStock } from "@/lib/demand/stock";
+import type { BuyerRequirement } from "@/lib/demand/types";
 import {
   isSpeechRecognitionAvailable,
   isSpeechSynthesisAvailable,
@@ -18,12 +22,14 @@ import {
   speakRecommendation,
   stopSpeaking,
 } from "@/lib/voice/speech";
-import { cachedJson } from "@/lib/client-cache";
+import { cachedJson, peekCached } from "@/lib/client-cache";
+import { FiveQuestionsStrip } from "@/components/weaver/StandeeEngineUI";
 
 type ChatMsg = { id: string; role: "user" | "assistant"; text: string };
 
 /**
- * Homepage chatbot — summarizes advice, money, and orders; TTS + voice ask.
+ * Homepage chatbot — five daily questions reply in-thread from account data.
+ * Never leaves buttons stuck: busy clears before TTS; snap uses cache first.
  */
 export function SummaryChatbot() {
   const { t, lang } = useI18n();
@@ -33,25 +39,62 @@ export function SummaryChatbot() {
   const [listening, setListening] = useState(false);
   const [snap, setSnap] = useState<LoomSnapshot | null>(null);
   const [voiceNote, setVoiceNote] = useState<string | null>(null);
+  const [activeQ, setActiveQ] = useState<FiveQuestionId | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  const snapRef = useRef<LoomSnapshot | null>(null);
 
   const loadSnap = useCallback(async (): Promise<LoomSnapshot> => {
-    const [recommendation, ordersData, me] = await Promise.all([
-      cachedJson<Recommendation>("/api/recommendations/today").catch(
-        () => null,
-      ),
-      cachedJson<{ orders: { order: PaymentOrder }[] }>("/api/orders").catch(
-        () => ({ orders: [] as { order: PaymentOrder }[] }),
-      ),
-      cachedJson<{
-        user?: { name?: string; weaver?: { name?: string } };
-      }>("/api/auth/me").catch(() => null),
-    ]);
+    const [recommendation, ordersData, me, stockData, requirements] =
+      await Promise.all([
+        cachedJson<Recommendation>("/api/recommendations/today").catch(
+          () =>
+            peekCached<Recommendation>("/api/recommendations/today") ?? null,
+        ),
+        cachedJson<{ orders: { order: PaymentOrder }[] }>("/api/orders").catch(
+          () =>
+            peekCached<{ orders: { order: PaymentOrder }[] }>("/api/orders") ?? {
+              orders: [] as { order: PaymentOrder }[],
+            },
+        ),
+        cachedJson<{
+          user?: {
+            name?: string;
+            weaver?: { name?: string; region?: string };
+          };
+        }>("/api/auth/me").catch(
+          () =>
+            peekCached<{
+              user?: {
+                name?: string;
+                weaver?: { name?: string; region?: string };
+              };
+            }>("/api/auth/me") ?? null,
+        ),
+        cachedJson<{ stock: WeaverStock }>("/api/stock").catch(
+          () => peekCached<{ stock: WeaverStock }>("/api/stock") ?? null,
+        ),
+        cachedJson<BuyerRequirement[]>("/api/admin/requirements").catch(
+          () =>
+            peekCached<BuyerRequirement[]>("/api/admin/requirements") ??
+            ([] as BuyerRequirement[]),
+        ),
+      ]);
+
+    const region = me?.user?.weaver?.region?.toLowerCase();
+    const openReqs = (Array.isArray(requirements) ? requirements : []).filter(
+      (r) =>
+        r.status === "open" &&
+        (!region || r.region.toLowerCase() === region),
+    );
+
     const next = buildSnapshot(
       recommendation,
       ordersData.orders ?? [],
       me?.user?.name ?? me?.user?.weaver?.name ?? null,
+      stockData?.stock ?? null,
+      openReqs.length,
     );
+    snapRef.current = next;
     setSnap(next);
     return next;
   }, []);
@@ -65,33 +108,36 @@ export function SummaryChatbot() {
       top: listRef.current.scrollHeight,
       behavior: "smooth",
     });
-  }, [messages]);
+  }, [messages, busy]);
 
-  async function speak(text: string) {
-    if (!isSpeechSynthesisAvailable()) {
-      setVoiceNote(t("voice.notSupported"));
-      return;
-    }
+  function speak(text: string) {
+    if (!isSpeechSynthesisAvailable()) return;
     setVoiceNote(t("voice.speaking"));
-    try {
-      await speakRecommendation(text, { languageCode: lang });
-      setVoiceNote(null);
-    } catch {
-      setVoiceNote(t("voice.speakFailed"));
-    }
+    void speakRecommendation(text, { languageCode: lang })
+      .then(() => setVoiceNote(null))
+      .catch(() => setVoiceNote(t("voice.speakFailed")));
   }
 
-  async function pushAssistant(text: string, alsoSpeak: boolean) {
+  function pushAssistant(text: string, alsoSpeak: boolean) {
     setMessages((m) => [
       ...m,
-      { id: `a-${Date.now()}`, role: "assistant", text },
+      { id: `a-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, role: "assistant", text },
     ]);
-    if (alsoSpeak) await speak(text);
+    if (alsoSpeak) speak(text);
+  }
+
+  async function resolveSnap(): Promise<LoomSnapshot> {
+    if (snapRef.current) {
+      void loadSnap(); // refresh in background
+      return snapRef.current;
+    }
+    return loadSnap();
   }
 
   async function handleUserText(text: string, alsoSpeak = true) {
     const trimmed = text.trim();
-    if (!trimmed) return;
+    if (!trimmed || busy) return;
+    setActiveQ(null);
     setMessages((m) => [
       ...m,
       { id: `u-${Date.now()}`, role: "user", text: trimmed },
@@ -99,32 +145,48 @@ export function SummaryChatbot() {
     setInput("");
     setBusy(true);
     try {
-      const current = snap ?? (await loadSnap());
+      const current = await resolveSnap();
       const reply = answerChat(trimmed, current, lang);
-      await pushAssistant(reply, alsoSpeak);
+      pushAssistant(reply, alsoSpeak);
     } catch {
-      await pushAssistant(t("chat.error"), alsoSpeak);
+      pushAssistant(t("chat.error"), alsoSpeak);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onFiveQuestion(id: FiveQuestionId, label: string) {
+    if (busy) return;
+    setActiveQ(id);
+    setMessages((m) => [
+      ...m,
+      { id: `u-${Date.now()}`, role: "user", text: label },
+    ]);
+    setBusy(true);
+    try {
+      const current = await resolveSnap();
+      const reply = answerFiveQuestion(id, current, lang);
+      pushAssistant(reply, true);
+    } catch {
+      pushAssistant(t("chat.error"), true);
     } finally {
       setBusy(false);
     }
   }
 
   async function onSummarize() {
+    if (busy) return;
     setBusy(true);
+    setActiveQ(null);
+    setMessages((m) => [
+      ...m,
+      { id: `u-${Date.now()}`, role: "user", text: t("chat.summarize") },
+    ]);
     try {
-      const current = await loadSnap();
-      const text = summarizeOverall(current, lang);
-      setMessages((m) => [
-        ...m,
-        {
-          id: `u-${Date.now()}`,
-          role: "user",
-          text: t("chat.summarize"),
-        },
-      ]);
-      await pushAssistant(text, true);
+      const current = await resolveSnap();
+      pushAssistant(summarizeOverall(current, lang), true);
     } catch {
-      await pushAssistant(t("chat.error"), true);
+      pushAssistant(t("chat.error"), true);
     } finally {
       setBusy(false);
     }
@@ -174,9 +236,15 @@ export function SummaryChatbot() {
         </div>
       </div>
 
+      <FiveQuestionsStrip
+        onAsk={(id, label) => void onFiveQuestion(id, label)}
+        busy={busy}
+        activeId={activeQ}
+      />
+
       <div
         ref={listRef}
-        className="mb-3 max-h-56 space-y-2 overflow-y-auto rounded-xl bg-loom-bg/70 px-3 py-3"
+        className="mb-3 max-h-72 space-y-2 overflow-y-auto rounded-xl bg-loom-bg/70 px-3 py-3"
         role="log"
         aria-live="polite"
       >
@@ -186,7 +254,7 @@ export function SummaryChatbot() {
           messages.map((msg) => (
             <div
               key={msg.id}
-              className={`rounded-lg px-3 py-2 text-sm leading-snug ${
+              className={`rounded-lg px-3 py-2 text-sm leading-snug whitespace-pre-line ${
                 msg.role === "user"
                   ? "ml-6 bg-loom-primary text-white"
                   : "mr-4 border border-loom-border bg-loom-surface text-loom-ink"
@@ -200,7 +268,7 @@ export function SummaryChatbot() {
                 <button
                   type="button"
                   className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-loom-primary"
-                  onClick={() => void speak(msg.text)}
+                  onClick={() => speak(msg.text)}
                   aria-label={t("home.hearAgain")}
                 >
                   <Volume2 className="size-3.5" aria-hidden />

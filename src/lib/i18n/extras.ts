@@ -65,7 +65,32 @@ export type ExtraKey =
   | "state.settlement_released"
   | "state.dispute_opened"
   | "state.under_review"
-  | "state.resolved";
+  | "state.resolved"
+  | "stock.title"
+  | "stock.hint"
+  | "stock.simNote"
+  | "stock.yarnCotton"
+  | "stock.yarnSilk"
+  | "stock.finishedCotton"
+  | "stock.finishedSilk"
+  | "stock.finishedStole"
+  | "stock.finishedDhoti"
+  | "stock.feedsEngine"
+  | "engine.whyTags"
+  | "engine.dailyTitle"
+  | "engine.dailyHint"
+  | "engine.fiveLabel"
+  | "engine.q1"
+  | "engine.a1"
+  | "engine.q2"
+  | "engine.a2"
+  | "engine.q3"
+  | "engine.a3"
+  | "engine.q4"
+  | "engine.a4"
+  | "engine.q5"
+  | "engine.a5"
+  | "engine.chipHint";
 
 type ExtraCatalog = Record<ExtraKey, string>;
 
@@ -145,6 +170,32 @@ const en: ExtraCatalog = {
   "state.dispute_opened": "Question raised",
   "state.under_review": "Under review",
   "state.resolved": "Resolved",
+  "stock.title": "Stock & resources",
+  "stock.hint": "Yarn and finished pieces on hand — feeds today’s advice.",
+  "stock.simNote": "Demo / Simulated inventory — edit for the pitch story.",
+  "stock.yarnCotton": "Cotton yarn (kg)",
+  "stock.yarnSilk": "Silk yarn (kg)",
+  "stock.finishedCotton": "Finished cotton sarees",
+  "stock.finishedSilk": "Finished silk sarees",
+  "stock.finishedStole": "Finished stoles / dupattas",
+  "stock.finishedDhoti": "Finished dhoti / angavastram",
+  "stock.feedsEngine": "Changes nudge the decision engine on Home.",
+  "engine.whyTags": "Why this recommendation",
+  "engine.dailyTitle": "What should I do today?",
+  "engine.dailyHint": "Daily action plan from market, business, and master-weaver signals.",
+  "engine.fiveLabel": "Five daily questions",
+  "engine.q1": "Demand",
+  "engine.a1": "Do I have work coming?",
+  "engine.q2": "Product",
+  "engine.a2": "What should I weave next?",
+  "engine.q3": "Timing",
+  "engine.a3": "When should I start?",
+  "engine.q4": "Money",
+  "engine.a4": "When will I get paid?",
+  "engine.q5": "Today",
+  "engine.a5": "What should I do today?",
+  "engine.chipHint":
+    "Tap a question — Loom assistant pulls from your advice, orders, money, and stock.",
 };
 
 const hi: ExtraCatalog = {

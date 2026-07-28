@@ -3,6 +3,8 @@ import { UserRole } from "@/generated/prisma/client";
 import { requireRole } from "@/lib/auth/current-user";
 import { getTodaysRecommendation } from "@/lib/recommendations";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   const auth = await requireRole(UserRole.WEAVER);
   if ("error" in auth) {

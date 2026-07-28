@@ -45,8 +45,9 @@ export function WeaverLoginScreen({
     DEMAND_CATEGORIES[0]?.label ?? "Cotton saree",
   ]);
   const [error, setError] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
+  const [busyPhone, setBusyPhone] = useState<string | null>(null);
   const [langOpen, setLangOpen] = useState(false);
+  const busy = busyPhone !== null;
 
   const currentLang =
     LANGUAGE_OPTIONS.find((o) => o.code === lang) ?? LANGUAGE_OPTIONS[0];
@@ -70,8 +71,11 @@ export function WeaverLoginScreen({
       categories?: string[];
     },
   ) {
+    if (busyPhone) return;
     setError(null);
-    setBusy(true);
+    setBusyPhone(nextPhone);
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 12_000);
     try {
       const body: Record<string, unknown> = {
         phone: nextPhone,
@@ -87,19 +91,32 @@ export function WeaverLoginScreen({
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(body),
+        signal: controller.signal,
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setError(data.error ?? "Could not sign in");
+        setError(
+          typeof data.error === "string" ? data.error : "Could not sign in",
+        );
         return;
       }
       if (data.tour) markTourPending();
       if (nextMode === "register") setLang(primaryLanguage);
       invalidateCached();
+      // Clear busy BEFORE waiting on parent refresh so UI never freezes
+      setBusyPhone(null);
       onSuccess?.();
+    } catch (e) {
+      setError(
+        e instanceof Error && e.name === "AbortError"
+          ? "Sign-in timed out. Wait a moment and tap again."
+          : "Could not reach the server. Try again.",
+      );
     } finally {
-      setBusy(false);
+      clearTimeout(timer);
+      setBusyPhone(null);
     }
   }
 
@@ -182,7 +199,11 @@ export function WeaverLoginScreen({
         </div>
         {checking ? (
           <p className="text-xs text-white/70">{t("auth.checkingSignIn")}</p>
-        ) : null}
+        ) : (
+          <p className="text-xs text-white/70">
+            Tap Continue or a demo name below to enter.
+          </p>
+        )}
       </div>
 
       <div className="relative z-10 -mt-10 flex flex-1 flex-col gap-4 px-4 pb-10">
@@ -315,7 +336,11 @@ export function WeaverLoginScreen({
               disabled={busy}
               className="flex h-12 w-full items-center justify-center rounded-xl bg-[#3c2415] text-base font-semibold text-white disabled:opacity-60"
             >
-              {busy ? t("auth.checking") : mode === "login" ? "Continue" : "Create account"}
+              {busy && busyPhone === phone
+                ? "Signing in…"
+                : mode === "login"
+                  ? "Continue"
+                  : "Create account"}
             </button>
           </form>
         </div>
@@ -337,14 +362,18 @@ export function WeaverLoginScreen({
                   disabled={busy}
                   onClick={() => void enterAsDemo(d.phone)}
                   className={`flex w-full items-start justify-between gap-2 rounded-xl border px-3 py-3 text-left transition disabled:opacity-60 ${
-                    phone === d.phone
-                      ? "border-[#3c2415] bg-[#3c2415]/8"
-                      : "border-[#e8e2d8] hover:border-[#3c2415]/40"
+                    busyPhone === d.phone
+                      ? "border-[#3c2415] bg-[#3c2415]/15"
+                      : phone === d.phone
+                        ? "border-[#3c2415] bg-[#3c2415]/8"
+                        : "border-[#e8e2d8] hover:border-[#3c2415]/40"
                   }`}
                 >
                   <span>
                     <span className="block text-sm font-semibold text-[#1a1f24]">
-                      Enter as {d.givenName}
+                      {busyPhone === d.phone
+                        ? `Signing in as ${d.givenName}…`
+                        : `Enter as ${d.givenName}`}
                     </span>
                     <span className="mt-0.5 block text-xs text-[#5c6570]">
                       {d.blurb}

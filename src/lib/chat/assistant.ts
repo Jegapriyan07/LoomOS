@@ -1,17 +1,29 @@
 /**
  * Rule-based Loom assistant — summarizes advice, money, and orders.
- * No LLM; grounded in live API payloads.
+ * No LLM; grounded in live API payloads + five daily standee questions.
  */
 
 import type { LanguageCode } from "@/lib/voice/languages";
 import type { Recommendation } from "@/lib/types";
 import type { PaymentOrder } from "@/lib/payments/types";
+import type { WeaverStock } from "@/lib/demand/stock";
+import { yarnReadyFor } from "@/lib/demand/stock";
+
+export type FiveQuestionId =
+  | "demand"
+  | "product"
+  | "timing"
+  | "money"
+  | "today";
 
 export type LoomSnapshot = {
   recommendation: Recommendation | null;
   orders: { order: PaymentOrder }[];
   money: { held: number; nextDate: string | null; openCount: number };
   weaverName?: string | null;
+  stock: WeaverStock | null;
+  /** Open buyer requirements in region (count) */
+  openRequirementCount: number;
 };
 
 function moneyFromOrders(orders: { order: PaymentOrder }[]) {
@@ -40,12 +52,16 @@ export function buildSnapshot(
   recommendation: Recommendation | null,
   orders: { order: PaymentOrder }[],
   weaverName?: string | null,
+  stock?: WeaverStock | null,
+  openRequirementCount = 0,
 ): LoomSnapshot {
   return {
     recommendation,
     orders,
     money: moneyFromOrders(orders),
     weaverName,
+    stock: stock ?? null,
+    openRequirementCount,
   };
 }
 
@@ -58,6 +74,157 @@ const OPENERS: Record<LanguageCode, (name: string) => string> = {
   bn: (n) => (n ? `নমস্কার ${n}. ` : "নমস্কার. "),
   as: (n) => (n ? `নমস্কাৰ ${n}. ` : "নমস্কাৰ. "),
 };
+
+function factorRaw(
+  rec: Recommendation | null,
+  id: string,
+): number | null {
+  const f = rec?.factors.find((x) => x.id === id);
+  return f ? f.rawScore : null;
+}
+
+function festivalName(rec: Recommendation | null): string | null {
+  const seasonal = rec?.factors.find((f) => f.id === "seasonal");
+  const name = seasonal?.inputs.find(
+    (i) => i.name === "Nearest relevant event",
+  )?.value;
+  if (!name || name.includes("None upcoming")) return null;
+  return name;
+}
+
+function daysUntilFestival(rec: Recommendation | null): number | null {
+  const seasonal = rec?.factors.find((f) => f.id === "seasonal");
+  const raw = seasonal?.inputs.find((i) => i.name === "Days until start")
+    ?.value;
+  if (raw == null) return null;
+  const n = Number(raw);
+  return Number.isFinite(n) ? n : null;
+}
+
+/** Answers for the five standee chips — always from this weaver's snapshot. */
+export function answerFiveQuestion(
+  id: FiveQuestionId,
+  snap: LoomSnapshot,
+  _lang: LanguageCode,
+): string {
+  const rec = snap.recommendation;
+  const name = snap.weaverName?.split("(")[0]?.trim() ?? "there";
+
+  if (id === "demand") {
+    const buyer = factorRaw(rec, "buyer") ?? 0;
+    const seasonal = factorRaw(rec, "seasonal") ?? 0;
+    const fest = festivalName(rec);
+    const days = daysUntilFestival(rec);
+    const reqs = snap.openRequirementCount;
+    const score = rec?.demandScore ?? 0;
+    const lines = [
+      `${name}, here's your demand picture from your account:`,
+      `• Top match demand score: ${score}/100${rec ? ` (${rec.categoryLabel})` : ""}.`,
+      `• Open buyer requirements in your region: ${reqs}.`,
+      `• Buyer signal strength: ${buyer}/100.`,
+      seasonal > 0
+        ? `• Festival signal: ${seasonal}/100${fest ? ` — ${fest}${days != null ? ` in ~${days} days` : ""}` : ""}.`
+        : "• No nearby festival lift in the seeded calendar.",
+      snap.money.openCount > 0
+        ? `• You already have ${snap.money.openCount} open order(s) in the pipeline.`
+        : "• No open production orders yet — demand is mostly from buyer posts + season.",
+    ];
+    return lines.join("\n");
+  }
+
+  if (id === "product") {
+    if (!rec) {
+      return "I don't have today's product pick yet. Refresh Home advice, then ask again.";
+    }
+    const tags = (rec.reasonTags ?? [])
+      .filter((t) => t.active)
+      .map((t) => t.label);
+    const others = (rec.allCategoryScores ?? [])
+      .filter((c) => c.categoryId !== rec.categoryId)
+      .slice(0, 2)
+      .map((c) => `${c.categoryLabel} (${c.demandScore})`)
+      .join("; ");
+    return [
+      `What you should weave next (from your profile + live signals):`,
+      `→ ${rec.categoryLabel} — demand score ${rec.demandScore}/100.`,
+      rec.action,
+      tags.length ? `Why: ${tags.join(" · ")}.` : "",
+      others ? `Also ranked: ${others}.` : "",
+    ]
+      .filter(Boolean)
+      .join("\n");
+  }
+
+  if (id === "timing") {
+    if (!rec) {
+      return "Timing needs today's recommendation. Open Home and refresh advice first.";
+    }
+    const fest = festivalName(rec);
+    const days = daysUntilFestival(rec);
+    const startHint =
+      rec.dailyActions?.find((a) => a.id === "weave")?.label ??
+      rec.action;
+    const yarn =
+      snap.stock && rec
+        ? yarnReadyFor(snap.stock, rec.categoryId)
+        : null;
+    return [
+      `When should you start (from your account):`,
+      `→ ${startHint}`,
+      fest && days != null
+        ? `• Nearest relevant event: ${fest} (~${days} days). Plan backward on the Plan tab.`
+        : "• No urgent festival deadline in the seed calendar — use Plan to set your own ready date.",
+      yarn
+        ? `• Yarn check: ${yarn.note}${yarn.ready ? "" : " Fix stock on Plan before you start."}`
+        : "• Open Plan → Stock & resources to confirm yarn on hand.",
+    ].join("\n");
+  }
+
+  if (id === "money") {
+    const { held, nextDate, openCount } = snap.money;
+    const states = snap.orders
+      .filter(
+        (r) =>
+          r.order.state !== "settlement_released" &&
+          r.order.state !== "resolved",
+      )
+      .map((o) => o.order.state.replaceAll("_", " "))
+      .slice(0, 4);
+    if (openCount === 0) {
+      return [
+        `When will you get paid (from your Money pipeline):`,
+        `• No open orders right now — nothing in escrow.`,
+        `• Check Orders for new buyer requirements, or Money after a buyer places work.`,
+        `• Reminder: amounts here are simulated Demo Mode — not real bank transfers.`,
+      ].join("\n");
+    }
+    return [
+      `When will you get paid (from your account):`,
+      `• ${openCount} open order(s) in the pipeline.`,
+      held > 0
+        ? `• About ₹${held.toLocaleString("en-IN")} advance held (simulated escrow).`
+        : "• No advance held yet on open orders.",
+      nextDate
+        ? `• Next projected settlement: ${nextDate.slice(0, 10)}.`
+        : "• No settlement date projected yet — advance / dispatch may still be pending.",
+      states.length ? `• States: ${states.join("; ")}.` : "",
+      `• Open Money for the full escrow walk and wallet. Demo / Simulated only.`,
+    ]
+      .filter(Boolean)
+      .join("\n");
+  }
+
+  // today
+  const actions = rec?.dailyActions ?? [];
+  if (actions.length === 0) {
+    return summarizeOverall(snap, "en");
+  }
+  return [
+    `What you should do today (pulled from your advice, stock, and orders):`,
+    ...actions.map((a, i) => `${i + 1}. ${a.label}`),
+    `Tap Plan, Money, or Orders when a step needs that screen.`,
+  ].join("\n");
+}
 
 export function summarizeOverall(
   snap: LoomSnapshot,
@@ -152,6 +319,44 @@ export function answerChat(
   lang: LanguageCode,
 ): string {
   const t = message.toLowerCase();
+
+  // Match five-question phrasing even when typed
+  if (
+    t.includes("work coming") ||
+    t.includes("do i have work") ||
+    t.includes("demand")
+  ) {
+    return answerFiveQuestion("demand", snap, lang);
+  }
+  if (
+    t.includes("what should i weave") ||
+    t.includes("weave next") ||
+    (t.includes("product") && t.includes("recommend"))
+  ) {
+    return answerFiveQuestion("product", snap, lang);
+  }
+  if (
+    t.includes("when should i start") ||
+    t.includes("production timing") ||
+    (t.includes("when") && t.includes("start"))
+  ) {
+    return answerFiveQuestion("timing", snap, lang);
+  }
+  if (
+    t.includes("when will i get paid") ||
+    t.includes("get paid") ||
+    (t.includes("when") && t.includes("paid"))
+  ) {
+    return answerFiveQuestion("money", snap, lang);
+  }
+  if (
+    t.includes("what should i do today") ||
+    t.includes("do today") ||
+    t.includes("daily action")
+  ) {
+    return answerFiveQuestion("today", snap, lang);
+  }
+
   const moneyCues = [
     "money",
     "pay",
@@ -202,15 +407,7 @@ export function answerChat(
     return summarizeOverall(snap, lang);
   }
   if (moneyCues.some((c) => t.includes(c))) {
-    const { held, nextDate, openCount } = snap.money;
-    if (lang === "hi") {
-      return openCount === 0
-        ? "अभी कोई खुला ऑर्डर नहीं। वॉलेट शांत है।"
-        : `${openCount} खुले ऑर्डर। होल्ड एडवांस: ₹${held.toLocaleString("en-IN")}.${nextDate ? ` अगला अनुमानित भुगतान ${nextDate.slice(0, 10)}।` : ""} यह सिम्युलेटेड प्रोटोटाइप है।`;
-    }
-    return openCount === 0
-      ? "No open orders — wallet looks quiet (simulated)."
-      : `${openCount} open order(s). Advance held: ₹${held.toLocaleString("en-IN")}.${nextDate ? ` Next projected payment ${nextDate.slice(0, 10)}.` : ""} This is a simulated prototype.`;
+    return answerFiveQuestion("money", snap, lang);
   }
   if (orderCues.some((c) => t.includes(c))) {
     const open = snap.orders.filter(
@@ -228,7 +425,7 @@ export function answerChat(
       : `Active orders: ${open.length}. States: ${open.map((o) => o.order.state.replaceAll("_", " ")).join(", ")}.`;
   }
   if (weaveCues.some((c) => t.includes(c)) && snap.recommendation) {
-    return snap.recommendation.action;
+    return answerFiveQuestion("product", snap, lang);
   }
   return summarizeOverall(snap, lang);
 }

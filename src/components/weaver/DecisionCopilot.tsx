@@ -30,8 +30,12 @@ import {
   localizedAdvice,
   localizedCategoryLabel,
 } from "@/lib/i18n/extras";
-import { cachedJson } from "@/lib/client-cache";
+import { cachedJson, invalidateCached } from "@/lib/client-cache";
 import { SummaryChatbot } from "@/components/weaver/SummaryChatbot";
+import {
+  DailyActionPlan,
+  ReasonTagsRow,
+} from "@/components/weaver/StandeeEngineUI";
 
 /**
  * Weaver Home — Decision Copilot + summary chatbot + Web Speech voice.
@@ -106,14 +110,34 @@ export function DecisionCopilot() {
 
   const load = useCallback(async () => {
     setError(null);
+    const fetchRec = () =>
+      cachedJson<Recommendation>("/api/recommendations/today");
+
     try {
-      const data = await cachedJson<Recommendation>(
-        "/api/recommendations/today",
-      );
+      const data = await fetchRec();
       setRecommendation(data);
       await loadMoney();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Something went wrong");
+      const msg = e instanceof Error ? e.message : "Something went wrong";
+      // Login rotates the session cookie; an in-flight call can 401 once.
+      if (msg.includes("401")) {
+        invalidateCached("/api/recommendations/today");
+        try {
+          await new Promise((r) => setTimeout(r, 200));
+          const data = await fetchRec();
+          setRecommendation(data);
+          await loadMoney();
+          return;
+        } catch (retryErr) {
+          setError(
+            retryErr instanceof Error
+              ? retryErr.message
+              : "Session expired — sign out and sign in again",
+          );
+          return;
+        }
+      }
+      setError(msg);
     }
   }, [loadMoney]);
 
@@ -138,11 +162,8 @@ export function DecisionCopilot() {
     [t],
   );
 
-  useEffect(() => {
-    if (!recommendation || !adviceText) return;
-    void speakAdvice(adviceText, lang);
-    return () => stopSpeaking();
-  }, [recommendation, adviceText, lang, speakAdvice]);
+  // Auto-speak removed — Loom assistant owns voice replies on Home.
+  // Tap "Hear again" below for today's advice TTS.
 
   async function onHearAgain() {
     if (!adviceText) return;
@@ -231,6 +252,14 @@ export function DecisionCopilot() {
               </span>
               .
             </p>
+
+            {recommendation.reasonTags?.length ? (
+              <ReasonTagsRow tags={recommendation.reasonTags} />
+            ) : null}
+
+            {recommendation.dailyActions?.length ? (
+              <DailyActionPlan actions={recommendation.dailyActions} />
+            ) : null}
 
             <div className="mt-4 grid grid-cols-2 gap-2">
               <button

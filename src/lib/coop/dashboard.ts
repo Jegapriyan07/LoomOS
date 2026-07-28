@@ -128,7 +128,7 @@ export function buildClusterDemandVisibility(args: {
         weight: f.weight,
       })),
       source:
-        "Same Stage 3 formula: 0.5×Buyer + 0.3×Seasonal + 0.2×Historical — not a separate invented metric.",
+        "Same decision formula: Buyer + Seasonal + Historical + Market + MasterWeaver — not a separate invented metric.",
     };
   }).sort((a, b) => b.demandScore - a.demandScore);
 }

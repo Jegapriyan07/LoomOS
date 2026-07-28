@@ -5,6 +5,7 @@ import type {
   Dispute,
   PaymentOrder,
 } from "@/lib/payments/types";
+import type { WeaverStock } from "@/lib/demand/stock";
 import type { WeaverWallet } from "@/lib/wallet/types";
 
 export type DemandCategoryId =
@@ -69,13 +70,21 @@ export type LoomStore = {
   wallets: WeaverWallet[];
   /** Settlement order ids already credited into Available (idempotent) */
   walletCredits: { weaverId: string; orderId: string }[];
+  /** Standee business signal — yarn & finished stock per weaver */
+  weaverStock: WeaverStock[];
 };
 
-/** Exact formula weights — Stage 3 */
+/**
+ * Decision engine weights — standee pillars mapped into one transparent score.
+ * Buyer + seasonal + historical remain core; market-extra + master-weaver
+ * inject the standee Market / Master Weaver inputs.
+ */
 export const DEMAND_WEIGHTS = {
-  buyer: 0.5,
-  seasonal: 0.3,
-  historical: 0.2,
+  buyer: 0.35,
+  seasonal: 0.2,
+  historical: 0.15,
+  marketExtra: 0.15,
+  masterWeaver: 0.15,
 } as const;
 
 export type NamedInput = {
@@ -83,8 +92,15 @@ export type NamedInput = {
   value: string;
 };
 
+export type DemandFactorId =
+  | "buyer"
+  | "seasonal"
+  | "historical"
+  | "marketExtra"
+  | "masterWeaver";
+
 export type DemandFactorBreakdown = {
-  id: "buyer" | "seasonal" | "historical";
+  id: DemandFactorId;
   label: string;
   weight: number;
   /** Component score 0–100 before weighting */
@@ -93,6 +109,19 @@ export type DemandFactorBreakdown = {
   weightedContribution: number;
   inputs: NamedInput[];
   note?: string;
+};
+
+/** Standee-style reason chips on Home advice */
+export type EngineReasonTag = {
+  id: string;
+  label: string;
+  active: boolean;
+};
+
+export type DailyAction = {
+  id: string;
+  label: string;
+  href?: string;
 };
 
 export type ScoredCategory = {
