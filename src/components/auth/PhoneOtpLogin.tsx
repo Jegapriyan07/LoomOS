@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { DEMAND_CATEGORIES } from "@/lib/demand/types";
 import { LANGUAGE_OPTIONS, type LanguageCode } from "@/lib/voice/languages";
 import { useI18n } from "@/lib/i18n/context";
+import { invalidateCached } from "@/lib/client-cache";
 
 type Role = "WEAVER" | "BUYER";
 type AuthMode = "login" | "register";
@@ -110,6 +111,7 @@ export function PhoneOtpLogin({
       if (role === "WEAVER" && mode === "register") {
         setLang(primaryLanguage);
       }
+      invalidateCached();
       onSuccess?.();
     } finally {
       setBusy(false);

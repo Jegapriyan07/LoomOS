@@ -14,11 +14,9 @@ import {
   Truck,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { PROTOTYPE_PAYMENT_NOTE } from "@/lib/payments/copy";
 import {
   nextHappyState,
   weaverStateHint,
-  weaverStateLabel,
 } from "@/lib/payments/states";
 import type {
   Dispute,
@@ -26,17 +24,21 @@ import type {
   PaymentOrder,
   TrustScoreBreakdown,
 } from "@/lib/payments/types";
-import { DEMAND_CATEGORIES } from "@/lib/demand/types";
 import { formatDisplayDate } from "@/lib/production-defaults";
 import { IncomeStabilityWallet } from "@/components/weaver/IncomeStabilityWallet";
 import { VerifiedRecordCard } from "@/components/weaver/VerifiedRecordCard";
 import { useI18n } from "@/lib/i18n/context";
+import {
+  localizedCategoryLabel,
+  localizedOrderState,
+} from "@/lib/i18n/extras";
 import {
   PitchHero,
   PitchOneLiner,
   PitchStepBlock,
   PitchSteps,
 } from "@/components/pitch/PitchExplain";
+import { cachedJson, invalidateCached } from "@/lib/client-cache";
 
 type EnrichedOrder = {
   order: PaymentOrder;
@@ -75,25 +77,19 @@ function statusTone(state: OrderState): string {
 }
 
 export function MoneyComingYourWay() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [rows, setRows] = useState<EnrichedOrder[]>([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [walletOpen, setWalletOpen] = useState(false);
   const [proofOpen, setProofOpen] = useState(false);
 
   const load = useCallback(async () => {
-    setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/orders`, { cache: "no-store" });
-      if (!res.ok) throw new Error(t("money.loadingError"));
-      const data = (await res.json()) as { orders: EnrichedOrder[] };
+      const data = await cachedJson<{ orders: EnrichedOrder[] }>("/api/orders");
       setRows(data.orders);
     } catch (e) {
       setError(e instanceof Error ? e.message : t("money.loadingError"));
-    } finally {
-      setLoading(false);
     }
   }, [t]);
 
@@ -122,23 +118,20 @@ export function MoneyComingYourWay() {
   return (
     <div className="flex flex-1 flex-col gap-4 px-4 pb-8 pt-4">
       <PitchHero
-        eyebrow="Money · simulated escrow story"
+        eyebrow={t("pitch.moneyEyebrow")}
         title={t("money.title")}
-        body="See where each payment sits — advance held, next projected settlement, then a steady reserve and a shareable proof record."
+        body={t("pitch.moneyBody")}
       />
 
-      <PitchOneLiner>
-        Pitch in one line: escrow-style advance → clear state → projected
-        settlement → optional reserve → verified record buyers can trust.
-      </PitchOneLiner>
+      <PitchOneLiner>{t("pitch.moneyOneLiner")}</PitchOneLiner>
 
       <PitchSteps
         active={1}
         steps={[
-          { n: 1, label: "Snapshot" },
-          { n: 2, label: "Orders" },
-          { n: 3, label: "Reserve" },
-          { n: 4, label: "Proof" },
+          { n: 1, label: t("pitch.stepSnapshot") },
+          { n: 2, label: t("pitch.stepOrders") },
+          { n: 3, label: t("pitch.stepReserve") },
+          { n: 4, label: t("pitch.stepProof") },
         ]}
       />
 
@@ -152,13 +145,10 @@ export function MoneyComingYourWay() {
         />
         <p>
           <span className="font-semibold">{t("money.prototypeLabel")} </span>
-          {PROTOTYPE_PAYMENT_NOTE}
+          {t("pitch.paymentNote")}
         </p>
       </div>
 
-      {loading ? (
-        <p className="text-base text-loom-muted">{t("common.loading")}</p>
-      ) : null}
       {error ? (
         <p className="rounded-xl bg-loom-danger-soft px-3 py-2 text-loom-danger">
           {error}
@@ -168,7 +158,7 @@ export function MoneyComingYourWay() {
       <PitchStepBlock
         step={1}
         title={t("money.walletSnapshot")}
-        hint="The first thing a weaver (or judge) should understand."
+        hint={t("pitch.walletHint")}
       >
         <div className="flex items-start gap-3">
           <Banknote className="mt-0.5 size-7 shrink-0 text-loom-primary" aria-hidden />
@@ -194,7 +184,7 @@ export function MoneyComingYourWay() {
       <PitchStepBlock
         step={2}
         title={t("money.yourOrders")}
-        hint="Walk each order’s state. Demo button advances the happy path for the pitch."
+        hint={t("pitch.ordersHint")}
       >
         <ul className="space-y-3">
           {rows
@@ -204,14 +194,8 @@ export function MoneyComingYourWay() {
               <OrderMoneyCard key={row.order.id} row={row} onChanged={load} />
             ))}
         </ul>
-        {rows.length === 0 && !loading ? (
-          <p className="text-sm text-loom-muted">
-            No orders yet. Simulated buyer posts live in the{" "}
-            <Link href="/buyer" className="font-semibold text-loom-primary underline">
-              Buyer Portal
-            </Link>
-            .
-          </p>
+        {rows.length === 0 ? (
+          <p className="text-sm text-loom-muted">{t("pitch.noOrders")}</p>
         ) : null}
       </PitchStepBlock>
 
@@ -222,8 +206,10 @@ export function MoneyComingYourWay() {
           className="flex h-12 w-full items-center justify-between px-1 text-left text-base font-semibold text-loom-primary"
           aria-expanded={walletOpen}
         >
-          <span>Step 3 · Steady income wallet</span>
-          <span className="text-sm">{walletOpen ? "Hide" : "Show"}</span>
+          <span>{t("pitch.reserveTitle")}</span>
+          <span className="text-sm">
+            {walletOpen ? t("pitch.hide") : t("pitch.show")}
+          </span>
         </button>
         {walletOpen ? (
           <div className="mt-2">
@@ -231,8 +217,7 @@ export function MoneyComingYourWay() {
           </div>
         ) : (
           <p className="px-1 pb-2 text-sm text-loom-muted">
-            Optional for the pitch: rule-based reserve when a month is above
-            your usual settlement average.
+            {t("pitch.reserveHint")}
           </p>
         )}
       </div>
@@ -244,8 +229,10 @@ export function MoneyComingYourWay() {
           className="flex h-12 w-full items-center justify-between px-1 text-left text-base font-semibold text-loom-primary"
           aria-expanded={proofOpen}
         >
-          <span>Step 4 · Verified transaction record</span>
-          <span className="text-sm">{proofOpen ? "Hide" : "Show"}</span>
+          <span>{t("pitch.proofTitle")}</span>
+          <span className="text-sm">
+            {proofOpen ? t("pitch.hide") : t("pitch.show")}
+          </span>
         </button>
         {proofOpen ? (
           <div className="mt-2">
@@ -253,16 +240,14 @@ export function MoneyComingYourWay() {
           </div>
         ) : (
           <p className="px-1 pb-2 text-sm text-loom-muted">
-            Shareable proof buyers can open — completed settlements, not a
-            decorative badge.
+            {t("pitch.proofHint")}
           </p>
         )}
       </div>
 
       <p className="text-sm text-loom-muted">
-        Buyers see the same payment story in the{" "}
         <Link href="/buyer" className="font-semibold text-loom-primary underline">
-          Buyer Portal
+          {t("pitch.buyerPortal")}
         </Link>
         . {t("money.adminHint")}
       </p>
@@ -277,15 +262,14 @@ function OrderMoneyCard({
   row: EnrichedOrder;
   onChanged: () => Promise<void>;
 }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [trustOpen, setTrustOpen] = useState(false);
   const trustId = useId();
   const Icon = stateIcon(row.order.state);
-  const category =
-    DEMAND_CATEGORIES.find((c) => c.id === row.order.category)?.label ??
-    row.order.category;
+  const category = localizedCategoryLabel(lang, row.order.category);
   const hint = weaverStateHint(row.order.state);
   const next = nextHappyState(row.order.state);
+  const stateLabel = localizedOrderState(lang, row.order.state);
 
   async function advance() {
     if (!next) return;
@@ -294,6 +278,7 @@ function OrderMoneyCard({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ to: next }),
     });
+    invalidateCached("/api/orders");
     await onChanged();
   }
 
@@ -317,7 +302,7 @@ function OrderMoneyCard({
               className={`inline-flex items-center gap-1 rounded-lg px-2 py-1 text-sm font-semibold ${statusTone(row.order.state)}`}
             >
               <Icon className="size-4" aria-hidden />
-              {weaverStateLabel(row.order.state)}
+              {stateLabel}
             </span>
           </p>
           {hint ? (
@@ -346,7 +331,9 @@ function OrderMoneyCard({
               onClick={() => void advance()}
               className="mt-3 flex h-12 w-full items-center justify-center rounded-xl border border-loom-border bg-loom-surface text-base font-semibold text-loom-primary"
             >
-              {t("money.demoNext", { state: weaverStateLabel(next) })}
+              {t("money.demoNext", {
+                state: localizedOrderState(lang, next),
+              })}
             </button>
           ) : null}
         </div>

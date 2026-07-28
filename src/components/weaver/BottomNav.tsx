@@ -1,7 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Home,
   CalendarClock,
@@ -50,7 +51,15 @@ const TABS: Tab[] = [
 
 export function BottomNav() {
   const pathname = usePathname();
+  const router = useRouter();
   const { t } = useI18n();
+
+  // Prefetch all tabs once after login so Next doesn't "compile" on first tap
+  useEffect(() => {
+    for (const tab of TABS) {
+      router.prefetch(tab.href);
+    }
+  }, [router]);
 
   return (
     <nav
@@ -65,6 +74,7 @@ export function BottomNav() {
             <li key={tab.href} className="flex">
               <Link
                 href={tab.href}
+                prefetch
                 aria-current={active ? "page" : undefined}
                 className={`flex min-h-12 min-w-12 flex-1 flex-col items-center justify-center gap-0.5 px-0.5 ${
                   active ? "text-loom-primary" : "text-loom-tab-inactive"

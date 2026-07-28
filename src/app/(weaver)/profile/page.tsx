@@ -18,6 +18,7 @@ import {
   PitchHero,
   PitchOneLiner,
 } from "@/components/pitch/PitchExplain";
+import { cachedJson } from "@/lib/client-cache";
 
 type MeUser = {
   name: string;
@@ -39,26 +40,19 @@ export default function ProfilePage() {
   const { t, lang } = useI18n();
   const [user, setUser] = useState<MeUser | null>(null);
   const [orders, setOrders] = useState<PaymentOrder[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     void (async () => {
-      setLoading(true);
-      const [meRes, ordRes] = await Promise.all([
-        fetch("/api/auth/me", { cache: "no-store" }),
-        fetch("/api/orders", { cache: "no-store" }),
-      ]);
-      if (meRes.ok) {
-        const me = await meRes.json();
-        setUser(me.user as MeUser);
+      try {
+        const [me, ord] = await Promise.all([
+          cachedJson<{ user: MeUser }>("/api/auth/me"),
+          cachedJson<{ orders: { order: PaymentOrder }[] }>("/api/orders"),
+        ]);
+        setUser(me.user);
+        setOrders(ord.orders.map((r) => r.order));
+      } catch {
+        /* keep prior */
       }
-      if (ordRes.ok) {
-        const data = (await ordRes.json()) as {
-          orders: { order: PaymentOrder }[];
-        };
-        setOrders(data.orders.map((r) => r.order));
-      }
-      setLoading(false);
     })();
   }, []);
 
@@ -98,10 +92,6 @@ export default function ProfilePage() {
         Switch demo customers from Sign out → login card. Each phone keeps its
         own orders, money story and plan context.
       </PitchOneLiner>
-
-      {loading ? (
-        <p className="text-loom-muted">{t("common.loading")}</p>
-      ) : null}
 
       {user?.weaver ? (
         <section className="rounded-2xl border border-loom-border bg-loom-surface p-4">

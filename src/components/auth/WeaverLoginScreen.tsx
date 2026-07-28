@@ -10,6 +10,8 @@ import {
 } from "@/lib/voice/languages";
 import { useI18n } from "@/lib/i18n/context";
 import { DEMO_WEAVER_LOGINS } from "@/lib/demo/logins";
+import { markTourPending } from "@/components/onboarding/AppTour";
+import { invalidateCached } from "@/lib/client-cache";
 
 type AuthMode = "login" | "register";
 
@@ -92,7 +94,9 @@ export function WeaverLoginScreen({
         setError(data.error ?? "Could not sign in");
         return;
       }
+      if (data.tour) markTourPending();
       if (nextMode === "register") setLang(primaryLanguage);
+      invalidateCached();
       onSuccess?.();
     } finally {
       setBusy(false);
@@ -321,7 +325,9 @@ export function WeaverLoginScreen({
             Demo logins (pitch)
           </h2>
           <p className="mt-1 text-xs text-[#5c6570]">
-            Tap a name to open Home, Plan, Money & Orders — no code needed.
+            Tap a name for a <strong>fresh simulated</strong> orders + production
+            story each login. Use <strong>Register</strong> for an empty account
+            with a guided tour.
           </p>
           <ul className="mt-3 space-y-2">
             {DEMO_WEAVER_LOGINS.map((d) => (

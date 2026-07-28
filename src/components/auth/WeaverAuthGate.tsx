@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import { TopBar } from "@/components/weaver/TopBar";
 import { BottomNav } from "@/components/weaver/BottomNav";
 import { DemoModeBanner } from "@/components/demo/DemoModeBanner";
-import { VoiceAccessibilityBar } from "@/components/weaver/VoiceAccessibilityBar";
 import { WeaverLoginScreen } from "@/components/auth/WeaverLoginScreen";
+import { AppTour } from "@/components/onboarding/AppTour";
+import { cachedJson } from "@/lib/client-cache";
 
 type Me = {
   authenticated: boolean;
@@ -63,6 +64,17 @@ export function WeaverAuthGate({ children }: { children: React.ReactNode }) {
     void refresh();
   }, []);
 
+  // Warm shared API cache once after login so tab switches don't wait on Neon
+  useEffect(() => {
+    if (!me.authenticated || me.user?.role !== "WEAVER") return;
+    void Promise.allSettled([
+      cachedJson("/api/auth/me"),
+      cachedJson("/api/orders"),
+      cachedJson("/api/recommendations/today"),
+      cachedJson("/api/admin/requirements"),
+    ]);
+  }, [me.authenticated, me.user?.role]);
+
   if (!me.authenticated || me.user?.role !== "WEAVER") {
     return (
       <WeaverLoginScreen
@@ -78,8 +90,8 @@ export function WeaverAuthGate({ children }: { children: React.ReactNode }) {
       <DemoModeBanner />
       <TopBar />
       <main className="flex flex-1 flex-col pb-20">{children}</main>
-      <VoiceAccessibilityBar />
       <BottomNav />
+      <AppTour />
     </>
   );
 }

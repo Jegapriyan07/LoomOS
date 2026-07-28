@@ -48,7 +48,7 @@ export async function speakRecommendation(
     return;
   }
 
-  const lang = bcp47For(options.languageCode ?? "hi");
+  const lang = bcp47For(options.languageCode ?? "en");
   stopSpeaking();
 
   // Chrome sometimes needs voices loaded asynchronously

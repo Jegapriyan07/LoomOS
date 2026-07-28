@@ -20,27 +20,30 @@ import {
 } from "@/lib/voice/speech";
 import {
   LANGUAGE_CHANGE_EVENT,
-  VOICE_DEMO_NOTE,
   readStoredLanguage,
   type LanguageCode,
 } from "@/lib/voice/languages";
 import { formatDisplayDate } from "@/lib/production-defaults";
 import type { PaymentOrder } from "@/lib/payments/types";
 import { useI18n } from "@/lib/i18n/context";
+import {
+  localizedAdvice,
+  localizedCategoryLabel,
+} from "@/lib/i18n/extras";
+import { cachedJson } from "@/lib/client-cache";
 import { SummaryChatbot } from "@/components/weaver/SummaryChatbot";
 
 /**
  * Weaver Home — Decision Copilot + summary chatbot + Web Speech voice.
  */
 export function DecisionCopilot() {
-  const { t } = useI18n();
+  const { t, lang: uiLang } = useI18n();
   const [recommendation, setRecommendation] = useState<Recommendation | null>(
     null,
   );
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
   const [whyOpen, setWhyOpen] = useState(false);
-  const [lang, setLang] = useState<LanguageCode>("hi");
+  const [lang, setLang] = useState<LanguageCode>("en");
   const [listening, setListening] = useState(false);
   const [voiceStatus, setVoiceStatus] = useState<string | null>(null);
   const [moneyLine, setMoneyLine] = useState<{
@@ -48,6 +51,10 @@ export function DecisionCopilot() {
     nextDate: string | null;
   }>({ held: 0, nextDate: null });
   const whyPanelId = useId();
+
+  useEffect(() => {
+    setLang(uiLang);
+  }, [uiLang]);
 
   useEffect(() => {
     setLang(readStoredLanguage());
@@ -59,48 +66,54 @@ export function DecisionCopilot() {
     return () => window.removeEventListener(LANGUAGE_CHANGE_EVENT, onChange);
   }, []);
 
+  const adviceText = recommendation
+    ? localizedAdvice(lang, {
+        categoryId: recommendation.categoryId,
+        categoryLabel: recommendation.categoryLabel,
+        demandScore: recommendation.demandScore,
+        factors: recommendation.factors,
+      })
+    : "";
+
   const loadMoney = useCallback(async () => {
-    const res = await fetch(`/api/orders`, { cache: "no-store" });
-    if (!res.ok) return;
-    const data = (await res.json()) as {
-      orders: { order: PaymentOrder }[];
-    };
-    const active = data.orders.filter(
-      (r) =>
-        r.order.state !== "settlement_released" && r.order.state !== "resolved",
-    );
-    const held = active
-      .filter((r) =>
-        [
-          "advance_paid_escrow_held",
-          "production_in_progress",
-          "dispatched",
-          "dispute_opened",
-          "under_review",
-        ].includes(r.order.state),
-      )
-      .reduce((s, r) => s + r.order.advanceAmount, 0);
-    const nextDate =
-      active.find((r) => r.order.expectedSettlementAt)?.order
-        .expectedSettlementAt ?? null;
-    setMoneyLine({ held, nextDate });
+    try {
+      const data = await cachedJson<{ orders: { order: PaymentOrder }[] }>(
+        "/api/orders",
+      );
+      const active = data.orders.filter(
+        (r) =>
+          r.order.state !== "settlement_released" && r.order.state !== "resolved",
+      );
+      const held = active
+        .filter((r) =>
+          [
+            "advance_paid_escrow_held",
+            "production_in_progress",
+            "dispatched",
+            "dispute_opened",
+            "under_review",
+          ].includes(r.order.state),
+        )
+        .reduce((s, r) => s + r.order.advanceAmount, 0);
+      const nextDate =
+        active.find((r) => r.order.expectedSettlementAt)?.order
+          .expectedSettlementAt ?? null;
+      setMoneyLine({ held, nextDate });
+    } catch {
+      /* keep prior */
+    }
   }, []);
 
   const load = useCallback(async () => {
-    setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/recommendations/today`, {
-        cache: "no-store",
-      });
-      if (!res.ok) throw new Error("Could not load today's advice");
-      const data = (await res.json()) as Recommendation;
+      const data = await cachedJson<Recommendation>(
+        "/api/recommendations/today",
+      );
       setRecommendation(data);
       await loadMoney();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong");
-    } finally {
-      setLoading(false);
     }
   }, [loadMoney]);
 
@@ -126,14 +139,14 @@ export function DecisionCopilot() {
   );
 
   useEffect(() => {
-    if (!recommendation) return;
-    void speakAdvice(recommendation.action, lang);
+    if (!recommendation || !adviceText) return;
+    void speakAdvice(adviceText, lang);
     return () => stopSpeaking();
-  }, [recommendation, lang, speakAdvice]);
+  }, [recommendation, adviceText, lang, speakAdvice]);
 
   async function onHearAgain() {
-    if (!recommendation) return;
-    await speakAdvice(recommendation.action, lang);
+    if (!adviceText) return;
+    await speakAdvice(adviceText, lang);
   }
 
   async function onAskByVoice() {
@@ -156,8 +169,8 @@ export function DecisionCopilot() {
         return;
       }
       setVoiceStatus(t("voice.heard", { transcript }));
-      if (soundsLikeWeaveQuestion(transcript) && recommendation) {
-        await speakAdvice(recommendation.action, lang);
+      if (soundsLikeWeaveQuestion(transcript) && adviceText) {
+        await speakAdvice(adviceText, lang);
       }
     } catch {
       setListening(false);
@@ -174,11 +187,6 @@ export function DecisionCopilot() {
           {t("home.question")}
         </p>
 
-        {loading ? (
-          <p className="text-center text-base text-loom-muted">
-            {t("home.loading")}
-          </p>
-        ) : null}
         {error ? (
           <p className="rounded-xl border border-loom-danger bg-loom-danger-soft px-3 py-3 text-base text-loom-danger">
             {error}
@@ -208,15 +216,18 @@ export function DecisionCopilot() {
               data-voice-advice
               className="font-[family-name:var(--font-loom-display)] text-weaver-lg font-semibold leading-snug text-loom-ink"
             >
-              {recommendation.action}
+              {adviceText}
             </p>
 
             <p className="mt-3 text-base text-loom-muted">
               {t("home.demandScore", {
-                category: recommendation.categoryLabel.toLowerCase(),
+                category: localizedCategoryLabel(
+                  lang,
+                  recommendation.categoryId || recommendation.categoryLabel,
+                ),
               })}{" "}
               <span className="font-semibold text-loom-ink">
-                {recommendation.demandScore} of 100
+                {t("home.scoreOf", { score: recommendation.demandScore })}
               </span>
               .
             </p>
@@ -250,7 +261,7 @@ export function DecisionCopilot() {
               </p>
             ) : null}
             <p className="mt-2 text-xs leading-snug text-loom-muted">
-              {VOICE_DEMO_NOTE}
+              {t("home.voiceNote")}
             </p>
 
             <div className="mt-auto pt-6">
@@ -280,7 +291,7 @@ export function DecisionCopilot() {
                     {recommendation.formulaSummary}
                   </p>
                   <p className="mt-1 text-sm text-loom-muted">
-                    Total = {recommendation.demandScore}/100
+                    {t("home.whyTotal", { score: recommendation.demandScore })}
                   </p>
 
                   {recommendation.factors.map((factor) => (

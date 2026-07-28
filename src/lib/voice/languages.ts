@@ -16,12 +16,12 @@ export const LANGUAGE_OPTIONS = [
 
 export type LanguageCode = (typeof LANGUAGE_OPTIONS)[number]["code"];
 
-export const LANGUAGE_STORAGE_KEY = "loomos-language";
+export const LANGUAGE_STORAGE_KEY = "loomos-ui-lang-v2";
 export const LANGUAGE_CHANGE_EVENT = "loomos-language-change";
 
 /** Demo tip: Web Speech is most reliable in Chrome. */
 export const VOICE_DEMO_NOTE =
-  "Voice works best in Chrome on the demo device. Hindi usually has the strongest built-in voice; Tamil, Telugu, Kannada, Bengali, and Assamese depend on voices installed on that device.";
+  "English is the default UI language. Switch Hindi, Tamil, Telugu, Kannada, Bengali, or Assamese from the language menu. Voice works best in Chrome; availability depends on voices installed on the device.";
 
 /**
  * Census context — Assam & West Bengal handloom household counts
@@ -38,7 +38,7 @@ export const COMING_NEXT_LANGUAGES = CENSUS_LANGUAGE_NOTE;
 
 export function bcp47For(code: string): string {
   const found = LANGUAGE_OPTIONS.find((o) => o.code === code);
-  return found?.bcp47 ?? "hi-IN";
+  return found?.bcp47 ?? "en-IN";
 }
 
 export function isLanguageCode(value: string): value is LanguageCode {
@@ -46,10 +46,10 @@ export function isLanguageCode(value: string): value is LanguageCode {
 }
 
 export function readStoredLanguage(): LanguageCode {
-  if (typeof window === "undefined") return "hi";
+  if (typeof window === "undefined") return "en";
   const saved = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
   if (saved && isLanguageCode(saved)) return saved;
-  return "hi";
+  return "en";
 }
 
 export function writeStoredLanguage(code: LanguageCode): void {

@@ -18,6 +18,7 @@ import {
   speakRecommendation,
   stopSpeaking,
 } from "@/lib/voice/speech";
+import { cachedJson } from "@/lib/client-cache";
 
 type ChatMsg = { id: string; role: "user" | "assistant"; text: string };
 
@@ -35,18 +36,17 @@ export function SummaryChatbot() {
   const listRef = useRef<HTMLDivElement>(null);
 
   const loadSnap = useCallback(async (): Promise<LoomSnapshot> => {
-    const [recRes, ordRes, meRes] = await Promise.all([
-      fetch("/api/recommendations/today", { cache: "no-store" }),
-      fetch("/api/orders", { cache: "no-store" }),
-      fetch("/api/auth/me", { cache: "no-store" }),
+    const [recommendation, ordersData, me] = await Promise.all([
+      cachedJson<Recommendation>("/api/recommendations/today").catch(
+        () => null,
+      ),
+      cachedJson<{ orders: { order: PaymentOrder }[] }>("/api/orders").catch(
+        () => ({ orders: [] as { order: PaymentOrder }[] }),
+      ),
+      cachedJson<{
+        user?: { name?: string; weaver?: { name?: string } };
+      }>("/api/auth/me").catch(() => null),
     ]);
-    const recommendation = recRes.ok
-      ? ((await recRes.json()) as Recommendation)
-      : null;
-    const ordersData = ordRes.ok
-      ? ((await ordRes.json()) as { orders: { order: PaymentOrder }[] })
-      : { orders: [] };
-    const me = meRes.ok ? await meRes.json() : null;
     const next = buildSnapshot(
       recommendation,
       ordersData.orders ?? [],

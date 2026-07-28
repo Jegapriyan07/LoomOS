@@ -70,7 +70,7 @@ export async function resolveUserAfterOtp(args: {
     const userId = `user-weaver-${randomBytes(4).toString("hex")}`;
     const weaverId = `weaver-${randomBytes(4).toString("hex")}`;
     const region = args.region?.trim() || "Tamil Nadu";
-    const primaryLanguage = args.primaryLanguage?.trim() || "hi";
+    const primaryLanguage = args.primaryLanguage?.trim() || "en";
 
     return prisma.user.create({
       data: {

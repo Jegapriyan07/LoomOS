@@ -69,91 +69,6 @@
   "ledgerOrders": [],
   "paymentOrders": [
     {
-      "id": "ord-hist-001",
-      "weaverId": "weaver-demo-001",
-      "buyerId": "buyer-demo-001",
-      "category": "cotton-saree",
-      "amount": 18000,
-      "advanceAmount": 5000,
-      "state": "settlement_released",
-      "createdAt": "2026-05-01T10:00:00.000Z",
-      "dispatchedAt": "2026-05-20T10:00:00.000Z",
-      "expectedSettlementAt": "2026-05-21",
-      "settledAt": "2026-05-21T12:00:00.000Z",
-      "stateHistory": [
-        {
-          "state": "order_created",
-          "at": "2026-05-01T10:00:00.000Z"
-        },
-        {
-          "state": "settlement_released",
-          "at": "2026-05-21T12:00:00.000Z"
-        }
-      ]
-    },
-    {
-      "id": "ord-hist-002",
-      "weaverId": "weaver-demo-001",
-      "buyerId": "buyer-demo-001",
-      "category": "cotton-saree",
-      "amount": 12000,
-      "advanceAmount": 4000,
-      "state": "settlement_released",
-      "createdAt": "2026-06-01T10:00:00.000Z",
-      "dispatchedAt": "2026-06-18T10:00:00.000Z",
-      "expectedSettlementAt": "2026-06-19",
-      "settledAt": "2026-06-19T09:00:00.000Z",
-      "stateHistory": [
-        {
-          "state": "order_created",
-          "at": "2026-06-01T10:00:00.000Z"
-        },
-        {
-          "state": "settlement_released",
-          "at": "2026-06-19T09:00:00.000Z"
-        }
-      ]
-    },
-    {
-      "id": "ord-hist-003",
-      "weaverId": "weaver-demo-001",
-      "buyerId": "buyer-demo-001",
-      "category": "silk-saree",
-      "amount": 32000,
-      "advanceAmount": 10000,
-      "state": "settlement_released",
-      "createdAt": "2026-04-10T10:00:00.000Z",
-      "dispatchedAt": "2026-05-05T10:00:00.000Z",
-      "expectedSettlementAt": "2026-05-06",
-      "settledAt": "2026-05-06T11:00:00.000Z",
-      "stateHistory": [
-        {
-          "state": "order_created",
-          "at": "2026-04-10T10:00:00.000Z"
-        },
-        {
-          "state": "settlement_released",
-          "at": "2026-05-06T11:00:00.000Z"
-        }
-      ]
-    },
-    {
-      "id": "ord-walk-001",
-      "weaverId": "weaver-demo-001",
-      "buyerId": "buyer-demo-001",
-      "category": "cotton-saree",
-      "amount": 15000,
-      "advanceAmount": 4500,
-      "state": "order_created",
-      "createdAt": "2026-07-28T11:09:30.403Z",
-      "stateHistory": [
-        {
-          "state": "order_created",
-          "at": "2026-07-28T11:09:30.403Z"
-        }
-      ]
-    },
-    {
       "id": "ord-selvi-001",
       "weaverId": "weaver-demo-002",
       "buyerId": "buyer-demo-002",
@@ -323,6 +238,91 @@
           "at": "2026-04-23T09:00:00.000Z"
         }
       ]
+    },
+    {
+      "id": "sim-weaver-demo-001-ms4uqp23-1",
+      "weaverId": "weaver-demo-001",
+      "buyerId": "buyer-demo-001",
+      "category": "silk-saree",
+      "amount": 10000,
+      "advanceAmount": 3000,
+      "state": "production_in_progress",
+      "createdAt": "2026-07-25T16:10:14.249Z",
+      "stateHistory": [
+        {
+          "state": "production_in_progress",
+          "at": "2026-07-25T16:10:14.249Z"
+        }
+      ]
+    },
+    {
+      "id": "sim-weaver-demo-001-ms4uqp23-2",
+      "weaverId": "weaver-demo-001",
+      "buyerId": "buyer-demo-002",
+      "category": "silk-saree",
+      "amount": 11500,
+      "advanceAmount": 3450,
+      "state": "advance_paid_escrow_held",
+      "createdAt": "2026-07-22T16:10:14.249Z",
+      "stateHistory": [
+        {
+          "state": "advance_paid_escrow_held",
+          "at": "2026-07-22T16:10:14.249Z"
+        }
+      ]
+    },
+    {
+      "id": "sim-weaver-demo-001-ms4uqp23-3",
+      "weaverId": "weaver-demo-001",
+      "buyerId": "buyer-demo-003",
+      "category": "dhoti-angavastram",
+      "amount": 14500,
+      "advanceAmount": 4350,
+      "state": "dispatched",
+      "createdAt": "2026-07-19T16:10:14.249Z",
+      "dispatchedAt": "2026-07-28T16:10:14.249Z",
+      "expectedSettlementAt": "2026-07-29",
+      "stateHistory": [
+        {
+          "state": "dispatched",
+          "at": "2026-07-19T16:10:14.249Z"
+        }
+      ]
+    },
+    {
+      "id": "sim-weaver-demo-001-ms4uqp23-4",
+      "weaverId": "weaver-demo-001",
+      "buyerId": "buyer-demo-001",
+      "category": "cotton-saree",
+      "amount": 19000,
+      "advanceAmount": 5700,
+      "state": "settlement_released",
+      "createdAt": "2026-06-18T16:10:14.249Z",
+      "dispatchedAt": "2026-07-22T16:10:14.249Z",
+      "expectedSettlementAt": "2026-07-23",
+      "settledAt": "2026-07-23T16:10:14.249Z",
+      "stateHistory": [
+        {
+          "state": "settlement_released",
+          "at": "2026-06-18T16:10:14.249Z"
+        }
+      ]
+    },
+    {
+      "id": "sim-weaver-demo-001-ms4uqp23-5",
+      "weaverId": "weaver-demo-001",
+      "buyerId": "buyer-demo-002",
+      "category": "silk-saree",
+      "amount": 23000,
+      "advanceAmount": 6900,
+      "state": "order_created",
+      "createdAt": "2026-07-13T16:10:14.249Z",
+      "stateHistory": [
+        {
+          "state": "order_created",
+          "at": "2026-07-13T16:10:14.249Z"
+        }
+      ]
     }
   ],
   "disputes": [],
@@ -348,6 +348,14 @@
       "reserveFloor": 2000,
       "surplusSavePercent": 40,
       "updatedAt": "2026-07-28T11:15:57.940Z"
+    },
+    {
+      "weaverId": "weaver-6ceeb0e1",
+      "available": 0,
+      "reserve": 0,
+      "reserveFloor": 2000,
+      "surplusSavePercent": 40,
+      "updatedAt": "2026-07-28T16:11:48.803Z"
     }
   ],
   "walletCredits": [

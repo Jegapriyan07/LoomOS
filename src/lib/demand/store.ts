@@ -59,15 +59,23 @@ function mergeBuyerProfiles(
   });
 }
 
-/** Ensure fictional cluster pipeline seed orders exist for Stage 11 dashboard. */
+/** Ensure fictional cluster pipeline seed orders exist for Stage 11 dashboard.
+ * Skip weavers that already have a fresh per-login `sim-*` pipeline.
+ */
 function mergeClusterPipelineOrders(
   existing: PaymentOrder[],
   seeded: PaymentOrder[],
 ): PaymentOrder[] {
   const ids = new Set(existing.map((o) => o.id));
+  const weaversWithSim = new Set(
+    existing
+      .filter((o) => o.id.startsWith("sim-"))
+      .map((o) => o.weaverId),
+  );
   const extras = seeded.filter(
     (o) =>
       !ids.has(o.id) &&
+      !weaversWithSim.has(o.weaverId) &&
       (o.id.startsWith("ord-selvi-") ||
         o.id.startsWith("ord-kamala-") ||
         o.id.startsWith("ord-lakshmi-")),
@@ -445,8 +453,16 @@ async function ensureStore(): Promise<LoomStore> {
           (b.id === "buyer-demo-001" && b.email !== DEMO_BUYERS[0].email) ||
           (b.id === "buyer-demo-001" && b.name !== DEMO_BUYERS[0].name),
       ) ||
-      !(parsed.paymentOrders ?? []).some((o) => o.id === "ord-selvi-001") ||
-      !(parsed.paymentOrders ?? []).some((o) => o.id === "ord-lakshmi-001") ||
+      !(parsed.paymentOrders ?? []).some(
+        (o) =>
+          o.id === "ord-selvi-001" ||
+          (o.weaverId === "weaver-demo-002" && o.id.startsWith("sim-")),
+      ) ||
+      !(parsed.paymentOrders ?? []).some(
+        (o) =>
+          o.id === "ord-lakshmi-001" ||
+          (o.weaverId === "weaver-demo-004" && o.id.startsWith("sim-")),
+      ) ||
       !(parsed.buyerRequirements ?? []).some((r) => r.id === "req-004");
     if (needsWrite) {
       await fs.writeFile(STORE_PATH, JSON.stringify(normalized, null, 2), "utf8");

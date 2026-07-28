@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { UserRole } from "@/generated/prisma/client";
+import { prisma } from "@/lib/auth/db";
 import { isValidIndianMobile, normalizePhone } from "@/lib/auth/phone";
 import { resolveUserAfterOtp } from "@/lib/auth/resolve-user";
 import {
@@ -10,6 +12,10 @@ import {
   setSessionCookie,
 } from "@/lib/auth/session";
 import { ensureBuyerInJsonStore } from "@/lib/demand/store";
+import {
+  bootstrapWeaverSimulation,
+  SIM_EPOCH_COOKIE,
+} from "@/lib/demo/simulate-session";
 
 function parseRole(raw: unknown): UserRole | null {
   const s = String(raw ?? "").toUpperCase();
@@ -20,7 +26,8 @@ function parseRole(raw: unknown): UserRole | null {
 
 /**
  * Pitch-friendly login — no OTP.
- * POST { phone, role, mode?, name?, region?, primaryLanguage?, categories? }
+ * Login (demo): fresh simulated orders/production each time.
+ * Register (new phone): empty data + client tour.
  */
 export async function POST(request: Request) {
   try {
@@ -47,6 +54,12 @@ export async function POST(request: Request) {
       ? body.categories.map((c: unknown) => String(c))
       : undefined;
 
+    const existedBefore = await prisma.user.findFirst({
+      where: { phone, role },
+      select: { id: true },
+    });
+    const creatingNew = mode === "register" && !existedBefore;
+
     const user = await resolveUserAfterOtp({
       phone,
       role,
@@ -68,6 +81,18 @@ export async function POST(request: Request) {
       });
     }
 
+    let hasPipeline = false;
+    let simEpoch = Date.now().toString(36);
+
+    if (user.weaver) {
+      const sim = await bootstrapWeaverSimulation({
+        weaverId: user.weaver.id,
+        mode: creatingNew ? "register" : "login",
+      });
+      hasPipeline = sim.hasPipeline;
+      simEpoch = sim.simEpoch;
+    }
+
     const old = await readSessionToken();
     await destroySession(old);
     await clearSessionCookie();
@@ -75,8 +100,21 @@ export async function POST(request: Request) {
     const token = await createSession(user.id);
     await setSessionCookie(token);
 
+    const jar = await cookies();
+    jar.set(SIM_EPOCH_COOKIE, simEpoch, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: 7 * 24 * 60 * 60,
+    });
+
     return NextResponse.json({
       ok: true,
+      isNew: creatingNew,
+      tour: creatingNew,
+      hasPipeline,
+      simEpoch,
       user: {
         userId: user.id,
         phone: user.phone,

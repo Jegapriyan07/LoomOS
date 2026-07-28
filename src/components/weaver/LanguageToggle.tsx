@@ -7,7 +7,6 @@ import {
   CENSUS_LANGUAGE_NOTE,
   LANGUAGE_CHANGE_EVENT,
   LANGUAGE_OPTIONS,
-  VOICE_DEMO_NOTE,
   readStoredLanguage,
   writeStoredLanguage,
   type LanguageCode,
@@ -15,7 +14,7 @@ import {
 import { useI18n } from "@/lib/i18n/context";
 
 export function LanguageToggle() {
-  const { lang: ctxLang, setLang: setCtxLang } = useI18n();
+  const { lang: ctxLang, setLang: setCtxLang, t } = useI18n();
   const [open, setOpen] = useState(false);
   const [lang, setLang] = useState<LanguageCode>(ctxLang);
 
@@ -86,7 +85,7 @@ export function LanguageToggle() {
               <span className="font-semibold text-loom-ink">Languages: </span>
               {CENSUS_LANGUAGE_NOTE}
             </p>
-            <p className="text-xs">{VOICE_DEMO_NOTE}</p>
+            <p className="text-xs">{t("home.voiceNote")}</p>
             <p className="text-xs">{BHASHINI_STATUS_NOTE}</p>
           </div>
         </div>

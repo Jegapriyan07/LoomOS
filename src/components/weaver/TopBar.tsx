@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Store } from "lucide-react";
 import { LanguageToggle } from "./LanguageToggle";
 import { useI18n } from "@/lib/i18n/context";
-import { isLanguageCode, writeStoredLanguage } from "@/lib/voice/languages";
+import { cachedJson, invalidateCached } from "@/lib/client-cache";
 
 export function TopBar() {
   const { t } = useI18n();
@@ -13,19 +13,20 @@ export function TopBar() {
 
   useEffect(() => {
     void (async () => {
-      const res = await fetch("/api/auth/me", { cache: "no-store" });
-      if (!res.ok) return;
-      const data = await res.json();
-      setName(data.user?.name ?? null);
-      const pl = data.user?.weaver?.primaryLanguage as string | undefined;
-      if (pl && isLanguageCode(pl)) {
-        writeStoredLanguage(pl);
+      try {
+        const data = await cachedJson<{ user?: { name?: string } }>(
+          "/api/auth/me",
+        );
+        setName(data.user?.name ?? null);
+      } catch {
+        /* signed-out / transient */
       }
     })();
   }, []);
 
   async function logout() {
     await fetch("/api/auth/logout", { method: "POST" });
+    invalidateCached();
     window.location.href = "/";
   }
 
@@ -54,10 +55,10 @@ export function TopBar() {
           <Link
             href="/buyer"
             className="flex h-10 items-center gap-1 rounded-lg border border-loom-border bg-loom-bg px-2 text-xs font-semibold text-loom-primary"
-            aria-label="Open Buyer Portal"
+            aria-label={t("pitch.openBuyerPortal")}
           >
             <Store className="size-4" aria-hidden />
-            Buyer
+            {t("topbar.buyer")}
           </Link>
           <LanguageToggle />
           <button

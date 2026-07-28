@@ -16,6 +16,7 @@ import { calculateReverseSchedule } from "@/lib/reverse-schedule";
 import { DurationDefaultsEditor } from "@/components/weaver/DurationDefaultsEditor";
 import { PlanTimeline } from "@/components/weaver/PlanTimeline";
 import { useI18n } from "@/lib/i18n/context";
+import { localizedCategoryLabel } from "@/lib/i18n/extras";
 import {
   PitchHero,
   PitchOneLiner,
@@ -23,7 +24,7 @@ import {
   PitchSteps,
 } from "@/components/pitch/PitchExplain";
 import type { BuyerRequirement } from "@/lib/demand/types";
-import { DEMAND_CATEGORIES } from "@/lib/demand/types";
+import { cachedJson } from "@/lib/client-cache";
 
 const STORAGE_KEY = "loomos-production-defaults";
 
@@ -41,7 +42,7 @@ function loadDefaults(): ProductionDefaults {
 }
 
 export function ReverseProductionPlanner() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const festivals = useMemo(() => getSampleFestivalCalendar(), []);
   const [defaults, setDefaults] = useState<ProductionDefaults>(DEFAULT_PRODUCTION);
   const [hydrated, setHydrated] = useState(false);
@@ -67,22 +68,27 @@ export function ReverseProductionPlanner() {
 
   useEffect(() => {
     void (async () => {
-      const meRes = await fetch("/api/auth/me", { cache: "no-store" });
-      const me = meRes.ok ? await meRes.json() : null;
-      const region = (me?.user?.weaver?.region as string | undefined) ?? "";
-      const res = await fetch("/api/admin/requirements", { cache: "no-store" });
-      if (!res.ok) return;
-      const all = (await res.json()) as BuyerRequirement[];
-      setBuyerNeeds(
-        all
-          .filter(
-            (r) =>
-              r.status === "open" &&
-              (!region ||
-                r.region.toLowerCase() === region.toLowerCase()),
-          )
-          .slice(0, 4),
-      );
+      try {
+        const me = await cachedJson<{
+          user?: { weaver?: { region?: string } };
+        }>("/api/auth/me");
+        const region = me?.user?.weaver?.region ?? "";
+        const all = await cachedJson<BuyerRequirement[]>(
+          "/api/admin/requirements",
+        );
+        setBuyerNeeds(
+          all
+            .filter(
+              (r) =>
+                r.status === "open" &&
+                (!region ||
+                  r.region.toLowerCase() === region.toLowerCase()),
+            )
+            .slice(0, 4),
+        );
+      } catch {
+        /* keep empty */
+      }
     })();
   }, []);
 
@@ -131,36 +137,31 @@ export function ReverseProductionPlanner() {
   return (
     <div className="flex flex-1 flex-col gap-4 px-4 pb-8 pt-4">
       <PitchHero
-        eyebrow="Plan · reverse production"
+        eyebrow={t("pitch.planEyebrow")}
         title={t("plan.title")}
-        body="Pick what you will weave and when it must be ready. LoomOS works the calendar backward so you know when to buy yarn and when money is projected."
+        body={t("pitch.planBody")}
       />
 
-      <PitchOneLiner>
-        Pitch in one line: buyer/festival date → start date → yarn date →
-        projected payment — not a to-do list, a decision timeline.
-      </PitchOneLiner>
+      <PitchOneLiner>{t("pitch.planOneLiner")}</PitchOneLiner>
 
       <PitchSteps
         active={3}
         steps={[
-          { n: 1, label: "What" },
-          { n: 2, label: "When" },
-          { n: 3, label: "Your dates" },
-          { n: 4, label: "Tune" },
+          { n: 1, label: t("pitch.stepWhat") },
+          { n: 2, label: t("pitch.stepWhen") },
+          { n: 3, label: t("pitch.stepDates") },
+          { n: 4, label: t("pitch.stepTune") },
         ]}
       />
 
       {buyerNeeds.length > 0 ? (
         <PitchStepBlock
-          title="Simulated buyer needs (optional)"
-          hint="Tap a buyer post to set your ready date — same data as the Buyer Portal."
+          title={t("pitch.buyerNeeds")}
+          hint={t("pitch.buyerNeedsHint")}
         >
           <ul className="space-y-2">
             {buyerNeeds.map((r) => {
-              const label =
-                DEMAND_CATEGORIES.find((c) => c.id === r.categoryId)?.label ??
-                r.categoryId;
+              const label = localizedCategoryLabel(lang, r.categoryId);
               return (
                 <li key={r.id}>
                   <button
@@ -172,8 +173,11 @@ export function ReverseProductionPlanner() {
                       {r.buyerName}
                     </span>
                     <span className="text-sm text-loom-muted">
-                      {label} · {r.quantity} pcs · ready{" "}
-                      {formatDisplayDate(r.neededBy)}
+                      {t("pitch.buyerNeedsLine", {
+                        category: label,
+                        qty: r.quantity,
+                        date: formatDisplayDate(r.neededBy),
+                      })}
                     </span>
                   </button>
                 </li>
@@ -181,11 +185,9 @@ export function ReverseProductionPlanner() {
             })}
           </ul>
           <p className="mt-3 text-sm text-loom-muted">
-            Buyers post these in the{" "}
             <Link href="/buyer" className="font-semibold text-loom-primary underline">
-              Buyer Portal
+              {t("pitch.buyerPortal")}
             </Link>
-            .
           </p>
         </PitchStepBlock>
       ) : null}
@@ -193,7 +195,7 @@ export function ReverseProductionPlanner() {
       <PitchStepBlock
         step={1}
         title={t("plan.whatWeave")}
-        hint="One choice — the days below use this item’s weaving length."
+        hint={t("pitch.whatHint")}
       >
         <div className="grid grid-cols-1 gap-2">
           {defaults.categories.map((c) => {
@@ -210,7 +212,7 @@ export function ReverseProductionPlanner() {
                     : "border-loom-border bg-loom-bg text-loom-ink"
                 }`}
               >
-                {c.label}
+                {localizedCategoryLabel(lang, c.id)}
               </button>
             );
           })}
@@ -239,7 +241,11 @@ export function ReverseProductionPlanner() {
                 }`}
               >
                 <span className="text-base font-semibold text-loom-ink">
-                  {f.name}
+                  {f.id === "sample-near"
+                    ? t("festival.nearby")
+                    : f.id === "sample-later"
+                      ? t("festival.later")
+                      : f.name}
                 </span>
                 <span className="text-sm text-loom-muted">
                   {formatDisplayDate(f.date)}
@@ -264,10 +270,13 @@ export function ReverseProductionPlanner() {
 
       <PitchStepBlock
         step={3}
-        title="Your dates — the pitch moment"
-        hint="This is the explainable answer: when to buy yarn, start, finish, and when money is projected."
+        title={t("pitch.datesTitle")}
+        hint={t("pitch.datesBody")}
       >
-        <PlanTimeline schedule={schedule} categoryLabel={category.label} />
+        <PlanTimeline
+          schedule={schedule}
+          categoryLabel={localizedCategoryLabel(lang, category.id)}
+        />
       </PitchStepBlock>
 
       <div className="rounded-2xl border border-dashed border-loom-border bg-loom-bg/80 p-3">
@@ -278,10 +287,11 @@ export function ReverseProductionPlanner() {
           aria-expanded={tuneOpen}
         >
           <span>
-            Step 4 · {t("plan.daysHeading")}{" "}
-            <span className="font-normal text-loom-muted">(optional)</span>
+            {t("pitch.stepTune")} · {t("plan.daysHeading")}
           </span>
-          <span className="text-sm">{tuneOpen ? "Hide" : "Show"}</span>
+          <span className="text-sm">
+            {tuneOpen ? t("pitch.hide") : t("pitch.show")}
+          </span>
         </button>
         {tuneOpen ? (
           <div className="mt-2">
