@@ -9,10 +9,7 @@ import {
   type LanguageCode,
 } from "@/lib/voice/languages";
 import { useI18n } from "@/lib/i18n/context";
-import {
-  DEMO_OTP_CODE,
-  DEMO_WEAVER_LOGINS,
-} from "@/lib/demo/logins";
+import { DEMO_WEAVER_LOGINS } from "@/lib/demo/logins";
 
 type AuthMode = "login" | "register";
 
@@ -28,7 +25,7 @@ const WEAVE_CATEGORY_OPTIONS = [
 ];
 
 /**
- * Nesavu-inspired weaver login — brand hero, account tabs, demo pitch cards.
+ * Weaver login — phone only (no OTP). Demo cards one-click sign-in.
  */
 export function WeaverLoginScreen({
   onSuccess,
@@ -37,9 +34,7 @@ export function WeaverLoginScreen({
 }: Props) {
   const { t, lang, setLang } = useI18n();
   const [mode, setMode] = useState<AuthMode>("login");
-  const [step, setStep] = useState<"phone" | "code">("phone");
   const [phone, setPhone] = useState(DEMO_WEAVER_LOGINS[0].phone);
-  const [code, setCode] = useState("");
   const [name, setName] = useState("");
   const [region, setRegion] = useState("Tamil Nadu");
   const [primaryLanguage, setPrimaryLanguage] =
@@ -47,7 +42,6 @@ export function WeaverLoginScreen({
   const [categories, setCategories] = useState<string[]>([
     DEMAND_CATEGORIES[0]?.label ?? "Cotton saree",
   ]);
-  const [devCode, setDevCode] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
@@ -55,15 +49,6 @@ export function WeaverLoginScreen({
   const currentLang =
     LANGUAGE_OPTIONS.find((o) => o.code === lang) ?? LANGUAGE_OPTIONS[0];
   const categorySet = useMemo(() => new Set(categories), [categories]);
-
-  function pickDemo(demoPhone: string) {
-    setMode("login");
-    setPhone(demoPhone);
-    setStep("phone");
-    setCode("");
-    setDevCode(null);
-    setError(null);
-  }
 
   function toggleCategory(label: string) {
     setCategories((prev) =>
@@ -73,9 +58,49 @@ export function WeaverLoginScreen({
     );
   }
 
-  async function sendOtp(e: React.FormEvent) {
-    e.preventDefault();
+  async function loginWithPhone(
+    nextPhone: string,
+    nextMode: AuthMode = "login",
+    profile?: {
+      name?: string;
+      region?: string;
+      primaryLanguage?: string;
+      categories?: string[];
+    },
+  ) {
     setError(null);
+    setBusy(true);
+    try {
+      const body: Record<string, unknown> = {
+        phone: nextPhone,
+        role: "WEAVER",
+        mode: nextMode,
+      };
+      if (nextMode === "register") {
+        body.name = profile?.name ?? name;
+        body.region = profile?.region ?? region;
+        body.primaryLanguage = profile?.primaryLanguage ?? primaryLanguage;
+        body.categories = profile?.categories ?? categories;
+      }
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? "Could not sign in");
+        return;
+      }
+      if (nextMode === "register") setLang(primaryLanguage);
+      onSuccess?.();
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
     if (mode === "register") {
       if (!name.trim()) {
         setError("Enter your name to register.");
@@ -86,65 +111,18 @@ export function WeaverLoginScreen({
         return;
       }
     }
-    setBusy(true);
-    try {
-      const res = await fetch("/api/auth/otp/send", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone, role: "WEAVER" }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error ?? "Could not send OTP");
-        return;
-      }
-      setDevCode(data.devCode ?? DEMO_OTP_CODE);
-      setStep("code");
-      if (data.devCode === DEMO_OTP_CODE || !data.devCode) {
-        setCode(DEMO_OTP_CODE);
-      }
-    } finally {
-      setBusy(false);
-    }
+    await loginWithPhone(phone, mode);
   }
 
-  async function verifyOtp(e: React.FormEvent) {
-    e.preventDefault();
+  async function enterAsDemo(demoPhone: string) {
+    setMode("login");
+    setPhone(demoPhone);
     setError(null);
-    setBusy(true);
-    try {
-      const body: Record<string, unknown> = {
-        phone,
-        code: code || DEMO_OTP_CODE,
-        role: "WEAVER",
-        mode,
-      };
-      if (mode === "register") {
-        body.name = name;
-        body.region = region;
-        body.primaryLanguage = primaryLanguage;
-        body.categories = categories;
-      }
-      const res = await fetch("/api/auth/otp/verify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error ?? "Could not verify");
-        return;
-      }
-      if (mode === "register") setLang(primaryLanguage);
-      onSuccess?.();
-    } finally {
-      setBusy(false);
-    }
+    await loginWithPhone(demoPhone, "login");
   }
 
   return (
     <div className="flex min-h-full flex-1 flex-col bg-[#ebe6e0]">
-      {/* Brand hero — chocolate brown like the pitch mock */}
       <div className="relative bg-[#3c2415] px-5 pb-16 pt-5 text-white">
         <div className="mb-8 flex items-start justify-between gap-3">
           <div>
@@ -210,7 +188,6 @@ export function WeaverLoginScreen({
           </p>
         ) : null}
 
-        {/* Login / Register card */}
         <div className="rounded-2xl bg-white p-4 shadow-[0_12px_40px_rgba(60,36,21,0.18)]">
           <div
             className="grid grid-cols-2 gap-1 rounded-xl bg-[#f3efe6] p-1"
@@ -222,7 +199,6 @@ export function WeaverLoginScreen({
               aria-selected={mode === "login"}
               onClick={() => {
                 setMode("login");
-                setStep("phone");
                 setError(null);
               }}
               className={`rounded-lg px-2 py-3 text-center text-sm font-semibold leading-snug ${
@@ -239,7 +215,6 @@ export function WeaverLoginScreen({
               aria-selected={mode === "register"}
               onClick={() => {
                 setMode("register");
-                setStep("phone");
                 setError(null);
               }}
               className={`rounded-lg px-2 py-3 text-center text-sm font-semibold leading-snug ${
@@ -252,161 +227,110 @@ export function WeaverLoginScreen({
             </button>
           </div>
 
-          {step === "phone" ? (
-            <form onSubmit={sendOtp} className="mt-5 space-y-3">
-              {mode === "register" ? (
-                <>
-                  <label className="block text-sm font-medium text-[#1a1f24]">
-                    {t("auth.yourName")}
-                    <input
-                      className="mt-1.5 w-full rounded-xl border border-[#d9d2c4] bg-[#fffdf8] px-3 py-3 text-base"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder="e.g. Meena"
-                      required
-                    />
-                  </label>
-                  <label className="block text-sm font-medium text-[#1a1f24]">
-                    {t("auth.region")}
-                    <input
-                      className="mt-1.5 w-full rounded-xl border border-[#d9d2c4] bg-[#fffdf8] px-3 py-3 text-base"
-                      value={region}
-                      onChange={(e) => setRegion(e.target.value)}
-                      required
-                    />
-                  </label>
-                  <label className="block text-sm font-medium text-[#1a1f24]">
-                    {t("auth.language")}
-                    <select
-                      className="mt-1.5 w-full rounded-xl border border-[#d9d2c4] bg-[#fffdf8] px-3 py-3 text-base"
-                      value={primaryLanguage}
-                      onChange={(e) =>
-                        setPrimaryLanguage(e.target.value as LanguageCode)
-                      }
-                    >
-                      {LANGUAGE_OPTIONS.map((opt) => (
-                        <option key={opt.code} value={opt.code}>
-                          {opt.label} — {opt.name}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <fieldset>
-                    <legend className="text-sm font-medium text-[#1a1f24]">
-                      {t("auth.categories")}
-                    </legend>
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      {WEAVE_CATEGORY_OPTIONS.map((label) => {
-                        const on = categorySet.has(label);
-                        return (
-                          <button
-                            key={label}
-                            type="button"
-                            aria-pressed={on}
-                            onClick={() => toggleCategory(label)}
-                            className={`rounded-lg border px-3 py-2 text-sm ${
-                              on
-                                ? "border-[#3c2415] bg-[#3c2415]/10 font-semibold text-[#3c2415]"
-                                : "border-[#d9d2c4] text-[#5c6570]"
-                            }`}
-                          >
-                            {label}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </fieldset>
-                </>
-              ) : null}
+          <form onSubmit={onSubmit} className="mt-5 space-y-3">
+            {mode === "register" ? (
+              <>
+                <label className="block text-sm font-medium text-[#1a1f24]">
+                  {t("auth.yourName")}
+                  <input
+                    className="mt-1.5 w-full rounded-xl border border-[#d9d2c4] bg-[#fffdf8] px-3 py-3 text-base"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="e.g. Meena"
+                    required
+                  />
+                </label>
+                <label className="block text-sm font-medium text-[#1a1f24]">
+                  {t("auth.region")}
+                  <input
+                    className="mt-1.5 w-full rounded-xl border border-[#d9d2c4] bg-[#fffdf8] px-3 py-3 text-base"
+                    value={region}
+                    onChange={(e) => setRegion(e.target.value)}
+                    required
+                  />
+                </label>
+                <label className="block text-sm font-medium text-[#1a1f24]">
+                  {t("auth.language")}
+                  <select
+                    className="mt-1.5 w-full rounded-xl border border-[#d9d2c4] bg-[#fffdf8] px-3 py-3 text-base"
+                    value={primaryLanguage}
+                    onChange={(e) =>
+                      setPrimaryLanguage(e.target.value as LanguageCode)
+                    }
+                  >
+                    {LANGUAGE_OPTIONS.map((opt) => (
+                      <option key={opt.code} value={opt.code}>
+                        {opt.label} — {opt.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <fieldset>
+                  <legend className="text-sm font-medium text-[#1a1f24]">
+                    {t("auth.categories")}
+                  </legend>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {WEAVE_CATEGORY_OPTIONS.map((label) => {
+                      const on = categorySet.has(label);
+                      return (
+                        <button
+                          key={label}
+                          type="button"
+                          aria-pressed={on}
+                          onClick={() => toggleCategory(label)}
+                          className={`rounded-lg border px-3 py-2 text-sm ${
+                            on
+                              ? "border-[#3c2415] bg-[#3c2415]/10 font-semibold text-[#3c2415]"
+                              : "border-[#d9d2c4] text-[#5c6570]"
+                          }`}
+                        >
+                          {label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </fieldset>
+              </>
+            ) : null}
 
-              <label className="block text-sm font-medium text-[#1a1f24]">
-                Mobile number
-                <input
-                  inputMode="numeric"
-                  autoComplete="tel"
-                  className="mt-1.5 w-full rounded-xl border border-[#d9d2c4] bg-[#fffdf8] px-3 py-3 text-base tracking-wide"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="10-digit mobile"
-                  required
-                />
-              </label>
-              {error ? (
-                <p className="text-sm text-red-700">{error}</p>
-              ) : null}
-              <button
-                type="submit"
-                disabled={busy}
-                className="flex h-12 w-full items-center justify-center rounded-xl bg-[#3c2415] text-base font-semibold text-white disabled:opacity-60"
-              >
-                {busy ? t("auth.sending") : "Send code"}
-              </button>
-            </form>
-          ) : (
-            <form onSubmit={verifyOtp} className="mt-5 space-y-3">
-              <p className="text-sm text-[#5c6570]">
-                {t("auth.codeSentTo")} <strong>{phone}</strong>
-              </p>
-              <p className="rounded-lg border border-dashed border-amber-500 bg-amber-50 px-3 py-2 text-sm text-amber-950">
-                Demo OTP:{" "}
-                <strong className="tracking-widest">
-                  {devCode ?? DEMO_OTP_CODE}
-                </strong>
-              </p>
-              <label className="block text-sm font-medium text-[#1a1f24]">
-                6-digit OTP
-                <input
-                  inputMode="numeric"
-                  className="mt-1.5 w-full rounded-xl border border-[#d9d2c4] bg-[#fffdf8] px-3 py-3 text-base tracking-widest"
-                  value={code}
-                  onChange={(e) => setCode(e.target.value)}
-                  maxLength={6}
-                  required
-                />
-              </label>
-              {error ? (
-                <p className="text-sm text-red-700">{error}</p>
-              ) : null}
-              <button
-                type="submit"
-                disabled={busy}
-                className="flex h-12 w-full items-center justify-center rounded-xl bg-[#3c2415] text-base font-semibold text-white disabled:opacity-60"
-              >
-                {busy ? t("auth.checking") : "Verify & continue"}
-              </button>
-              <button
-                type="button"
-                className="w-full text-sm text-[#5c6570] underline"
-                onClick={() => {
-                  setStep("phone");
-                  setCode("");
-                  setDevCode(null);
-                  setError(null);
-                }}
-              >
-                {t("auth.changeNumber")}
-              </button>
-            </form>
-          )}
+            <label className="block text-sm font-medium text-[#1a1f24]">
+              Mobile number
+              <input
+                inputMode="numeric"
+                autoComplete="tel"
+                className="mt-1.5 w-full rounded-xl border border-[#d9d2c4] bg-[#fffdf8] px-3 py-3 text-base tracking-wide"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="10-digit mobile"
+                required
+              />
+            </label>
+            {error ? <p className="text-sm text-red-700">{error}</p> : null}
+            <button
+              type="submit"
+              disabled={busy}
+              className="flex h-12 w-full items-center justify-center rounded-xl bg-[#3c2415] text-base font-semibold text-white disabled:opacity-60"
+            >
+              {busy ? t("auth.checking") : mode === "login" ? "Continue" : "Create account"}
+            </button>
+          </form>
         </div>
 
-        {/* Demo logins pitch card */}
         <div className="rounded-2xl bg-white p-4 shadow-[0_8px_24px_rgba(60,36,21,0.1)]">
           <h2 className="text-base font-semibold text-[#1a1f24]">
             Demo logins (pitch)
           </h2>
           <p className="mt-1 text-xs text-[#5c6570]">
-            Four customers — each opens Home, Plan, Money & Orders with their
-            own profile, orders and earnings. OTP always{" "}
-            <strong>{DEMO_OTP_CODE}</strong>.
+            Tap a name to open Home, Plan, Money & Orders — no code needed.
           </p>
           <ul className="mt-3 space-y-2">
             {DEMO_WEAVER_LOGINS.map((d) => (
               <li key={d.phone}>
                 <button
                   type="button"
-                  onClick={() => pickDemo(d.phone)}
-                  className={`flex w-full items-start justify-between gap-2 rounded-xl border px-3 py-3 text-left transition ${
+                  disabled={busy}
+                  onClick={() => void enterAsDemo(d.phone)}
+                  className={`flex w-full items-start justify-between gap-2 rounded-xl border px-3 py-3 text-left transition disabled:opacity-60 ${
                     phone === d.phone
                       ? "border-[#3c2415] bg-[#3c2415]/8"
                       : "border-[#e8e2d8] hover:border-[#3c2415]/40"
@@ -414,7 +338,7 @@ export function WeaverLoginScreen({
                 >
                   <span>
                     <span className="block text-sm font-semibold text-[#1a1f24]">
-                      {d.givenName}
+                      Enter as {d.givenName}
                     </span>
                     <span className="mt-0.5 block text-xs text-[#5c6570]">
                       {d.blurb}
@@ -427,9 +351,6 @@ export function WeaverLoginScreen({
               </li>
             ))}
           </ul>
-          <p className="mt-3 text-center text-xs text-[#5c6570]">
-            OTP always: <strong>{DEMO_OTP_CODE}</strong>
-          </p>
         </div>
 
         <p className="text-center text-sm text-[#5c6570]">

@@ -50,7 +50,7 @@ export function WeaverAuthGate({ children }: { children: React.ReactNode }) {
     } catch (e) {
       setLoadError(
         e instanceof Error && e.name === "AbortError"
-          ? "Sign-in check timed out. Pull to refresh, or tap Send code."
+          ? "Sign-in check timed out. Pull to refresh, or tap Continue."
           : "Could not reach the server. Refresh and try again.",
       );
       setMe({ authenticated: false });

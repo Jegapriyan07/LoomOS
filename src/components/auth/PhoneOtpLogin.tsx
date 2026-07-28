@@ -13,12 +13,7 @@ type Props = {
   title?: string;
   /** Prefill phone for demo */
   defaultPhone?: string;
-  /**
-   * Legacy buyer flag — when true and role is BUYER, Register collects business name.
-   * Prefer modeTabs for weaver Login | Register.
-   */
   allowSignupName?: boolean;
-  /** Show Login | Register tabs (default true for WEAVER) */
   modeTabs?: boolean;
   onSuccess?: () => void;
 };
@@ -29,8 +24,7 @@ const WEAVE_CATEGORY_OPTIONS = [
 ];
 
 /**
- * Shared phone OTP form with Login / Register modes.
- * Register collects weaver profile (name, region, language, categories).
+ * Shared phone login (no OTP) with Login / Register modes.
  */
 export function PhoneOtpLogin({
   role,
@@ -43,16 +37,13 @@ export function PhoneOtpLogin({
   const { t, lang, setLang } = useI18n();
   const showTabs = modeTabs ?? role === "WEAVER";
   const [mode, setMode] = useState<AuthMode>("login");
-  const [step, setStep] = useState<"phone" | "code">("phone");
   const [phone, setPhone] = useState(defaultPhone);
-  const [code, setCode] = useState("");
   const [name, setName] = useState("");
   const [region, setRegion] = useState("Tamil Nadu");
   const [primaryLanguage, setPrimaryLanguage] = useState<LanguageCode>(lang);
   const [categories, setCategories] = useState<string[]>([
     DEMAND_CATEGORIES[0]?.label ?? "Cotton saree",
   ]);
-  const [devCode, setDevCode] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -71,7 +62,7 @@ export function PhoneOtpLogin({
     );
   }
 
-  async function sendOtp(e: React.FormEvent) {
+  async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
 
@@ -92,31 +83,8 @@ export function PhoneOtpLogin({
 
     setBusy(true);
     try {
-      const res = await fetch("/api/auth/otp/send", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone, role }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setError(data.error ?? "Could not send OTP");
-        return;
-      }
-      setDevCode(data.devCode ?? null);
-      setStep("code");
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function verifyOtp(e: React.FormEvent) {
-    e.preventDefault();
-    setError(null);
-    setBusy(true);
-    try {
       const body: Record<string, unknown> = {
         phone,
-        code,
         role,
         mode,
       };
@@ -129,14 +97,14 @@ export function PhoneOtpLogin({
         }
       }
 
-      const res = await fetch("/api/auth/otp/verify", {
+      const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.error ?? "Could not verify");
+        setError(data.error ?? "Could not sign in");
         return;
       }
       if (role === "WEAVER" && mode === "register") {
@@ -151,9 +119,6 @@ export function PhoneOtpLogin({
   function switchMode(next: AuthMode) {
     setMode(next);
     setError(null);
-    setStep("phone");
-    setCode("");
-    setDevCode(null);
   }
 
   return (
@@ -163,7 +128,7 @@ export function PhoneOtpLogin({
         {mode === "login" ? t("auth.loginSubtitle") : t("auth.registerSubtitle")}
       </p>
       <p className="mt-2 rounded-lg border border-amber-400 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-950">
-        {t("auth.devNote")}
+        Pitch demo — enter mobile and continue. No OTP / SMS.
       </p>
 
       {showTabs ? (
@@ -191,146 +156,105 @@ export function PhoneOtpLogin({
         </div>
       ) : null}
 
-      {step === "phone" ? (
-        <form onSubmit={sendOtp} className="mt-6 space-y-3">
-          {collectProfile ? (
-            <>
-              <label className="block text-sm text-loom-ink">
-                {role === "BUYER" ? "Business name" : t("auth.yourName")}
-                <input
-                  className="mt-1 w-full rounded-xl border border-loom-border bg-loom-surface px-3 py-2.5"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder={
-                    role === "BUYER" ? "Your shop / brand" : "e.g. Meena"
-                  }
-                  required={mode === "register"}
-                />
-              </label>
-              <label className="block text-sm text-loom-ink">
-                {t("auth.region")}
-                <input
-                  className="mt-1 w-full rounded-xl border border-loom-border bg-loom-surface px-3 py-2.5"
-                  value={region}
-                  onChange={(e) => setRegion(e.target.value)}
-                  required={mode === "register"}
-                />
-              </label>
-              {role === "WEAVER" ? (
-                <>
-                  <label className="block text-sm text-loom-ink">
-                    {t("auth.language")}
-                    <select
-                      className="mt-1 w-full rounded-xl border border-loom-border bg-loom-surface px-3 py-2.5"
-                      value={primaryLanguage}
-                      onChange={(e) =>
-                        setPrimaryLanguage(e.target.value as LanguageCode)
-                      }
-                    >
-                      {LANGUAGE_OPTIONS.map((opt) => (
-                        <option key={opt.code} value={opt.code}>
-                          {opt.label} — {opt.name}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <fieldset className="space-y-2">
-                    <legend className="text-sm text-loom-ink">
-                      {t("auth.categories")}
-                    </legend>
-                    <p className="text-xs text-loom-muted">
-                      {t("auth.categoriesHint")}
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {WEAVE_CATEGORY_OPTIONS.map((label) => {
-                        const on = categorySet.has(label);
-                        return (
-                          <button
-                            key={label}
-                            type="button"
-                            onClick={() => toggleCategory(label)}
-                            aria-pressed={on}
-                            className={`rounded-lg border px-3 py-2 text-sm font-medium ${
-                              on
-                                ? "border-loom-primary bg-loom-primary-soft text-loom-primary"
-                                : "border-loom-border bg-loom-surface text-loom-ink"
-                            }`}
-                          >
-                            {label}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </fieldset>
-                </>
-              ) : null}
-            </>
-          ) : null}
-          <label className="block text-sm text-loom-ink">
-            {t("auth.phone")}
-            <input
-              inputMode="numeric"
-              autoComplete="tel"
-              className="mt-1 w-full rounded-xl border border-loom-border bg-loom-surface px-3 py-2.5"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="10-digit mobile"
-              required
-            />
-          </label>
-          {error ? <p className="text-sm text-red-700">{error}</p> : null}
-          <button
-            type="submit"
-            disabled={busy}
-            className="flex h-12 w-full items-center justify-center rounded-xl bg-loom-primary text-base font-semibold text-white disabled:opacity-60"
-          >
-            {busy ? t("auth.sending") : t("auth.sendOtp")}
-          </button>
-        </form>
-      ) : (
-        <form onSubmit={verifyOtp} className="mt-6 space-y-3">
-          <p className="text-sm text-loom-muted">
-            {t("auth.codeSentTo")} <strong>{phone}</strong>
-          </p>
-          {devCode ? (
-            <p className="rounded-lg border border-dashed border-amber-500 bg-amber-50 px-3 py-2 text-sm text-amber-950">
-              {t("auth.devCode")}{" "}
-              <strong className="tracking-widest">{devCode}</strong>
-            </p>
-          ) : null}
-          <label className="block text-sm text-loom-ink">
-            {t("auth.otp")}
-            <input
-              inputMode="numeric"
-              className="mt-1 w-full rounded-xl border border-loom-border bg-loom-surface px-3 py-2.5 tracking-widest"
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              maxLength={6}
-              required
-            />
-          </label>
-          {error ? <p className="text-sm text-red-700">{error}</p> : null}
-          <button
-            type="submit"
-            disabled={busy}
-            className="flex h-12 w-full items-center justify-center rounded-xl bg-loom-primary text-base font-semibold text-white disabled:opacity-60"
-          >
-            {busy ? t("auth.checking") : t("auth.verify")}
-          </button>
-          <button
-            type="button"
-            className="w-full text-sm text-loom-muted underline"
-            onClick={() => {
-              setStep("phone");
-              setCode("");
-              setDevCode(null);
-              setError(null);
-            }}
-          >
-            {t("auth.changeNumber")}
-          </button>
-        </form>
-      )}
+      <form onSubmit={onSubmit} className="mt-6 space-y-3">
+        {collectProfile ? (
+          <>
+            <label className="block text-sm text-loom-ink">
+              {role === "BUYER" ? "Business name" : t("auth.yourName")}
+              <input
+                className="mt-1 w-full rounded-xl border border-loom-border bg-loom-surface px-3 py-2.5"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder={
+                  role === "BUYER" ? "Your shop / brand" : "e.g. Meena"
+                }
+                required={mode === "register"}
+              />
+            </label>
+            <label className="block text-sm text-loom-ink">
+              {t("auth.region")}
+              <input
+                className="mt-1 w-full rounded-xl border border-loom-border bg-loom-surface px-3 py-2.5"
+                value={region}
+                onChange={(e) => setRegion(e.target.value)}
+                required={mode === "register"}
+              />
+            </label>
+            {role === "WEAVER" ? (
+              <>
+                <label className="block text-sm text-loom-ink">
+                  {t("auth.language")}
+                  <select
+                    className="mt-1 w-full rounded-xl border border-loom-border bg-loom-surface px-3 py-2.5"
+                    value={primaryLanguage}
+                    onChange={(e) =>
+                      setPrimaryLanguage(e.target.value as LanguageCode)
+                    }
+                  >
+                    {LANGUAGE_OPTIONS.map((opt) => (
+                      <option key={opt.code} value={opt.code}>
+                        {opt.label} — {opt.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <fieldset className="space-y-2">
+                  <legend className="text-sm text-loom-ink">
+                    {t("auth.categories")}
+                  </legend>
+                  <p className="text-xs text-loom-muted">
+                    {t("auth.categoriesHint")}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {WEAVE_CATEGORY_OPTIONS.map((label) => {
+                      const on = categorySet.has(label);
+                      return (
+                        <button
+                          key={label}
+                          type="button"
+                          onClick={() => toggleCategory(label)}
+                          aria-pressed={on}
+                          className={`rounded-lg border px-3 py-2 text-sm font-medium ${
+                            on
+                              ? "border-loom-primary bg-loom-primary-soft text-loom-primary"
+                              : "border-loom-border bg-loom-surface text-loom-ink"
+                          }`}
+                        >
+                          {label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </fieldset>
+              </>
+            ) : null}
+          </>
+        ) : null}
+        <label className="block text-sm text-loom-ink">
+          {t("auth.phone")}
+          <input
+            inputMode="numeric"
+            autoComplete="tel"
+            className="mt-1 w-full rounded-xl border border-loom-border bg-loom-surface px-3 py-2.5"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="10-digit mobile"
+            required
+          />
+        </label>
+        {error ? <p className="text-sm text-red-700">{error}</p> : null}
+        <button
+          type="submit"
+          disabled={busy}
+          className="flex h-12 w-full items-center justify-center rounded-xl bg-loom-primary text-base font-semibold text-white disabled:opacity-60"
+        >
+          {busy
+            ? t("auth.checking")
+            : mode === "login"
+              ? "Continue"
+              : "Create account"}
+        </button>
+      </form>
     </div>
   );
 }

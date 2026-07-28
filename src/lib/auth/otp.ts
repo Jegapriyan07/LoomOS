@@ -17,15 +17,17 @@ export function generateOtpCode(): string {
   return String(randomInt(100000, 999999));
 }
 
-/** Pitch demos always use 123456 so judges never hunt for a random code. */
+/**
+ * Pitch / Dev OTP: always 123456 when no SMS provider is configured,
+ * so the deployed site can list one fixed code. With MSG91/Twilio, generate random.
+ */
 export async function createOtpChallenge(
   phone: string,
   role: UserRole,
 ): Promise<{ code: string }> {
-  const { isDemoWeaverPhone, DEMO_OTP_CODE } = await import(
-    "@/lib/demo/logins"
-  );
-  const code = isDemoWeaverPhone(phone) ? DEMO_OTP_CODE : generateOtpCode();
+  const { DEMO_OTP_CODE } = await import("@/lib/demo/logins");
+  const { isSmsProviderConfigured } = await import("@/lib/auth/sms");
+  const code = isSmsProviderConfigured() ? generateOtpCode() : DEMO_OTP_CODE;
   const codeHash = hashOtp(code);
   const expiresAt = new Date(Date.now() + OTP_TTL_MS);
 

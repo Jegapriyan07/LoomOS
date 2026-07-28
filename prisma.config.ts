@@ -1,11 +1,14 @@
-import "dotenv/config";
+import dotenv from "dotenv";
+import path from "node:path";
 import { defineConfig } from "prisma/config";
 
-/** Placeholder so `prisma generate` works before a real DB is configured. */
+// Always load project-root .env (Prisma CLI cwd can vary on Windows)
+dotenv.config({ path: path.join(process.cwd(), ".env"), override: true });
+
+const raw = process.env.DATABASE_URL?.trim() ?? "";
 const url =
-  process.env.DATABASE_URL?.trim() &&
-  !process.env.DATABASE_URL.trim().startsWith("file:")
-    ? process.env.DATABASE_URL.trim()
+  raw && !raw.startsWith("file:")
+    ? raw
     : "postgresql://postgres:postgres@localhost:5432/loomos?sslmode=disable";
 
 export default defineConfig({

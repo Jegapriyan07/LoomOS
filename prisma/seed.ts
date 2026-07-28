@@ -2,24 +2,31 @@
  * Seed identity into PostgreSQL — same fictional Demo Mode people as before,
  * with stable ids so JSON payment/wallet rows still match.
  *
- * Demo phones (OTP always 123456 for demo weavers):
+ * Demo phones:
  *   Weavers: 9000000001 Meena, 9000000002 Selvi, 9000000003 Kamala, 9000000004 Lakshmi
  *   Buyers:  9100000001 Saffron, 9100000002 Festival, 9100000003 Loom Link
  */
-import "dotenv/config";
-import { PrismaPg } from "@prisma/adapter-pg";
+import dotenv from "dotenv";
+import path from "node:path";
+import ws from "ws";
+import { neonConfig } from "@neondatabase/serverless";
+import { PrismaNeon } from "@prisma/adapter-neon";
 import { PrismaClient, UserRole } from "../src/generated/prisma/client";
+
+dotenv.config({ path: path.join(process.cwd(), ".env"), override: true });
+neonConfig.webSocketConstructor = ws;
 
 const connectionString = process.env.DATABASE_URL?.trim();
 if (!connectionString || connectionString.startsWith("file:")) {
   console.error(
     "Set DATABASE_URL to a PostgreSQL connection string before seeding.",
   );
+  console.error("Current DATABASE_URL:", connectionString ? "(file: url)" : "(missing)");
   process.exit(1);
 }
 
 console.log("Seeding PostgreSQL…");
-const adapter = new PrismaPg({ connectionString });
+const adapter = new PrismaNeon({ connectionString });
 const prisma = new PrismaClient({ adapter });
 
 async function main() {

@@ -16,8 +16,8 @@ export function SimulatedBuyerDesk({ highlightPhone }: { highlightPhone?: string
         Simulated buyer data
       </h2>
       <p className="mt-1 text-sm leading-snug text-amber-900/90">
-        Three fictional buyer desks ship with the demo. Login with their phone +
-        Dev OTP, or Register a new number. Posts feed the same store weavers see
+        Three fictional buyer desks ship with the demo. Enter their phone and
+        Continue (no OTP), or Register a new number. Posts feed the same store weavers see
         on Home / Plan / Orders.
       </p>
       <ul className="mt-4 grid gap-3 sm:grid-cols-3">
