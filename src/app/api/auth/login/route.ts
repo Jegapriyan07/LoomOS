@@ -131,13 +131,16 @@ export async function POST(request: Request) {
       /DATABASE_URL|PostgreSQL|SQLite file|Demo cooperative is missing/i.test(
         message,
       ) || message.includes("Can't reach database");
+    const isReadonlyFs = /EROFS|read-only file system/i.test(message);
     return NextResponse.json(
       {
         error: isConfig
           ? "Database not ready. Set DATABASE_URL on Vercel, run prisma db push + db:seed, then redeploy."
-          : message,
+          : isReadonlyFs
+            ? "App storage is misconfigured for serverless. Redeploy with the latest store fix."
+            : message,
       },
-      { status: isConfig ? 500 : 400 },
+      { status: isConfig || isReadonlyFs ? 500 : 400 },
     );
   }
 }

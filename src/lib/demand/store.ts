@@ -35,8 +35,28 @@ import {
 } from "@/lib/coop/dashboard";
 import { DEMAND_CATEGORIES } from "@/lib/demand/types";
 
-const DATA_DIR = path.join(process.cwd(), "data");
+/** Bundled seed (read-only on Vercel under /var/task). */
+const BUNDLED_STORE_PATH = path.join(process.cwd(), "data", "loomos-store.json");
+
+/**
+ * Vercel/Lambda filesystem is read-only except /tmp.
+ * Locally we keep writing to data/ for persistence across restarts.
+ */
+function isServerlessRuntime(): boolean {
+  return Boolean(
+    process.env.VERCEL ||
+      process.env.AWS_LAMBDA_FUNCTION_NAME ||
+      process.env.FUNCTION_NAME,
+  );
+}
+
+const DATA_DIR = isServerlessRuntime()
+  ? path.join("/tmp", "loomos-data")
+  : path.join(process.cwd(), "data");
 const STORE_PATH = path.join(DATA_DIR, "loomos-store.json");
+
+/** Warm-instance cache — survives writes when disk fails; lost on cold start. */
+let memoryStore: LoomStore | null = null;
 
 /** Relabel demo buyer names; OTP auth lives in Postgres (no passwords). */
 function mergeBuyerProfiles(
@@ -436,43 +456,89 @@ function normalizeStore(raw: Partial<LoomStore>): LoomStore {
   };
 }
 
-async function ensureStore(): Promise<LoomStore> {
-  await fs.mkdir(DATA_DIR, { recursive: true });
+async function tryReadJson(filePath: string): Promise<Partial<LoomStore> | null> {
   try {
-    const raw = await fs.readFile(STORE_PATH, "utf8");
-    const parsed = JSON.parse(raw) as Partial<LoomStore>;
-    const normalized = normalizeStore(parsed);
-    // Persist migration: payment/wallet slices OR Demo Mode relabel of seed buyers
-    const needsWrite =
-      !parsed.paymentOrders ||
-      !parsed.buyers ||
-      !parsed.wallets ||
-      !parsed.walletCredits ||
+    const raw = await fs.readFile(filePath, "utf8");
+    return JSON.parse(raw) as Partial<LoomStore>;
+  } catch {
+    return null;
+  }
+}
+
+async function persistStore(store: LoomStore): Promise<void> {
+  memoryStore = store;
+  try {
+    await fs.mkdir(DATA_DIR, { recursive: true });
+    await fs.writeFile(STORE_PATH, JSON.stringify(store, null, 2), "utf8");
+  } catch (err) {
+    // EROFS on misconfigured paths — keep serving from memory for this instance
+    const code =
+      err && typeof err === "object" && "code" in err
+        ? String((err as { code?: unknown }).code)
+        : "";
+    if (code !== "EROFS" && code !== "EACCES") throw err;
+    console.warn(
+      "[loomos-store] disk write failed; using in-memory store for this instance",
+      code,
+    );
+  }
+}
+
+function storeNeedsMigration(parsed: Partial<LoomStore>): boolean {
+  return (
+    !parsed.paymentOrders ||
+    !parsed.buyers ||
+    !parsed.wallets ||
+    !parsed.walletCredits ||
+    Boolean(
       parsed.buyers?.some(
         (b) =>
           (b.id === "buyer-demo-001" && b.email !== DEMO_BUYERS[0].email) ||
           (b.id === "buyer-demo-001" && b.name !== DEMO_BUYERS[0].name),
-      ) ||
-      !(parsed.paymentOrders ?? []).some(
-        (o) =>
-          o.id === "ord-selvi-001" ||
-          (o.weaverId === "weaver-demo-002" && o.id.startsWith("sim-")),
-      ) ||
-      !(parsed.paymentOrders ?? []).some(
-        (o) =>
-          o.id === "ord-lakshmi-001" ||
-          (o.weaverId === "weaver-demo-004" && o.id.startsWith("sim-")),
-      ) ||
-      !(parsed.buyerRequirements ?? []).some((r) => r.id === "req-004");
-    if (needsWrite) {
-      await fs.writeFile(STORE_PATH, JSON.stringify(normalized, null, 2), "utf8");
+      ),
+    ) ||
+    !(parsed.paymentOrders ?? []).some(
+      (o) =>
+        o.id === "ord-selvi-001" ||
+        (o.weaverId === "weaver-demo-002" && o.id.startsWith("sim-")),
+    ) ||
+    !(parsed.paymentOrders ?? []).some(
+      (o) =>
+        o.id === "ord-lakshmi-001" ||
+        (o.weaverId === "weaver-demo-004" && o.id.startsWith("sim-")),
+    ) ||
+    !(parsed.buyerRequirements ?? []).some((r) => r.id === "req-004")
+  );
+}
+
+async function ensureStore(): Promise<LoomStore> {
+  if (memoryStore) return memoryStore;
+
+  const fromWritable = await tryReadJson(STORE_PATH);
+  if (fromWritable) {
+    const normalized = normalizeStore(fromWritable);
+    if (storeNeedsMigration(fromWritable)) {
+      await persistStore(normalized);
+    } else {
+      memoryStore = normalized;
     }
     return normalized;
-  } catch {
-    const seeded = seedStore();
-    await fs.writeFile(STORE_PATH, JSON.stringify(seeded, null, 2), "utf8");
-    return seeded;
   }
+
+  // First warm start on Vercel: seed from the bundled read-only file if present
+  const fromBundled =
+    STORE_PATH !== BUNDLED_STORE_PATH
+      ? await tryReadJson(BUNDLED_STORE_PATH)
+      : null;
+  if (fromBundled) {
+    const normalized = normalizeStore(fromBundled);
+    await persistStore(normalized);
+    return normalized;
+  }
+
+  const seeded = seedStore();
+  await persistStore(seeded);
+  return seeded;
 }
 
 export async function readStore(): Promise<LoomStore> {
@@ -480,8 +546,7 @@ export async function readStore(): Promise<LoomStore> {
 }
 
 export async function writeStore(store: LoomStore): Promise<void> {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  await fs.writeFile(STORE_PATH, JSON.stringify(store, null, 2), "utf8");
+  await persistStore(store);
 }
 
 export async function listOpenRequirements(filters?: {
