@@ -24,6 +24,12 @@ type Tab = {
 const TABS: Tab[] = [
   { href: "/", labelKey: "nav.home", icon: Home, match: (p) => p === "/" },
   {
+    href: "/orders",
+    labelKey: "nav.orders",
+    icon: ClipboardList,
+    match: (p) => p.startsWith("/orders"),
+  },
+  {
     href: "/plan",
     labelKey: "nav.plan",
     icon: CalendarClock,
@@ -34,12 +40,6 @@ const TABS: Tab[] = [
     labelKey: "nav.money",
     icon: Wallet,
     match: (p) => p.startsWith("/money"),
-  },
-  {
-    href: "/orders",
-    labelKey: "nav.orders",
-    icon: ClipboardList,
-    match: (p) => p.startsWith("/orders"),
   },
   {
     href: "/profile",

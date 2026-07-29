@@ -222,7 +222,7 @@ export function answerFiveQuestion(
   return [
     `What you should do today (pulled from your advice, stock, and orders):`,
     ...actions.map((a, i) => `${i + 1}. ${a.label}`),
-    `Tap Plan, Money, or Orders when a step needs that screen.`,
+    `Tap tabs in pitch order: Orders → Plan → Money when a step needs that screen.`,
   ].join("\n");
 }
 

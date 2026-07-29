@@ -10,15 +10,24 @@ import {
 } from "@/lib/voice/languages";
 import { useI18n } from "@/lib/i18n/context";
 import { DEMO_WEAVER_LOGINS } from "@/lib/demo/logins";
+import { DEMO_BUYERS } from "@/lib/demo/cluster";
 import { markTourPending } from "@/components/onboarding/AppTour";
 import { invalidateCached } from "@/lib/client-cache";
+import {
+  INDIA_STATES,
+  coopForLocation,
+  districtsForState,
+} from "@/lib/auth/regions";
 
 type AuthMode = "login" | "register";
+type Role = "WEAVER" | "BUYER";
 
 type Props = {
-  onSuccess?: () => void;
+  onSuccess?: (info: { role: Role }) => void;
   loadError?: string | null;
   checking?: boolean;
+  /** Default tab: weaver (home) or buyer (/buyer) */
+  defaultRole?: Role;
 };
 
 const WEAVE_CATEGORY_OPTIONS = [
@@ -26,19 +35,41 @@ const WEAVE_CATEGORY_OPTIONS = [
   "cotton lungi",
 ];
 
+const BUYER_BUSINESS_TYPES = [
+  "Festival retail boutique",
+  "Seasonal wholesale desk",
+  "Reseller / marketplace",
+  "Export desk",
+  "Other",
+];
+
 /**
- * Weaver login — phone only (no OTP). Demo cards one-click sign-in.
+ * Unified Weaver + Buyer login — phone only (no OTP).
+ * Register is a compact link; form collects richer details with state dropdown
+ * and auto-assigned cooperative / sector from location.
  */
 export function WeaverLoginScreen({
   onSuccess,
   loadError,
   checking,
+  defaultRole = "WEAVER",
 }: Props) {
   const { t, lang, setLang } = useI18n();
+  const [role, setRole] = useState<Role>(defaultRole);
   const [mode, setMode] = useState<AuthMode>("login");
-  const [phone, setPhone] = useState(DEMO_WEAVER_LOGINS[0].phone);
+  const [phone, setPhone] = useState(
+    defaultRole === "BUYER"
+      ? DEMO_BUYERS[0].phone
+      : DEMO_WEAVER_LOGINS[0].phone,
+  );
   const [name, setName] = useState("");
   const [region, setRegion] = useState("Tamil Nadu");
+  const [district, setDistrict] = useState(
+    () => districtsForState("Tamil Nadu")[0] ?? "Kanchipuram",
+  );
+  const [yearsWeaving, setYearsWeaving] = useState("");
+  const [businessType, setBusinessType] = useState(BUYER_BUSINESS_TYPES[0]);
+  const [email, setEmail] = useState("");
   const [primaryLanguage, setPrimaryLanguage] =
     useState<LanguageCode>(lang);
   const [categories, setCategories] = useState<string[]>([
@@ -52,6 +83,20 @@ export function WeaverLoginScreen({
   const currentLang =
     LANGUAGE_OPTIONS.find((o) => o.code === lang) ?? LANGUAGE_OPTIONS[0];
   const categorySet = useMemo(() => new Set(categories), [categories]);
+  const coopPreview = useMemo(
+    () => coopForLocation(region, district),
+    [region, district],
+  );
+  const districtOptions = useMemo(
+    () => districtsForState(region),
+    [region],
+  );
+
+  function onStateChange(nextState: string) {
+    setRegion(nextState);
+    const nextDistricts = districtsForState(nextState);
+    setDistrict(nextDistricts[0] ?? "");
+  }
 
   function toggleCategory(label: string) {
     setCategories((prev) =>
@@ -61,32 +106,48 @@ export function WeaverLoginScreen({
     );
   }
 
+  function switchRole(next: Role) {
+    if (next === role) return;
+    setRole(next);
+    setMode("login");
+    setError(null);
+    setPhone(
+      next === "BUYER"
+        ? DEMO_BUYERS[0].phone
+        : DEMO_WEAVER_LOGINS[0].phone,
+    );
+  }
+
   async function loginWithPhone(
     nextPhone: string,
     nextMode: AuthMode = "login",
-    profile?: {
-      name?: string;
-      region?: string;
-      primaryLanguage?: string;
-      categories?: string[];
-    },
+    nextRole: Role = role,
   ) {
     if (busyPhone) return;
     setError(null);
     setBusyPhone(nextPhone);
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 12_000);
+    // Neon cold start can take a while — allow enough room, keep UI responsive
+    const timer = setTimeout(() => controller.abort(), 25_000);
     try {
       const body: Record<string, unknown> = {
         phone: nextPhone,
-        role: "WEAVER",
+        role: nextRole,
         mode: nextMode,
       };
       if (nextMode === "register") {
-        body.name = profile?.name ?? name;
-        body.region = profile?.region ?? region;
-        body.primaryLanguage = profile?.primaryLanguage ?? primaryLanguage;
-        body.categories = profile?.categories ?? categories;
+        body.name = name;
+        body.region = region;
+        if (nextRole === "WEAVER") {
+          body.primaryLanguage = primaryLanguage;
+          body.categories = categories;
+          body.district = district;
+          body.yearsWeaving = yearsWeaving;
+        } else {
+          body.businessType = businessType;
+          body.email = email;
+          body.district = district;
+        }
       }
       const res = await fetch("/api/auth/login", {
         method: "POST",
@@ -103,15 +164,17 @@ export function WeaverLoginScreen({
         return;
       }
       if (data.tour) markTourPending();
-      if (nextMode === "register") setLang(primaryLanguage);
+      if (nextMode === "register" && nextRole === "WEAVER") {
+        setLang(primaryLanguage);
+      }
       invalidateCached();
-      // Clear busy BEFORE waiting on parent refresh so UI never freezes
+      const signedRole = (data.user?.role as Role | undefined) ?? nextRole;
       setBusyPhone(null);
-      onSuccess?.();
+      onSuccess?.({ role: signedRole });
     } catch (e) {
       setError(
         e instanceof Error && e.name === "AbortError"
-          ? "Sign-in timed out. Wait a moment and tap again."
+          ? "Sign-in timed out (database waking up). Wait a moment and tap again."
           : "Could not reach the server. Try again.",
       );
     } finally {
@@ -124,22 +187,35 @@ export function WeaverLoginScreen({
     e.preventDefault();
     if (mode === "register") {
       if (!name.trim()) {
-        setError("Enter your name to register.");
+        setError(
+          role === "BUYER"
+            ? "Enter your business name to register."
+            : "Enter your name to register.",
+        );
         return;
       }
-      if (categories.length === 0) {
+      if (!region.trim()) {
+        setError("Select your state.");
+        return;
+      }
+      if (!district.trim()) {
+        setError("Select your district / weaving town.");
+        return;
+      }
+      if (role === "WEAVER" && categories.length === 0) {
         setError(t("auth.categoriesHint"));
         return;
       }
     }
-    await loginWithPhone(phone, mode);
+    await loginWithPhone(phone, mode, role);
   }
 
-  async function enterAsDemo(demoPhone: string) {
+  async function enterAsDemo(demoPhone: string, demoRole: Role) {
+    setRole(demoRole);
     setMode("login");
     setPhone(demoPhone);
     setError(null);
-    await loginWithPhone(demoPhone, "login");
+    await loginWithPhone(demoPhone, "login", demoRole);
   }
 
   return (
@@ -154,7 +230,7 @@ export function WeaverLoginScreen({
               LoomOS
             </h1>
             <p className="mt-2 text-sm text-white/85">
-              Demand · Plans · Steady income
+              Demand · Orders · Plan · Income
             </p>
           </div>
 
@@ -175,7 +251,11 @@ export function WeaverLoginScreen({
                 className="absolute right-0 z-50 mt-1 max-h-64 w-44 overflow-auto rounded-xl border border-[#d9d2c4] bg-white py-1 text-[#1a1f24] shadow-lg"
               >
                 {LANGUAGE_OPTIONS.map((opt) => (
-                  <li key={opt.code} role="option" aria-selected={opt.code === lang}>
+                  <li
+                    key={opt.code}
+                    role="option"
+                    aria-selected={opt.code === lang}
+                  >
                     <button
                       type="button"
                       className={`flex w-full px-3 py-2.5 text-left text-sm ${
@@ -201,7 +281,7 @@ export function WeaverLoginScreen({
           <p className="text-xs text-white/70">{t("auth.checkingSignIn")}</p>
         ) : (
           <p className="text-xs text-white/70">
-            Tap Continue or a demo name below to enter.
+            Choose Weaver or Buyer, then Continue — or tap a demo below.
           </p>
         )}
       </div>
@@ -217,38 +297,33 @@ export function WeaverLoginScreen({
           <div
             className="grid grid-cols-2 gap-1 rounded-xl bg-[#f3efe6] p-1"
             role="tablist"
+            aria-label="Account type"
           >
             <button
               type="button"
               role="tab"
-              aria-selected={mode === "login"}
-              onClick={() => {
-                setMode("login");
-                setError(null);
-              }}
+              aria-selected={role === "WEAVER"}
+              onClick={() => switchRole("WEAVER")}
               className={`rounded-lg px-2 py-3 text-center text-sm font-semibold leading-snug ${
-                mode === "login"
+                role === "WEAVER"
                   ? "bg-[#3c2415] text-white shadow-sm"
                   : "text-[#3c2415]/80"
               }`}
             >
-              I already have an account
+              Weaver login
             </button>
             <button
               type="button"
               role="tab"
-              aria-selected={mode === "register"}
-              onClick={() => {
-                setMode("register");
-                setError(null);
-              }}
+              aria-selected={role === "BUYER"}
+              onClick={() => switchRole("BUYER")}
               className={`rounded-lg px-2 py-3 text-center text-sm font-semibold leading-snug ${
-                mode === "register"
-                  ? "bg-[#3c2415] text-white shadow-sm"
-                  : "text-[#3c2415]/80"
+                role === "BUYER"
+                  ? "bg-[#1e3a5f] text-white shadow-sm"
+                  : "text-[#1e3a5f]/80"
               }`}
             >
-              New here? Register
+              Buyer login
             </button>
           </div>
 
@@ -256,65 +331,160 @@ export function WeaverLoginScreen({
             {mode === "register" ? (
               <>
                 <label className="block text-sm font-medium text-[#1a1f24]">
-                  {t("auth.yourName")}
+                  {role === "BUYER" ? "Business name" : t("auth.yourName")}
                   <input
                     className="mt-1.5 w-full rounded-xl border border-[#d9d2c4] bg-[#fffdf8] px-3 py-3 text-base"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="e.g. Meena"
+                    placeholder={
+                      role === "BUYER" ? "Your shop / brand" : "e.g. Meena"
+                    }
                     required
                   />
                 </label>
+
+                {role === "BUYER" ? (
+                  <>
+                    <label className="block text-sm font-medium text-[#1a1f24]">
+                      Business type
+                      <select
+                        className="mt-1.5 w-full rounded-xl border border-[#d9d2c4] bg-[#fffdf8] px-3 py-3 text-base"
+                        value={businessType}
+                        onChange={(e) => setBusinessType(e.target.value)}
+                      >
+                        {BUYER_BUSINESS_TYPES.map((bt) => (
+                          <option key={bt} value={bt}>
+                            {bt}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className="block text-sm font-medium text-[#1a1f24]">
+                      Email (optional)
+                      <input
+                        type="email"
+                        className="mt-1.5 w-full rounded-xl border border-[#d9d2c4] bg-[#fffdf8] px-3 py-3 text-base"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="orders@yourshop.com"
+                      />
+                    </label>
+                  </>
+                ) : null}
+
                 <label className="block text-sm font-medium text-[#1a1f24]">
-                  {t("auth.region")}
-                  <input
-                    className="mt-1.5 w-full rounded-xl border border-[#d9d2c4] bg-[#fffdf8] px-3 py-3 text-base"
-                    value={region}
-                    onChange={(e) => setRegion(e.target.value)}
-                    required
-                  />
-                </label>
-                <label className="block text-sm font-medium text-[#1a1f24]">
-                  {t("auth.language")}
+                  State / UT
                   <select
                     className="mt-1.5 w-full rounded-xl border border-[#d9d2c4] bg-[#fffdf8] px-3 py-3 text-base"
-                    value={primaryLanguage}
-                    onChange={(e) =>
-                      setPrimaryLanguage(e.target.value as LanguageCode)
-                    }
+                    value={region}
+                    onChange={(e) => onStateChange(e.target.value)}
+                    required
                   >
-                    {LANGUAGE_OPTIONS.map((opt) => (
-                      <option key={opt.code} value={opt.code}>
-                        {opt.label} — {opt.name}
+                    {INDIA_STATES.map((s) => (
+                      <option key={s} value={s}>
+                        {s}
                       </option>
                     ))}
                   </select>
                 </label>
-                <fieldset>
-                  <legend className="text-sm font-medium text-[#1a1f24]">
-                    {t("auth.categories")}
-                  </legend>
-                  <div className="mt-2 flex flex-wrap gap-2">
-                    {WEAVE_CATEGORY_OPTIONS.map((label) => {
-                      const on = categorySet.has(label);
-                      return (
-                        <button
-                          key={label}
-                          type="button"
-                          aria-pressed={on}
-                          onClick={() => toggleCategory(label)}
-                          className={`rounded-lg border px-3 py-2 text-sm ${
-                            on
-                              ? "border-[#3c2415] bg-[#3c2415]/10 font-semibold text-[#3c2415]"
-                              : "border-[#d9d2c4] text-[#5c6570]"
-                          }`}
-                        >
-                          {label}
-                        </button>
-                      );
-                    })}
+
+                <label className="block text-sm font-medium text-[#1a1f24]">
+                  District / weaving town
+                  <select
+                    className="mt-1.5 w-full rounded-xl border border-[#d9d2c4] bg-[#fffdf8] px-3 py-3 text-base"
+                    value={district}
+                    onChange={(e) => setDistrict(e.target.value)}
+                    required
+                  >
+                    {districtOptions.length === 0 ? (
+                      <option value="">No districts listed</option>
+                    ) : (
+                      districtOptions.map((d) => (
+                        <option key={d} value={d}>
+                          {d}
+                        </option>
+                      ))
+                    )}
+                  </select>
+                </label>
+
+                {role === "WEAVER" ? (
+                  <div className="rounded-xl border border-[#e8e2d8] bg-[#f3efe6]/70 px-3 py-3">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-[#5c6570]">
+                      Auto-assigned from {district || region}
+                    </p>
+                    <p className="mt-1 text-sm font-semibold text-[#1a1f24]">
+                      {coopPreview.shortName}
+                    </p>
+                    <p className="mt-0.5 text-xs text-[#5c6570]">
+                      Sector: {coopPreview.sector}
+                    </p>
+                    <p className="mt-1 text-[0.65rem] leading-snug text-[#8a8070]">
+                      {coopPreview.disclaimer}
+                    </p>
                   </div>
-                </fieldset>
+                ) : (
+                  <p className="rounded-lg bg-[#f3efe6] px-3 py-2 text-xs text-[#5c6570]">
+                    Buying needs you post will match weavers in {region}
+                    {district ? ` · ${district}` : ""}.
+                  </p>
+                )}
+
+                {role === "WEAVER" ? (
+                  <>
+                    <label className="block text-sm font-medium text-[#1a1f24]">
+                      Years weaving (optional)
+                      <input
+                        inputMode="numeric"
+                        className="mt-1.5 w-full rounded-xl border border-[#d9d2c4] bg-[#fffdf8] px-3 py-3 text-base"
+                        value={yearsWeaving}
+                        onChange={(e) => setYearsWeaving(e.target.value)}
+                        placeholder="e.g. 8"
+                      />
+                    </label>
+                    <label className="block text-sm font-medium text-[#1a1f24]">
+                      {t("auth.language")}
+                      <select
+                        className="mt-1.5 w-full rounded-xl border border-[#d9d2c4] bg-[#fffdf8] px-3 py-3 text-base"
+                        value={primaryLanguage}
+                        onChange={(e) =>
+                          setPrimaryLanguage(e.target.value as LanguageCode)
+                        }
+                      >
+                        {LANGUAGE_OPTIONS.map((opt) => (
+                          <option key={opt.code} value={opt.code}>
+                            {opt.label} — {opt.name}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <fieldset>
+                      <legend className="text-sm font-medium text-[#1a1f24]">
+                        {t("auth.categories")}
+                      </legend>
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {WEAVE_CATEGORY_OPTIONS.map((label) => {
+                          const on = categorySet.has(label);
+                          return (
+                            <button
+                              key={label}
+                              type="button"
+                              aria-pressed={on}
+                              onClick={() => toggleCategory(label)}
+                              className={`rounded-lg border px-3 py-2 text-sm ${
+                                on
+                                  ? "border-[#3c2415] bg-[#3c2415]/10 font-semibold text-[#3c2415]"
+                                  : "border-[#d9d2c4] text-[#5c6570]"
+                              }`}
+                            >
+                              {label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </fieldset>
+                  </>
+                ) : null}
               </>
             ) : null}
 
@@ -334,7 +504,9 @@ export function WeaverLoginScreen({
             <button
               type="submit"
               disabled={busy}
-              className="flex h-12 w-full items-center justify-center rounded-xl bg-[#3c2415] text-base font-semibold text-white disabled:opacity-60"
+              className={`flex h-12 w-full items-center justify-center rounded-xl text-base font-semibold text-white disabled:opacity-60 ${
+                role === "BUYER" ? "bg-[#1e3a5f]" : "bg-[#3c2415]"
+              }`}
             >
               {busy && busyPhone === phone
                 ? "Signing in…"
@@ -342,60 +514,130 @@ export function WeaverLoginScreen({
                   ? "Continue"
                   : "Create account"}
             </button>
+
+            {mode === "login" ? (
+              <p className="pt-1 text-center text-xs text-[#5c6570]">
+                New here?{" "}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMode("register");
+                    setError(null);
+                  }}
+                  className="font-semibold text-[#3c2415] underline underline-offset-2"
+                >
+                  Register
+                </button>
+              </p>
+            ) : (
+              <p className="pt-1 text-center text-xs text-[#5c6570]">
+                Already registered?{" "}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMode("login");
+                    setError(null);
+                  }}
+                  className="font-semibold text-[#3c2415] underline underline-offset-2"
+                >
+                  Sign in
+                </button>
+              </p>
+            )}
           </form>
         </div>
 
         <div className="rounded-2xl bg-white p-4 shadow-[0_8px_24px_rgba(60,36,21,0.1)]">
           <h2 className="text-base font-semibold text-[#1a1f24]">
-            Demo logins (pitch)
+            {role === "BUYER" ? "Demo buyers (pitch)" : "Demo weavers (pitch)"}
           </h2>
           <p className="mt-1 text-xs text-[#5c6570]">
-            Tap a name for a <strong>fresh simulated</strong> orders + production
-            story each login. Use <strong>Register</strong> for an empty account
-            with a guided tour.
+            {role === "BUYER"
+              ? "Tap a desk to post simulated buying needs for weavers."
+              : "Tap a name for a fresh simulated orders + production story. Use Register for an empty account + tour."}
           </p>
           <ul className="mt-3 space-y-2">
-            {DEMO_WEAVER_LOGINS.map((d) => (
-              <li key={d.phone}>
-                <button
-                  type="button"
-                  disabled={busy}
-                  onClick={() => void enterAsDemo(d.phone)}
-                  className={`flex w-full items-start justify-between gap-2 rounded-xl border px-3 py-3 text-left transition disabled:opacity-60 ${
-                    busyPhone === d.phone
-                      ? "border-[#3c2415] bg-[#3c2415]/15"
-                      : phone === d.phone
-                        ? "border-[#3c2415] bg-[#3c2415]/8"
-                        : "border-[#e8e2d8] hover:border-[#3c2415]/40"
-                  }`}
-                >
-                  <span>
-                    <span className="block text-sm font-semibold text-[#1a1f24]">
-                      {busyPhone === d.phone
-                        ? `Signing in as ${d.givenName}…`
-                        : `Enter as ${d.givenName}`}
-                    </span>
-                    <span className="mt-0.5 block text-xs text-[#5c6570]">
-                      {d.blurb}
-                    </span>
-                  </span>
-                  <code className="shrink-0 rounded bg-[#f3efe6] px-2 py-1 text-xs font-semibold text-[#3c2415]">
-                    {d.phone}
-                  </code>
-                </button>
-              </li>
-            ))}
+            {role === "WEAVER"
+              ? DEMO_WEAVER_LOGINS.map((d) => (
+                  <li key={d.phone}>
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={() => void enterAsDemo(d.phone, "WEAVER")}
+                      className={`flex w-full items-start justify-between gap-2 rounded-xl border px-3 py-3 text-left transition disabled:opacity-60 ${
+                        busyPhone === d.phone
+                          ? "border-[#3c2415] bg-[#3c2415]/15"
+                          : phone === d.phone
+                            ? "border-[#3c2415] bg-[#3c2415]/8"
+                            : "border-[#e8e2d8] hover:border-[#3c2415]/40"
+                      }`}
+                    >
+                      <span>
+                        <span className="block text-sm font-semibold text-[#1a1f24]">
+                          {busyPhone === d.phone
+                            ? `Signing in as ${d.givenName}…`
+                            : `Enter as ${d.givenName}`}
+                        </span>
+                        <span className="mt-0.5 block text-xs text-[#5c6570]">
+                          {d.blurb}
+                        </span>
+                      </span>
+                      <code className="shrink-0 rounded bg-[#f3efe6] px-2 py-1 text-xs font-semibold text-[#3c2415]">
+                        {d.phone}
+                      </code>
+                    </button>
+                  </li>
+                ))
+              : DEMO_BUYERS.map((d) => (
+                  <li key={d.phone}>
+                    <button
+                      type="button"
+                      disabled={busy}
+                      onClick={() => void enterAsDemo(d.phone, "BUYER")}
+                      className={`flex w-full items-start justify-between gap-2 rounded-xl border px-3 py-3 text-left transition disabled:opacity-60 ${
+                        busyPhone === d.phone
+                          ? "border-[#1e3a5f] bg-[#1e3a5f]/15"
+                          : phone === d.phone
+                            ? "border-[#1e3a5f] bg-[#1e3a5f]/8"
+                            : "border-[#e8e2d8] hover:border-[#1e3a5f]/40"
+                      }`}
+                    >
+                      <span>
+                        <span className="block text-sm font-semibold text-[#1a1f24]">
+                          {busyPhone === d.phone
+                            ? `Signing in as ${d.shortName}…`
+                            : `Enter as ${d.shortName}`}
+                        </span>
+                        <span className="mt-0.5 block text-xs text-[#5c6570]">
+                          {d.businessType} · {d.focus}
+                        </span>
+                      </span>
+                      <code className="shrink-0 rounded bg-[#eef2f7] px-2 py-1 text-xs font-semibold text-[#1e3a5f]">
+                        {d.phone}
+                      </code>
+                    </button>
+                  </li>
+                ))}
           </ul>
         </div>
 
         <p className="text-center text-sm text-[#5c6570]">
-          <Link href="/buyer" className="font-semibold text-[#3c2415] underline">
-            Buyer Portal
-          </Link>
-          {" · "}
           <Link href="/about" className="underline">
             About / pitch
           </Link>
+          {" · "}
+          {role === "WEAVER" ? (
+            <Link
+              href="/buyer"
+              className="font-semibold text-[#1e3a5f] underline"
+            >
+              Buyer portal desk
+            </Link>
+          ) : (
+            <Link href="/" className="font-semibold text-[#3c2415] underline">
+              Weaver app
+            </Link>
+          )}
         </p>
       </div>
     </div>

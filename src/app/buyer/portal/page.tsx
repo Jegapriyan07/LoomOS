@@ -2,10 +2,15 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { DEMAND_CATEGORIES, type BuyerRequirement } from "@/lib/demand/types";
 import { SimulatedBuyerDesk } from "@/components/buyer/SimulatedBuyerDesk";
+import { BuyerWeaversMap } from "@/components/map/BuyerWeaversMapLazy";
 import { DEMO_BUYERS } from "@/lib/demo/cluster";
+import type {
+  DistrictCluster,
+  MapWeaverPin,
+  StateCluster,
+} from "@/lib/map/build-map-data";
 
 type Session = {
   id: string;
@@ -37,7 +42,14 @@ type OrderRow = {
   settledAt?: string;
 };
 
-type Tab = "post" | "weavers" | "orders" | "mine" | "desks";
+type Tab = "post" | "weavers" | "orders" | "mine" | "desks" | "map";
+
+type MapPayload = {
+  weavers: MapWeaverPin[];
+  districtClusters: DistrictCluster[];
+  stateClusters: StateCluster[];
+  disclaimer: string;
+};
 
 export default function BuyerPortalPage() {
   const router = useRouter();
@@ -47,6 +59,7 @@ export default function BuyerPortalPage() {
   const [requirements, setRequirements] = useState<BuyerRequirement[]>([]);
   const [weavers, setWeavers] = useState<WeaverRow[]>([]);
   const [orders, setOrders] = useState<OrderRow[]>([]);
+  const [mapData, setMapData] = useState<MapPayload | null>(null);
   const [form, setForm] = useState({
     categoryId: "cotton-saree",
     quantity: 25,
@@ -100,12 +113,25 @@ export default function BuyerPortalPage() {
     setOrders(data.orders as OrderRow[]);
   }, []);
 
+  const loadMap = useCallback(async () => {
+    const res = await fetch("/api/buyer/map", { cache: "no-store" });
+    if (!res.ok) return;
+    const data = await res.json();
+    setMapData({
+      weavers: data.weavers as MapWeaverPin[],
+      districtClusters: data.districtClusters as DistrictCluster[],
+      stateClusters: data.stateClusters as StateCluster[],
+      disclaimer: String(data.disclaimer ?? ""),
+    });
+  }, []);
+
   useEffect(() => {
     if (!session) return;
     void loadMine();
     void loadWeavers();
     void loadOrders();
-  }, [session, loadMine, loadWeavers, loadOrders]);
+    void loadMap();
+  }, [session, loadMine, loadWeavers, loadOrders, loadMap]);
 
   async function postRequirement(e: React.FormEvent) {
     e.preventDefault();
@@ -133,6 +159,11 @@ export default function BuyerPortalPage() {
     router.push("/buyer");
   }
 
+  async function goWeaverApp() {
+    await fetch("/api/auth/logout", { method: "POST" });
+    window.location.assign("/");
+  }
+
   if (!session) {
     return <p className="p-8 text-sm text-slate-600">Loading session…</p>;
   }
@@ -157,12 +188,13 @@ export default function BuyerPortalPage() {
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Link
-            href="/"
+          <button
+            type="button"
+            onClick={() => void goWeaverApp()}
             className="rounded border border-slate-300 bg-white px-3 py-1.5 text-sm font-semibold text-[#1e3a5f]"
           >
             Weaver app
-          </Link>
+          </button>
           <button
             type="button"
             onClick={() => void logout()}
@@ -182,6 +214,7 @@ export default function BuyerPortalPage() {
         {(
           [
             ["desks", "Simulated desks"],
+            ["map", "Weaver map"],
             ["post", "Post requirement"],
             ["mine", "My requirements"],
             ["weavers", "Verified weavers"],
@@ -206,9 +239,13 @@ export default function BuyerPortalPage() {
       {message ? (
         <p className="mt-4 rounded border border-emerald-300 bg-emerald-50 px-3 py-2 text-sm text-emerald-950">
           {message}{" "}
-          <Link href="/" className="underline">
+          <button
+            type="button"
+            onClick={() => void goWeaverApp()}
+            className="underline"
+          >
             Open weaver Home
-          </Link>
+          </button>
         </p>
       ) : null}
 
@@ -224,8 +261,37 @@ export default function BuyerPortalPage() {
             >
               Post requirement
             </button>{" "}
-            to publish a need weavers can plan from.
+            to publish a need weavers can plan from, or open{" "}
+            <button
+              type="button"
+              className="font-semibold text-[#1e3a5f] underline"
+              onClick={() => setTab("map")}
+            >
+              Weaver map
+            </button>{" "}
+            for nationwide clusters.
           </p>
+        </div>
+      ) : null}
+
+      {tab === "map" ? (
+        <div className="mt-6 space-y-3">
+          <p className="text-sm text-slate-600">
+            Nationwide heat → tap a state → district clusters (e.g. Kanchipuram)
+            → tap a weaver for rating and ready-stock menu.
+          </p>
+          {mapData ? (
+            <BuyerWeaversMap
+              weavers={mapData.weavers}
+              stateClusters={mapData.stateClusters}
+              districtClusters={mapData.districtClusters}
+              disclaimer={mapData.disclaimer}
+            />
+          ) : (
+            <p className="rounded-lg border border-slate-200 bg-white px-4 py-8 text-center text-sm text-slate-600">
+              Loading map data…
+            </p>
+          )}
         </div>
       ) : null}
 

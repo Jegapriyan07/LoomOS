@@ -58,6 +58,10 @@ export type MessageKey =
   | "voice.stop"
   | "voice.ask"
   | "voice.a11yLabel"
+  | "voice.navListening"
+  | "voice.navMic"
+  | "voice.navLabel"
+  | "voice.navA11yLabel"
   | "chat.title"
   | "chat.subtitle"
   | "chat.placeholder"
@@ -224,6 +228,11 @@ const en: Catalog = {
   "voice.stop": "Stop",
   "voice.ask": "Voice ask",
   "voice.a11yLabel": "Voice accessibility",
+  "voice.navListening":
+    "Listening… say plan, orders, home, money, or profile",
+  "voice.navMic": "Voice navigate",
+  "voice.navLabel": "Voice",
+  "voice.navA11yLabel": "App voice assistant",
   "chat.title": "Loom assistant",
   "chat.subtitle":
     "Tap a daily question — answers use your advice, orders, money, and stock.",
@@ -240,7 +249,7 @@ const en: Catalog = {
   "common.demoSimulated": "Demo / Simulated",
   "plan.title": "When to start",
   "plan.subtitle":
-    "Pick what you will weave and when it must be ready. We work the dates backward for you.",
+    "Third tab in the pitch walk — after Orders shows demand, set a ready date and we work the calendar backward for you.",
   "plan.whatWeave": "What will you weave?",
   "plan.whenReady": "When must it be ready?",
   "plan.festivalNote":
@@ -295,9 +304,9 @@ const en: Catalog = {
   "money.question": "Question: {reason} ({status})",
   "money.adminHint": "Team: walk every state on Admin → Payments.",
   "money.loadingError": "Could not load money status",
-  "orders.title": "Your orders",
+  "orders.title": "Buyer demand near you",
   "orders.subtitle":
-    "Buyer needs near you — posted in the buyer portal. These same posts shape today's advice on Home.",
+    "Second tab in the pitch walk — open requirements in your region. Same posts buyers publish in the Buyer Portal.",
   "orders.demoNote":
     "Demo Mode — seed requirements may include fictional buyers from Nila Loom Circle. Not live marketplace orders.",
   "orders.empty": "No open buyer needs in {region} right now.",
@@ -399,6 +408,11 @@ const hi: Catalog = {
   "voice.stop": "रोकें",
   "voice.ask": "आवाज़ से पूछें",
   "voice.a11yLabel": "आवाज़ पहुँच",
+  "voice.navListening":
+    "सुन रहे हैं… योजना, ऑर्डर, होम, पैसे या प्रोफ़ाइल कहें",
+  "voice.navMic": "आवाज़ से नेविगेट",
+  "voice.navLabel": "आवाज़",
+  "voice.navA11yLabel": "ऐप आवाज़ सहायक",
   "chat.title": "लूम सहायक",
   "chat.subtitle": "सलाह, पैसे और ऑर्डर का सारांश।",
   "chat.placeholder": "आज, पैसे या ऑर्डर के बारे में पूछें…",
@@ -572,6 +586,11 @@ const ta: Catalog = {
   "voice.stop": "நிறுத்து",
   "voice.ask": "குரல் கேள்வி",
   "voice.a11yLabel": "குரல் அணுகல்",
+  "voice.navListening":
+    "கேட்கிறது… திட்டம், ஆர்டர், முகப்பு, பணம் அல்லது சுயவிவரம் சொல்லுங்கள்",
+  "voice.navMic": "குரல் வழிசெலுத்தல்",
+  "voice.navLabel": "குரல்",
+  "voice.navA11yLabel": "பயன்பாட்டு குரல் உதவியாளர்",
   "chat.title": "லூம் உதவியாளர்",
   "chat.subtitle": "ஆலோசனை, பணம், ஆர்டர் சுருக்கம்.",
   "chat.placeholder": "இன்று, பணம் அல்லது ஆர்டர் பற்றி கேளுங்கள்…",
@@ -746,6 +765,11 @@ const te: Catalog = {
   "voice.stop": "ఆపు",
   "voice.ask": "వాయిస్ అడుగు",
   "voice.a11yLabel": "వాయిస్ యాక్సెస్",
+  "voice.navListening":
+    "వింటోంది… ప్లాన్, ఆర్డర్లు, హోమ్, డబ్బు లేదా ప్రొఫైల్ చెప్పండి",
+  "voice.navMic": "వాయిస్ నావిగేట్",
+  "voice.navLabel": "వాయిస్",
+  "voice.navA11yLabel": "యాప్ వాయిస్ సహాయకుడు",
   "chat.title": "లూమ్ సహాయకుడు",
   "chat.subtitle": "సలహా, డబ్బు, ఆర్డర్ల సారాంశం.",
   "chat.placeholder": "నేడు, డబ్బు లేదా ఆర్డర్ల గురించి అడగండి…",
@@ -919,6 +943,11 @@ const kn: Catalog = {
   "voice.stop": "ನಿಲ್ಲಿಸು",
   "voice.ask": "ಧ್ವನಿ ಪ್ರಶ್ನೆ",
   "voice.a11yLabel": "ಧ್ವನಿ ಪ್ರವೇಶ",
+  "voice.navListening":
+    "ಕೇಳುತ್ತಿದೆ… ಯೋಜನೆ, ಆರ್ಡರ್, ಮುಖಪುಟ, ಹಣ ಅಥವಾ ಪ್ರೊಫೈಲ್ ಹೇಳಿ",
+  "voice.navMic": "ಧ್ವನಿ ನ್ಯಾವಿಗೇಟ್",
+  "voice.navLabel": "ಧ್ವನಿ",
+  "voice.navA11yLabel": "ಅಪ್ ಧ್ವನಿ ಸಹಾಯಕ",
   "chat.title": "ಲೂಮ್ ಸಹಾಯಕ",
   "chat.subtitle": "ಸಲಹೆ, ಹಣ, ಆರ್ಡರ್ ಸಾರಾಂಶ.",
   "chat.placeholder": "ಇಂದು, ಹಣ ಅಥವಾ ಆರ್ಡರ್ ಬಗ್ಗೆ ಕೇಳಿ…",
@@ -1097,6 +1126,11 @@ const bn: Catalog = {
   "voice.stop": "থামান",
   "voice.ask": "কণ্ঠে জিজ্ঞাসা",
   "voice.a11yLabel": "কণ্ঠ অ্যাক্সেস",
+  "voice.navListening":
+    "শুনছি… পরিকল্পনা, অর্ডার, হোম, টাকা বা প্রোফাইল বলুন",
+  "voice.navMic": "কণ্ঠে নেভিগেট",
+  "voice.navLabel": "কণ্ঠ",
+  "voice.navA11yLabel": "অ্যাপ কণ্ঠ সহায়ক",
   "chat.title": "লুম সহায়ক",
   "chat.subtitle": "পরামর্শ, টাকা ও অর্ডারের সারাংশ।",
   "chat.placeholder": "আজ, টাকা বা অর্ডার নিয়ে জিজ্ঞাসা করুন…",
@@ -1275,6 +1309,11 @@ const as: Catalog = {
   "voice.stop": "বন্ধ কৰক",
   "voice.ask": "কণ্ঠেৰে সোধক",
   "voice.a11yLabel": "কণ্ঠ এক্সেছ",
+  "voice.navListening":
+    "শুনি আছে… পৰিকল্পনা, অৰ্ডাৰ, হোম, টকা বা প্ৰফাইল কওক",
+  "voice.navMic": "কণ্ঠেৰে নেভিগেট",
+  "voice.navLabel": "কণ্ঠ",
+  "voice.navA11yLabel": "এপ কণ্ঠ সহায়ক",
   "chat.title": "লুম সহায়ক",
   "chat.subtitle": "পৰামৰ্শ, টকা আৰু অৰ্ডাৰৰ সাৰাংশ।",
   "chat.placeholder": "আজি, টকা বা অৰ্ডাৰ সম্পৰ্কে সোধক…",

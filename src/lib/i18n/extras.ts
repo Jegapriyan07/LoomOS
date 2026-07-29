@@ -114,11 +114,11 @@ const en: ExtraCatalog = {
   "cat.dhoti-angavastram": "Dhoti / angavastram",
   "festival.nearby": "Nearby festival season (sample)",
   "festival.later": "Later festival season (sample)",
-  "pitch.planEyebrow": "Plan · reverse production",
+  "pitch.planEyebrow": "Plan · 3rd tab · reverse production",
   "pitch.planBody":
-    "Pick what you will weave and when it must be ready. LoomOS works the calendar backward so you know when to buy yarn and when money is projected.",
+    "After Orders shows demand, pick what you will weave and when it must be ready. LoomOS works the calendar backward so you know when to buy yarn and when money is projected.",
   "pitch.planOneLiner":
-    "Pitch in one line: buyer/festival date → start date → yarn date → projected payment — not a to-do list, a decision timeline.",
+    "Pitch beat: buyer/festival date → start date → yarn date → projected payment — timing comes after you see the order.",
   "pitch.stepWhat": "What",
   "pitch.stepWhen": "When",
   "pitch.stepDates": "Your dates",
@@ -132,7 +132,7 @@ const en: ExtraCatalog = {
   "pitch.datesTitle": "Your dates — the pitch moment",
   "pitch.datesBody":
     "This is the explainable answer: when to buy yarn, start, finish, and when money is projected.",
-  "pitch.moneyEyebrow": "Money · simulated escrow story",
+  "pitch.moneyEyebrow": "Money · 4th tab · simulated escrow story",
   "pitch.moneyBody":
     "See where each payment sits — advance held, next projected settlement, then a steady reserve and a shareable proof record.",
   "pitch.moneyOneLiner":
@@ -152,9 +152,9 @@ const en: ExtraCatalog = {
   "pitch.proofHint": "Shareable proof buyers can trust — simulated for the demo.",
   "pitch.show": "Show",
   "pitch.hide": "Hide",
-  "pitch.ordersEyebrow": "Orders · buyer demand feed",
+  "pitch.ordersEyebrow": "Orders · 2nd tab · buyer demand feed",
   "pitch.ordersOneLiner":
-    "Same simulated buyer posts the Buyer Portal publishes — they also move today's advice on Home.",
+    "Pitch beat: see work coming first — same simulated buyer posts the Buyer Portal publishes, then move to Plan for when to start.",
   "pitch.openBuyerPortal": "Open Buyer Portal",
   "pitch.openBuyerPortalHint":
     "Login as Saffron ({phone1}) or Festival ({phone2}) — simulated desks.",
@@ -195,7 +195,7 @@ const en: ExtraCatalog = {
   "engine.q5": "Today",
   "engine.a5": "What should I do today?",
   "engine.chipHint":
-    "Tap a question — Loom assistant pulls from your advice, orders, money, and stock.",
+    "Tap a question — then walk the tabs: Home → Orders → Plan → Money.",
 };
 
 const hi: ExtraCatalog = {

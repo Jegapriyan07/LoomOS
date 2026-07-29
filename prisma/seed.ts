@@ -30,22 +30,29 @@ const adapter = new PrismaNeon({ connectionString });
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
+  const { DEMO_COOPS } = await import("../src/lib/auth/regions");
   const coopId = "demo-cluster-nila";
 
-  await prisma.cooperative.upsert({
-    where: { id: coopId },
-    create: {
-      id: coopId,
-      name: "Nila Loom Circle (Demo Cluster)",
-      shortName: "Nila Loom Circle",
-      region: "Tamil Nadu",
-      flavor:
-        "Fictional Kanchipuram-style silk-and-cotton weaving circle in Tamil Nadu, invented for this prototype.",
-      disclaimer:
-        "Demo Mode — fictional seed cluster. Not a real cooperative, not live data, not attributed to any real organization or person.",
-    },
-    update: {},
-  });
+  for (const coop of DEMO_COOPS) {
+    await prisma.cooperative.upsert({
+      where: { id: coop.id },
+      create: {
+        id: coop.id,
+        name: coop.name,
+        shortName: coop.shortName,
+        region: coop.region,
+        flavor: `${coop.flavor} Sector: ${coop.sector}.`,
+        disclaimer: coop.disclaimer,
+      },
+      update: {
+        name: coop.name,
+        shortName: coop.shortName,
+        region: coop.region,
+        flavor: `${coop.flavor} Sector: ${coop.sector}.`,
+        disclaimer: coop.disclaimer,
+      },
+    });
+  }
 
   const weavers = [
     {
@@ -55,7 +62,7 @@ async function main() {
       name: "Meena (demo weaver — fictional)",
       givenName: "Meena",
       primaryLanguage: "ta",
-      categories: ["cotton saree", "silk saree", "cotton lungi"],
+      categories: ["cotton saree", "silk saree", "cotton lungi", "district:Kanchipuram"],
     },
     {
       id: "weaver-demo-002",
@@ -64,7 +71,7 @@ async function main() {
       name: "Selvi (demo weaver — fictional)",
       givenName: "Selvi",
       primaryLanguage: "ta",
-      categories: ["cotton saree", "stole / dupatta"],
+      categories: ["cotton saree", "stole / dupatta", "district:Salem"],
     },
     {
       id: "weaver-demo-003",
@@ -73,7 +80,7 @@ async function main() {
       name: "Kamala (demo weaver — fictional)",
       givenName: "Kamala",
       primaryLanguage: "ta",
-      categories: ["silk saree", "dhoti / angavastram"],
+      categories: ["silk saree", "dhoti / angavastram", "district:Kumbakonam"],
     },
     {
       id: "weaver-demo-004",
@@ -82,7 +89,7 @@ async function main() {
       name: "Lakshmi (demo weaver — fictional)",
       givenName: "Lakshmi",
       primaryLanguage: "hi",
-      categories: ["stole / dupatta", "dhoti / angavastram", "cotton saree"],
+      categories: ["stole / dupatta", "dhoti / angavastram", "cotton saree", "district:Madurai"],
     },
   ];
 
@@ -197,7 +204,9 @@ async function main() {
     }
   }
 
-  console.log("Seeded cooperative, 4 weavers, 3 buyers.");
+  console.log(
+    `Seeded ${DEMO_COOPS.length} cooperatives, 4 weavers, 3 buyers.`,
+  );
 }
 
 main()

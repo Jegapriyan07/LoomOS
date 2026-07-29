@@ -208,17 +208,18 @@ export default function ProfilePage() {
 
       <div className="grid grid-cols-2 gap-2">
         <Link
-          href="/plan"
+          href="/orders"
           className="flex h-12 items-center justify-center gap-2 rounded-xl bg-loom-primary text-sm font-semibold text-white"
+        >
+          <ClipboardList className="size-4" aria-hidden />
+          Orders
+        </Link>
+        <Link
+          href="/plan"
+          className="flex h-12 items-center justify-center gap-2 rounded-xl border border-loom-border text-sm font-semibold text-loom-primary"
         >
           <CalendarClock className="size-4" aria-hidden />
           Plan
-        </Link>
-        <Link
-          href="/"
-          className="flex h-12 items-center justify-center rounded-xl border border-loom-border text-sm font-semibold text-loom-primary"
-        >
-          Home advice
         </Link>
       </div>
     </div>

@@ -1,23 +1,26 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { useEffect, useState } from "react";
-import { PhoneOtpLogin } from "@/components/auth/PhoneOtpLogin";
+import { WeaverLoginScreen } from "@/components/auth/WeaverLoginScreen";
 import { DemoModeBanner } from "@/components/demo/DemoModeBanner";
 import { SimulatedBuyerDesk } from "@/components/buyer/SimulatedBuyerDesk";
-import { DEMO_BUYERS } from "@/lib/demo/cluster";
 
 export default function BuyerAuthPage() {
   const router = useRouter();
   const [checking, setChecking] = useState(true);
+  const [showDesk, setShowDesk] = useState(false);
 
   useEffect(() => {
     void (async () => {
       try {
-        const res = await fetch("/api/auth/me", { cache: "no-store" });
+        const res = await fetch("/api/auth/me", {
+          cache: "no-store",
+          credentials: "include",
+        });
         if (res.ok) {
           const data = await res.json();
+          // Only auto-enter portal when already a buyer — never bounce weavers away
           if (data.user?.role === "BUYER") {
             router.replace("/buyer/portal");
             return;
@@ -36,37 +39,32 @@ export default function BuyerAuthPage() {
   }
 
   return (
-    <div className="min-h-full bg-[#f3efe6]">
+    <div className="min-h-full bg-[#ebe6e0]">
       <DemoModeBanner />
-      <div className="mx-auto max-w-5xl px-4 pt-6">
-        <p className="font-[family-name:var(--font-loom-display)] text-3xl font-semibold text-[#1e3a5f]">
-          Buyer Portal
-        </p>
-        <p className="mt-2 max-w-2xl text-base text-slate-600">
-          Post simulated buying needs that weavers see on Home, Plan, and
-          Orders — same store, not a disconnected form.
-        </p>
-        <div className="mt-5">
-          <SimulatedBuyerDesk />
-        </div>
-      </div>
-      <PhoneOtpLogin
-        role="BUYER"
-        title="Buyer login / register"
-        defaultPhone={DEMO_BUYERS[0].phone}
-        allowSignupName
-        modeTabs
-        onSuccess={() => router.push("/buyer/portal")}
+      <WeaverLoginScreen
+        defaultRole="BUYER"
+        onSuccess={({ role }) => {
+          if (role === "BUYER") {
+            router.push("/buyer/portal");
+            return;
+          }
+          window.location.assign("/");
+        }}
       />
-      <p className="mx-auto max-w-md px-4 pb-10 text-sm text-slate-500">
-        <Link href="/" className="font-semibold text-[#1e3a5f] underline">
-          ← Weaver app
-        </Link>
-        {" · "}
-        <Link href="/about" className="underline">
-          Pitch / about
-        </Link>
-      </p>
+      <div className="mx-auto max-w-lg px-4 pb-10">
+        <button
+          type="button"
+          onClick={() => setShowDesk((v) => !v)}
+          className="w-full text-center text-xs font-semibold text-[#1e3a5f] underline"
+        >
+          {showDesk ? "Hide sample buyer desk" : "Preview sample buyer desk"}
+        </button>
+        {showDesk ? (
+          <div className="mt-4">
+            <SimulatedBuyerDesk />
+          </div>
+        ) : null}
+      </div>
     </div>
   );
 }

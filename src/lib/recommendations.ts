@@ -90,13 +90,19 @@ function buildDailyActions(args: {
   hasOpenOrders: boolean;
   pendingPayment: boolean;
 }): DailyAction[] {
-  const actions: DailyAction[] = [
-    {
-      id: "weave",
-      label: `Plan ${args.categoryLabel} — start ${args.startHint}`,
-      href: "/plan",
-    },
-  ];
+  const actions: DailyAction[] = [];
+  if (args.hasOpenOrders) {
+    actions.push({
+      id: "orders",
+      label: "Check open buyer requirements in your region (Orders tab)",
+      href: "/orders",
+    });
+  }
+  actions.push({
+    id: "weave",
+    label: `Plan ${args.categoryLabel} — start ${args.startHint}`,
+    href: "/plan",
+  });
   if (!args.yarnReady) {
     actions.push({
       id: "yarn",
@@ -108,13 +114,6 @@ function buildDailyActions(args: {
       id: "yarn_ok",
       label: args.yarnNote,
       href: "/plan",
-    });
-  }
-  if (args.hasOpenOrders) {
-    actions.push({
-      id: "orders",
-      label: "Check open buyer requirements in your region",
-      href: "/orders",
     });
   }
   if (args.pendingPayment) {

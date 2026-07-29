@@ -37,27 +37,27 @@ const STEPS = [
   {
     href: "/",
     title: "Home — today’s advice",
-    body: "Here LoomOS suggests what to weave this week from simulated demand. As a new weaver you start empty — advice still works from shared market signals.",
+    body: "Pitch beat 1: LoomOS answers what to weave from simulated demand. Demo accounts already have a full story.",
+  },
+  {
+    href: "/orders",
+    title: "Orders — buyer demand",
+    body: "Pitch beat 2: open buyer requirements in your region. Same posts the Buyer Portal publishes — this is the work coming in.",
   },
   {
     href: "/plan",
-    title: "Plan — reverse production",
-    body: "Pick what you will weave and a ready date. LoomOS works backward: yarn → start → finish → projected money.",
+    title: "Plan — when to start",
+    body: "Pitch beat 3: pick a ready date. LoomOS works backward — yarn → start → finish → projected money.",
   },
   {
     href: "/money",
     title: "Money — simulated escrow",
-    body: "New accounts have no orders yet. After buyers place work, you’ll see advance held, production, and projected settlement here.",
-  },
-  {
-    href: "/orders",
-    title: "Orders — buyer needs",
-    body: "Open buyer demand near you. Demo logins already have a full pipeline; your new profile starts clean until needs appear.",
+    body: "Pitch beat 4: advance held, production, projected settlement, and a shareable proof record. Demo / Simulated only.",
   },
   {
     href: "/profile",
     title: "Profile",
-    body: "Your name, region, language, and weaving categories live here. You’re set — start from Home anytime.",
+    body: "Your name, region, language, and weaving categories. You’re set — return to Home for the next pitch pass.",
   },
 ] as const;
 

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { TopBar } from "@/components/weaver/TopBar";
 import { BottomNav } from "@/components/weaver/BottomNav";
+import { VoiceNavFab } from "@/components/weaver/VoiceNavFab";
 import { DemoModeBanner } from "@/components/demo/DemoModeBanner";
 import { WeaverLoginScreen } from "@/components/auth/WeaverLoginScreen";
 import { AppTour } from "@/components/onboarding/AppTour";
@@ -81,12 +82,26 @@ export function WeaverAuthGate({ children }: { children: React.ReactNode }) {
     return () => window.clearTimeout(t);
   }, [me.authenticated, me.user?.role]);
 
+  // Buyer (or any non-weaver) session must not bounce to /buyer/portal —
+  // stay on weaver login so hard refresh of / keeps the weaver entry.
   if (!me.authenticated || me.user?.role !== "WEAVER") {
     return (
       <WeaverLoginScreen
         checking={checking}
-        loadError={loadError}
-        onSuccess={() => void refresh()}
+        loadError={
+          loadError ??
+          (me.authenticated && me.user?.role === "BUYER"
+            ? "You're signed in as a buyer. Sign in as a weaver to open this app (or open Buyer from the top bar after login)."
+            : null)
+        }
+        defaultRole="WEAVER"
+        onSuccess={({ role }) => {
+          if (role === "BUYER") {
+            window.location.assign("/buyer/portal");
+            return;
+          }
+          void refresh();
+        }}
       />
     );
   }
@@ -95,7 +110,8 @@ export function WeaverAuthGate({ children }: { children: React.ReactNode }) {
     <>
       <DemoModeBanner />
       <TopBar />
-      <main className="flex flex-1 flex-col pb-20">{children}</main>
+      <main className="flex flex-1 flex-col pb-28">{children}</main>
+      <VoiceNavFab />
       <BottomNav />
       <AppTour />
     </>

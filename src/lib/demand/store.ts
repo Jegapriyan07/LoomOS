@@ -1055,3 +1055,51 @@ export async function getBuyerById(id: string): Promise<BuyerProfile | null> {
   const store = await readStore();
   return store.buyers.find((b) => b.id === id) ?? null;
 }
+
+/** Buyer nationwide weaver map — DB weavers + national demo cluster pins. */
+export async function getBuyerWeaverMapData() {
+  const { listWeaversFromDb } = await import("@/lib/auth/identity");
+  const {
+    buildBuyerMapDirectory,
+    clusterByDistrict,
+    clusterByState,
+  } = await import("@/lib/map/build-map-data");
+  const store = await readStore();
+  const weavers = await listWeaversFromDb();
+  const stockByWeaver: Record<string, (typeof store.weaverStock)[number]> = {};
+  for (const s of store.weaverStock) {
+    stockByWeaver[s.weaverId] = s;
+  }
+  const pins = buildBuyerMapDirectory({
+    dbWeavers: weavers,
+    paymentOrders: store.paymentOrders,
+    stockByWeaver,
+  });
+  return {
+    weavers: pins,
+    districtClusters: clusterByDistrict(pins),
+    stateClusters: clusterByState(pins),
+    demoMode: true as const,
+    disclaimer:
+      "Demo Mode heatmap — hub coordinates are approximate. Ratings derived from Settlement Released counts + verified badge, not a live review database.",
+  };
+}
+
+/** Weaver order-demand heatmap (requirements + open pipeline orders). */
+export async function getWeaverOrdersHeatmap(focusRegion?: string) {
+  const { buildWeaverOrdersHeat } = await import("@/lib/map/build-map-data");
+  const store = await readStore();
+  const heat = buildWeaverOrdersHeat(
+    store.buyerRequirements,
+    store.paymentOrders,
+    store.buyers,
+    focusRegion,
+  );
+  return {
+    points: heat,
+    focusRegion: focusRegion ?? null,
+    demoMode: true as const,
+    disclaimer:
+      "Demo Mode orders heatmap — intensity from open buyer requirements and pipeline orders near handloom hubs.",
+  };
+}

@@ -70,6 +70,10 @@ export async function POST(request: Request) {
         ? String(body.primaryLanguage)
         : undefined,
       categories,
+      district: body.district ? String(body.district) : undefined,
+      yearsWeaving: body.yearsWeaving ? String(body.yearsWeaving) : undefined,
+      businessType: body.businessType ? String(body.businessType) : undefined,
+      email: body.email ? String(body.email) : undefined,
     });
 
     if (user.buyer) {

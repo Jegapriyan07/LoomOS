@@ -13,12 +13,39 @@ import {
   PitchHero,
   PitchOneLiner,
 } from "@/components/pitch/PitchExplain";
+import { WeaverOrdersMap } from "@/components/map/WeaverOrdersMapLazy";
+import type { OrderHeatPoint } from "@/lib/map/build-map-data";
 
 export default function OrdersPage() {
   const { t, lang } = useI18n();
   const [rows, setRows] = useState<BuyerRequirement[]>([]);
   const [region, setRegion] = useState<string>("");
   const [ready, setReady] = useState(false);
+  const [national, setNational] = useState(false);
+  const [heatPoints, setHeatPoints] = useState<OrderHeatPoint[]>([]);
+  const [heatDisclaimer, setHeatDisclaimer] = useState("");
+  const [heatFocus, setHeatFocus] = useState<string | null>(null);
+
+  const loadHeat = useCallback(
+    async (scopeNational: boolean, weaverRegion: string) => {
+      try {
+        const qs = scopeNational
+          ? "scope=national"
+          : `region=${encodeURIComponent(weaverRegion)}`;
+        const data = await cachedJson<{
+          points: OrderHeatPoint[];
+          focusRegion: string | null;
+          disclaimer: string;
+        }>(`/api/orders/heatmap?${qs}`);
+        setHeatPoints(data.points ?? []);
+        setHeatFocus(data.focusRegion);
+        setHeatDisclaimer(data.disclaimer ?? "");
+      } catch {
+        /* keep prior */
+      }
+    },
+    [],
+  );
 
   const load = useCallback(async () => {
     try {
@@ -49,6 +76,11 @@ export default function OrdersPage() {
     void load();
   }, [load]);
 
+  useEffect(() => {
+    if (!ready) return;
+    void loadHeat(national, region);
+  }, [national, region, ready, loadHeat]);
+
   return (
     <div className="flex flex-1 flex-col gap-4 px-4 pb-8 pt-4">
       <PitchHero
@@ -58,6 +90,16 @@ export default function OrdersPage() {
       />
 
       <PitchOneLiner>{t("pitch.ordersOneLiner")}</PitchOneLiner>
+
+      {ready ? (
+        <WeaverOrdersMap
+          points={heatPoints}
+          focusRegion={heatFocus}
+          disclaimer={heatDisclaimer}
+          national={national}
+          onToggleNational={setNational}
+        />
+      ) : null}
 
       <Link
         href="/buyer"

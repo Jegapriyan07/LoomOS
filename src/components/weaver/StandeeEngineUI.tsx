@@ -97,6 +97,15 @@ const Q_META: {
   { id: "today", eyebrowKey: "engine.q5", askKey: "engine.a5", Icon: ListChecks },
 ];
 
+/** Pitch walk order for the bottom nav story (kept next to chip UI). */
+export const PITCH_TAB_ORDER = [
+  "Home",
+  "Orders",
+  "Plan",
+  "Money",
+  "Profile",
+] as const;
+
 type FiveProps = {
   onAsk: (id: FiveQuestionId, label: string) => void;
   busy?: boolean;
