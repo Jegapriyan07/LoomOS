@@ -99,6 +99,12 @@ export function IncomeStabilityWallet() {
     void load();
   }, [load]);
 
+  const monthlyHistory = useMemo(
+    () => (snap ? monthlyHistoryFromSnap(snap) : []),
+    [snap],
+  );
+  const maxMonthTotal = Math.max(1, ...monthlyHistory.map((m) => m.total));
+
   async function post(action: string, extra: Record<string, unknown> = {}) {
     const res = await fetch("/api/wallet", {
       method: "POST",
@@ -133,12 +139,6 @@ export function IncomeStabilityWallet() {
     incomeLog,
     thisMonthSettled,
   } = snap;
-
-  const monthlyHistory = useMemo(
-    () => monthlyHistoryFromSnap(snap),
-    [snap],
-  );
-  const maxMonthTotal = Math.max(1, ...monthlyHistory.map((m) => m.total));
 
   return (
     <section
