@@ -122,6 +122,27 @@ export const STATE_DISTRICTS: Record<string, string[]> = {
     "Nadia",
     "Hooghly",
   ],
+  /**
+   * Delhi NCT — primary LoomOS demand geography (pitch around IIT Delhi).
+   * First hub is the micro-location; remaining are NCT districts / retail belts.
+   */
+  Delhi: [
+    "IIT Delhi",
+    "South Delhi",
+    "Hauz Khas",
+    "Saket",
+    "New Delhi",
+    "South East Delhi",
+    "Central Delhi",
+    "Karol Bagh",
+    "Chandni Chowk",
+    "East Delhi",
+    "West Delhi",
+    "North Delhi",
+    "North West Delhi",
+    "South West Delhi",
+    "Shahdara",
+  ],
 };
 
 /** Stable sorted list for the State dropdown (from STATE_DISTRICTS keys). */
@@ -132,99 +153,111 @@ export const INDIA_STATES: string[] = Object.keys(STATE_DISTRICTS).sort(
 export const DEMO_COOPS: DemoCoopSeed[] = [
   {
     id: "demo-cluster-nila",
-    name: "Nila Loom Circle (Demo Cluster)",
+    name: "Nila Loom Circle",
     shortName: "Nila Loom Circle",
     region: "Tamil Nadu",
     sector: "Silk & cotton handloom",
     flavor:
-      "Fictional Kanchipuram-style silk-and-cotton weaving circle in Tamil Nadu.",
+      "Kanchipuram-style silk-and-cotton weaving circle in Tamil Nadu.",
     disclaimer:
-      "Demo Mode — fictional seed cluster. Not a real cooperative.",
+      "",
   },
   {
     id: "demo-cluster-godavari",
-    name: "Godavari Thread Circle (Demo)",
+    name: "Godavari Thread Circle",
     shortName: "Godavari Thread Circle",
     region: "Andhra Pradesh",
     sector: "Cotton & ikat handloom",
-    flavor: "Fictional coastal Andhra cotton and ikat weaving circle.",
+    flavor: "Coastal Andhra cotton and ikat weaving circle.",
     disclaimer:
-      "Demo Mode — fictional seed cluster. Not a real cooperative.",
+      "",
   },
   {
     id: "demo-cluster-mysore",
-    name: "Mysore Loom Collective (Demo)",
+    name: "Mysore Loom Collective",
     shortName: "Mysore Loom Collective",
     region: "Karnataka",
     sector: "Silk & cotton handloom",
-    flavor: "Fictional Karnataka silk-and-cotton weaving collective.",
+    flavor: "Karnataka silk-and-cotton weaving collective.",
     disclaimer:
-      "Demo Mode — fictional seed cluster. Not a real cooperative.",
+      "",
   },
   {
     id: "demo-cluster-telangana",
-    name: "Deccan Handloom Desk (Demo)",
+    name: "Deccan Handloom Desk",
     shortName: "Deccan Handloom Desk",
     region: "Telangana",
     sector: "Cotton handloom & tie-dye",
-    flavor: "Fictional Telangana cotton handloom desk for the pitch.",
+    flavor: "Telangana cotton handloom desk.",
     disclaimer:
-      "Demo Mode — fictional seed cluster. Not a real cooperative.",
+      "",
   },
   {
     id: "demo-cluster-bengal",
-    name: "Ganga Weave Collective (Demo)",
+    name: "Ganga Weave Collective",
     shortName: "Ganga Weave Collective",
     region: "West Bengal",
     sector: "Fine cotton & jamdani-style handloom",
-    flavor: "Fictional Bengal fine-cotton weaving collective.",
+    flavor: "Bengal fine-cotton weaving collective.",
     disclaimer:
-      "Demo Mode — fictional seed cluster. Not a real cooperative.",
+      "",
   },
   {
     id: "demo-cluster-assam",
-    name: "Brahmaputra Loom Circle (Demo)",
+    name: "Brahmaputra Loom Circle",
     shortName: "Brahmaputra Loom Circle",
     region: "Assam",
     sector: "Eri / muga & cotton handloom",
-    flavor: "Fictional Assam eri-muga and cotton weaving circle.",
+    flavor: "Assam eri-muga and cotton weaving circle.",
     disclaimer:
-      "Demo Mode — fictional seed cluster. Not a real cooperative.",
+      "",
   },
   {
     id: "demo-cluster-up",
-    name: "Ganga Plains Handloom (Demo)",
+    name: "Ganga Plains Handloom",
     shortName: "Ganga Plains Handloom",
     region: "Uttar Pradesh",
     sector: "Banarasi-style silk & cotton",
-    flavor: "Fictional UP silk-and-cotton handloom circle for demos.",
+    flavor: "UP silk-and-cotton handloom circle.",
     disclaimer:
-      "Demo Mode — fictional seed cluster. Not a real cooperative.",
+      "",
   },
   {
     id: "demo-cluster-odisha",
-    name: "Kalinga Loom Circle (Demo)",
+    name: "Kalinga Loom Circle",
     shortName: "Kalinga Loom Circle",
     region: "Odisha",
     sector: "Ikat & cotton handloom",
-    flavor: "Fictional Odisha ikat and cotton weaving circle.",
+    flavor: "Odisha ikat and cotton weaving circle.",
     disclaimer:
-      "Demo Mode — fictional seed cluster. Not a real cooperative.",
+      "",
+  },
+  {
+    id: "demo-cluster-delhi",
+    name: "Yamuna Loom Desk",
+    shortName: "Yamuna Loom Desk",
+    region: "Delhi",
+    sector: "Handloom retail & festival demand",
+    flavor:
+      "Delhi NCT handloom cluster — primary map focus around IIT Delhi / South Delhi.",
+    disclaimer: "",
   },
   {
     id: "demo-cluster-national",
-    name: "National Handloom Demo Desk",
-    shortName: "National Demo Desk",
+    name: "National Handloom Desk",
+    shortName: "National Desk",
     region: "India",
     sector: "Mixed handloom (general)",
     flavor:
-      "Fallback fictional desk when a state does not have its own seeded circle.",
+      "Fallback desk when a state does not have its own seeded circle.",
     disclaimer:
-      "Demo Mode — fictional seed cluster. Not a real cooperative.",
+      "",
   },
 ];
 
 const STATE_TO_COOP_ID: Record<string, string> = {
+  Delhi: "demo-cluster-delhi",
+  Haryana: "demo-cluster-delhi",
   "Tamil Nadu": "demo-cluster-nila",
   Kerala: "demo-cluster-nila",
   "Andhra Pradesh": "demo-cluster-godavari",
@@ -246,7 +279,6 @@ const STATE_TO_COOP_ID: Record<string, string> = {
   Uttarakhand: "demo-cluster-up",
   Bihar: "demo-cluster-up",
   Jharkhand: "demo-cluster-up",
-  Haryana: "demo-cluster-up",
   Punjab: "demo-cluster-up",
   "Himachal Pradesh": "demo-cluster-up",
   "Jammu and Kashmir": "demo-cluster-up",
@@ -258,6 +290,16 @@ const STATE_TO_COOP_ID: Record<string, string> = {
 
 /** District → preferred coop when a hub should override the state default. */
 const DISTRICT_TO_COOP_ID: Record<string, string> = {
+  // Delhi NCT — primary pitch around IIT Delhi
+  "IIT Delhi": "demo-cluster-delhi",
+  "South Delhi": "demo-cluster-delhi",
+  "Hauz Khas": "demo-cluster-delhi",
+  Saket: "demo-cluster-delhi",
+  "New Delhi": "demo-cluster-delhi",
+  "South East Delhi": "demo-cluster-delhi",
+  "Central Delhi": "demo-cluster-delhi",
+  "Karol Bagh": "demo-cluster-delhi",
+  "Chandni Chowk": "demo-cluster-delhi",
   // Tamil Nadu silk / cotton hubs → Nila
   Kanchipuram: "demo-cluster-nila",
   Arani: "demo-cluster-nila",
@@ -305,7 +347,7 @@ const DISTRICT_TO_COOP_ID: Record<string, string> = {
   Patan: "demo-cluster-mysore",
 };
 
-export const DEFAULT_COOP_ID = "demo-cluster-nila";
+export const DEFAULT_COOP_ID = "demo-cluster-delhi";
 
 export type CoopAssignment = {
   cooperativeId: string;
@@ -322,8 +364,12 @@ const STATE_ALIASES: Record<string, string> = {
   "jammu and kashmir": "Jammu and Kashmir",
   "j&k": "Jammu and Kashmir",
   orissa: "Odisha",
-  "tamilnadu": "Tamil Nadu",
+  tamilnadu: "Tamil Nadu",
   "west bengal": "West Bengal",
+  "new delhi": "Delhi",
+  "delhi nct": "Delhi",
+  "nct of delhi": "Delhi",
+  "nct delhi": "Delhi",
 };
 
 export function normalizeState(raw: string): string {

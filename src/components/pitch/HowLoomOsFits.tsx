@@ -25,7 +25,7 @@ export function HowLoomOsFits() {
         </p>
       </aside>
 
-      {/* Pitch-ready sentence */}
+      {/* Positioning sentence */}
       <blockquote className="mt-8 border-l-4 border-[#1e3a5f] bg-[#fffdf8] px-5 py-4 font-[family-name:var(--font-loom-display)] text-xl font-semibold leading-snug text-[#1e3a5f]">
         LoomOS isn&apos;t a competing marketplace — it&apos;s the
         decision-and-trust layer that could sit on top of ONDC-connected

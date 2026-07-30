@@ -37,27 +37,27 @@ const STEPS = [
   {
     href: "/",
     title: "Home — today’s advice",
-    body: "Pitch beat 1: LoomOS answers what to weave from simulated demand. Demo accounts already have a full story.",
+    body: "LoomOS answers what to weave from demand signals. Sample accounts already have a full story.",
   },
   {
     href: "/orders",
     title: "Orders — buyer demand",
-    body: "Pitch beat 2: open buyer requirements in your region. Same posts the Buyer Portal publishes — this is the work coming in.",
+    body: "Open buyer requirements in your region. Same posts the Buyer Portal publishes — this is the work coming in.",
   },
   {
     href: "/plan",
     title: "Plan — when to start",
-    body: "Pitch beat 3: pick a ready date. LoomOS works backward — yarn → start → finish → projected money.",
+    body: "Pick a ready date. LoomOS works backward — yarn → start → finish → projected money.",
   },
   {
     href: "/money",
-    title: "Money — simulated escrow",
-    body: "Pitch beat 4: advance held, production, projected settlement, and a shareable proof record. Demo / Simulated only.",
+    title: "Money — escrow timeline",
+    body: "Advance held, production, projected settlement, and a shareable proof record.",
   },
   {
     href: "/profile",
     title: "Profile",
-    body: "Your name, region, language, and weaving categories. You’re set — return to Home for the next pitch pass.",
+    body: "Your name, region, language, and weaving categories. You’re set — return to Home anytime.",
   },
 ] as const;
 
@@ -130,9 +130,10 @@ export function AppTour() {
         <p className="mt-3 text-sm leading-relaxed text-[#5c6570]">
           {current.body}
         </p>
-        <p className="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-950">
-          Your register account starts with <strong>no orders or money yet</strong> —
-          that is intentional. Demo logins (Meena / Selvi / …) show a full simulated story.
+        <p className="mt-2 rounded-lg bg-[#f3efe6] px-3 py-2 text-xs text-[#5c6570]">
+          New accounts start with <strong>no orders or money yet</strong> —
+          that is intentional. Sample logins (Kavita / Selvi / …) show a full
+          orders and money story.
         </p>
         <div className="mt-5 flex gap-2">
           <button

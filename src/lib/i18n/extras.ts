@@ -32,6 +32,12 @@ export type ExtraKey =
   | "pitch.buyerNeedsHint"
   | "pitch.buyerNeedsLine"
   | "pitch.buyerPortal"
+  | "pitch.planLinked"
+  | "pitch.planLinkedMeta"
+  | "pitch.planClearLink"
+  | "orders.planThis"
+  | "orders.boutiqueId"
+  | "orders.needId"
   | "pitch.whatHint"
   | "pitch.datesTitle"
   | "pitch.datesBody"
@@ -49,6 +55,7 @@ export type ExtraKey =
   | "pitch.reserveHint"
   | "pitch.proofTitle"
   | "pitch.proofHint"
+  | "pitch.reserveOnPlan"
   | "pitch.show"
   | "pitch.hide"
   | "pitch.ordersEyebrow"
@@ -90,7 +97,19 @@ export type ExtraKey =
   | "engine.a4"
   | "engine.q5"
   | "engine.a5"
-  | "engine.chipHint";
+  | "engine.chipHint"
+  | "drift.title"
+  | "drift.subtitle"
+  | "drift.pctOf"
+  | "drift.highTrust"
+  | "drift.thinkTitle"
+  | "drift.whyLow"
+  | "drift.mindfulness"
+  | "drift.inputs"
+  | "drift.formula"
+  | "drift.estimated"
+  | "drift.demoTag"
+  | "drift.thresholdNote";
 
 type ExtraCatalog = Record<ExtraKey, string>;
 
@@ -118,47 +137,54 @@ const en: ExtraCatalog = {
   "pitch.planBody":
     "After Orders shows demand, pick what you will weave and when it must be ready. LoomOS works the calendar backward so you know when to buy yarn and when money is projected.",
   "pitch.planOneLiner":
-    "Pitch beat: buyer/festival date → start date → yarn date → projected payment — timing comes after you see the order.",
+    "Buyer/festival date → start date → yarn date → projected payment — timing comes after you see the order.",
   "pitch.stepWhat": "What",
   "pitch.stepWhen": "When",
   "pitch.stepDates": "Your dates",
   "pitch.stepTune": "Tune",
-  "pitch.buyerNeeds": "Simulated buyer needs (optional)",
+  "pitch.buyerNeeds": "Buyer needs (optional)",
   "pitch.buyerNeedsHint":
-    "Tap a buyer post to set your ready date — same data as the Buyer Portal.",
+    "Tap a boutique post to plan from it — same Orders feed, linked by buyer id + name.",
   "pitch.buyerNeedsLine": "{category} · {qty} pcs · ready {date}",
   "pitch.buyerPortal": "Buyer Portal",
+  "pitch.planLinked": "Planning for {name}",
+  "pitch.planLinkedMeta": "Boutique {buyerId} · need {requirementId}",
+  "pitch.planClearLink": "Clear linked order",
+  "orders.planThis": "Plan this order",
+  "orders.boutiqueId": "Boutique id {id}",
+  "orders.needId": "Need {id}",
   "pitch.whatHint": "One choice — the days below use this item’s weaving length.",
-  "pitch.datesTitle": "Your dates — the pitch moment",
+  "pitch.datesTitle": "Your dates",
   "pitch.datesBody":
     "This is the explainable answer: when to buy yarn, start, finish, and when money is projected.",
-  "pitch.moneyEyebrow": "Money · 4th tab · simulated escrow story",
+  "pitch.moneyEyebrow": "Money",
   "pitch.moneyBody":
-    "See where each payment sits — advance held, next projected settlement, then a steady reserve and a shareable proof record.",
+    "Advance held, order status, next projected settlement — then shareable proof.",
   "pitch.moneyOneLiner":
-    "Pitch in one line: escrow-style advance → clear state → projected settlement → optional reserve → verified record buyers can trust.",
+    "Escrow-style advance → clear state → projected settlement → verified record.",
   "pitch.stepSnapshot": "Snapshot",
   "pitch.stepOrders": "Orders",
   "pitch.stepReserve": "Reserve",
   "pitch.stepProof": "Proof",
-  "pitch.walletHint": "The first thing a weaver (or judge) should understand.",
+  "pitch.walletHint": "The first thing a weaver should understand.",
   "pitch.ordersHint":
-    "Walk each order’s state. Demo button advances the happy path for the pitch.",
-  "pitch.noOrders": "No orders yet. Simulated buyer posts live in the Buyer Portal.",
+    "Walk each order’s state. Use Next step to advance.",
+  "pitch.noOrders": "No orders yet. Buyer posts live in the Buyer Portal.",
   "pitch.reserveTitle": "Step 3 · Steady income wallet",
   "pitch.reserveHint":
-    "Optional for the pitch: rule-based reserve when a month is above your usual settlement average.",
-  "pitch.proofTitle": "Step 4 · Verified transaction record",
-  "pitch.proofHint": "Shareable proof buyers can trust — simulated for the demo.",
+    "Optional: rule-based reserve when a month is above your usual settlement average.",
+  "pitch.proofTitle": "Verified transaction record",
+  "pitch.proofHint": "Shareable proof buyers can trust.",
+  "pitch.reserveOnPlan": "Income reserve on Plan",
   "pitch.show": "Show",
   "pitch.hide": "Hide",
   "pitch.ordersEyebrow": "Orders · 2nd tab · buyer demand feed",
   "pitch.ordersOneLiner":
-    "Pitch beat: see work coming first — same simulated buyer posts the Buyer Portal publishes, then move to Plan for when to start.",
+    "See work coming first — same buyer posts the Buyer Portal publishes, then move to Plan for when to start.",
   "pitch.openBuyerPortal": "Open Buyer Portal",
   "pitch.openBuyerPortalHint":
-    "Login as Saffron ({phone1}) or Festival ({phone2}) — simulated desks.",
-  "pitch.simulatedBuyer": "Simulated buyer",
+    "Login as Saffron ({phone1}) or Festival ({phone2}).",
+  "pitch.simulatedBuyer": "Buyer",
   "pitch.paymentNote":
     "This flow does not move real money and is not a licensed financial product. It is modeled on an RBI-authorised payment aggregator's escrow settlement pattern. Real deployment needs a licensed-aggregator partnership. This is not legal advice.",
   "state.order_created": "Order placed",
@@ -172,7 +198,7 @@ const en: ExtraCatalog = {
   "state.resolved": "Resolved",
   "stock.title": "Stock & resources",
   "stock.hint": "Yarn and finished pieces on hand — feeds today’s advice.",
-  "stock.simNote": "Demo / Simulated inventory — edit for the pitch story.",
+  "stock.simNote": "Your inventory — edit amounts to update advice.",
   "stock.yarnCotton": "Cotton yarn (kg)",
   "stock.yarnSilk": "Silk yarn (kg)",
   "stock.finishedCotton": "Finished cotton sarees",
@@ -196,6 +222,20 @@ const en: ExtraCatalog = {
   "engine.a5": "What should I do today?",
   "engine.chipHint":
     "Tap a question — then walk the tabs: Home → Orders → Plan → Money.",
+  "drift.title": "Drift score",
+  "drift.subtitle": "Intelligence accuracy for this advice",
+  "drift.pctOf": "{pct}%",
+  "drift.highTrust":
+    "Signals agree — this advice is above the 90% trust line. You can plan with more confidence (still Estimated).",
+  "drift.thinkTitle": "Think carefully — drift below 90%",
+  "drift.whyLow": "Why drift is low",
+  "drift.mindfulness": "What weavers should keep in mind",
+  "drift.inputs": "Inputs behind this %",
+  "drift.formula": "Formula",
+  "drift.estimated": "Estimated",
+  "drift.demoTag": "Demo / Simulated",
+  "drift.thresholdNote":
+    "Below 90% means the app’s advice is less certain — pause before committing yarn or a full loom run.",
 };
 
 const hi: ExtraCatalog = {
@@ -228,16 +268,16 @@ const hi: ExtraCatalog = {
   "pitch.stepWhen": "कब",
   "pitch.stepDates": "आपकी तिथियाँ",
   "pitch.stepTune": "समायोजन",
-  "pitch.buyerNeeds": "सिम्युलेटेड खरीदार ज़रूरतें (वैकल्पिक)",
+  "pitch.buyerNeeds": "खरीदार ज़रूरतें (वैकल्पिक)",
   "pitch.buyerNeedsHint":
     "तैयार तिथि सेट करने के लिए खरीदार पोस्ट पर टैप करें — वही डेटा Buyer Portal में है।",
   "pitch.buyerNeedsLine": "{category} · {qty} पीस · {date} तक तैयार",
   "pitch.buyerPortal": "खरीदार पोर्टल",
   "pitch.whatHint": "एक विकल्प — नीचे के दिन इसी वस्तु की बुनाई लंबाई से हैं।",
-  "pitch.datesTitle": "आपकी तिथियाँ — पिच का मुख्य पल",
+  "pitch.datesTitle": "आपकी तिथियाँ",
   "pitch.datesBody":
     "यही स्पष्ट जवाब है: सूत कब खरीदें, कब शुरू/खत्म करें, और पैसे कब अनुमानित हैं।",
-  "pitch.moneyEyebrow": "पैसे · सिम्युलेटेड एस्क्रो कहानी",
+  "pitch.moneyEyebrow": "पैसे · एस्क्रो कहानी",
   "pitch.moneyBody":
     "हर भुगतान कहाँ है देखें — एडवांस होल्ड, अगला अनुमानित सेटलमेंट, फिर रिज़र्व और साझा करने योग्य प्रमाण।",
   "pitch.moneyOneLiner":
@@ -246,24 +286,25 @@ const hi: ExtraCatalog = {
   "pitch.stepOrders": "ऑर्डर",
   "pitch.stepReserve": "रिज़र्व",
   "pitch.stepProof": "प्रमाण",
-  "pitch.walletHint": "बुनकर (या जज) को सबसे पहले यही समझना चाहिए।",
+  "pitch.walletHint": "बुनकर को सबसे पहले यही समझना चाहिए।",
   "pitch.ordersHint":
-    "हर ऑर्डर की स्थिति देखें। डेमो बटन पिच के लिए खुशहाल रास्ता आगे बढ़ाता है।",
-  "pitch.noOrders": "अभी कोई ऑर्डर नहीं। सिम्युलेटेड खरीदार पोस्ट Buyer Portal में हैं।",
+    "हर ऑर्डर की स्थिति देखें। अगला चरण से आगे बढ़ाएँ।",
+  "pitch.noOrders": "अभी कोई ऑर्डर नहीं। खरीदार पोस्ट Buyer Portal में हैं।",
   "pitch.reserveTitle": "चरण 3 · स्थिर आय वॉलेट",
   "pitch.reserveHint":
-    "पिच के लिए वैकल्पिक: जब महीना सामान्य औसत से ऊपर हो तो नियम-आधारित रिज़र्व।",
+    "वैकल्पिक: जब महीना सामान्य औसत से ऊपर हो तो नियम-आधारित रिज़र्व।",
   "pitch.proofTitle": "चरण 4 · सत्यापित लेन-देन रिकॉर्ड",
-  "pitch.proofHint": "खरीदार भरोसे के लिए साझा प्रमाण — डेमो में सिम्युलेटेड।",
+  "pitch.proofHint": "खरीदार भरोसे के लिए साझा प्रमाण।",
+  "pitch.reserveOnPlan": "Plan पर आय रिज़र्व",
   "pitch.show": "दिखाएँ",
   "pitch.hide": "छिपाएँ",
   "pitch.ordersEyebrow": "ऑर्डर · खरीदार माँग फ़ीड",
   "pitch.ordersOneLiner":
-    "Buyer Portal की वही सिम्युलेटेड पोस्ट — होम पर आज की सलाह भी इन्हीं से चलती है।",
+    "Buyer Portal की वही पोस्ट — होम पर आज की सलाह भी इन्हीं से चलती है।",
   "pitch.openBuyerPortal": "खरीदार पोर्टल खोलें",
   "pitch.openBuyerPortalHint":
-    "Saffron ({phone1}) या Festival ({phone2}) से लॉगिन करें — सिम्युलेटेड डेस्क।",
-  "pitch.simulatedBuyer": "सिम्युलेटेड खरीदार",
+    "Saffron ({phone1}) या Festival ({phone2}) से लॉगिन करें।",
+  "pitch.simulatedBuyer": "खरीदार",
   "pitch.paymentNote":
     "यह प्रवाह असली पैसे नहीं भेजता और लाइसेंस प्राप्त वित्तीय उत्पाद नहीं है। यह RBI-अधिकृत पेमेंट एग्रीगेटर एस्क्रो पैटर्न पर आधारित मॉडल है। असली तैनाती के लिए लाइसेंस पार्टनरशिप ज़रूरी है। यह कानूनी सलाह नहीं है।",
   "state.order_created": "ऑर्डर लगा",
@@ -275,6 +316,20 @@ const hi: ExtraCatalog = {
   "state.dispute_opened": "सवाल उठा",
   "state.under_review": "जाँच में",
   "state.resolved": "हल हुआ",
+  "drift.title": "ड्रिफ्ट स्कोर",
+  "drift.subtitle": "इस सलाह की बुद्धिमत्ता सटीकता",
+  "drift.pctOf": "{pct}%",
+  "drift.highTrust":
+    "संकेत मिलते हैं — यह सलाह 90% भरोसे की रेखा से ऊपर है। अधिक आत्मविश्वास से योजना बनाएँ (फिर भी अनुमानित)।",
+  "drift.thinkTitle": "सोच-समझकर आगे बढ़ें — ड्रिफ्ट 90% से कम",
+  "drift.whyLow": "ड्रिफ्ट कम क्यों है",
+  "drift.mindfulness": "बुनकरों को क्या ध्यान में रखना चाहिए",
+  "drift.inputs": "इस % के पीछे के इनपुट",
+  "drift.formula": "सूत्र",
+  "drift.estimated": "अनुमानित",
+  "drift.demoTag": "डेमो / सिम्युलेटेड",
+  "drift.thresholdNote":
+    "90% से कम का मतलब सलाह कम निश्चित है — सूत या पूरी बुनाई से पहले रुकें।",
 };
 
 /** Tamil — complete pitch chrome */
@@ -332,6 +387,7 @@ const ta: ExtraCatalog = {
   "pitch.reserveHint": "சராசரிக்கு மேல் இருக்கும் மாதத்திற்கு விதி அடிப்படை இருப்பு.",
   "pitch.proofTitle": "படி 4 · சரிபார்க்கப்பட்ட பரிவர்த்தனை பதிவு",
   "pitch.proofHint": "வாங்குநர்கள் நம்பக்கூடிய பகிரத்தக்க சான்று — டெமோவில் உருவகம்.",
+  "pitch.reserveOnPlan": "Plan-இல் வருமான இருப்பு",
   "pitch.show": "காட்டு",
   "pitch.hide": "மறை",
   "pitch.ordersEyebrow": "ஆர்டர்கள் · வாங்குநர் தேவை ஊட்டம்",
@@ -340,7 +396,7 @@ const ta: ExtraCatalog = {
   "pitch.openBuyerPortal": "வாங்குநர் போர்டல் திற",
   "pitch.openBuyerPortalHint":
     "Saffron ({phone1}) அல்லது Festival ({phone2}) — உருவக மேசைகள்.",
-  "pitch.simulatedBuyer": "உருவக வாங்குநர்",
+  "pitch.simulatedBuyer": "வாங்குநர்",
   "pitch.paymentNote":
     "இந்த ஓட்டம் உண்மையான பணத்தை நகர்த்தாது. RBI அனுமதி பெற்ற கட்டண ஒருங்கிணைப்பாளர் எஸ்க்ரோ முறையை அடிப்படையாகக் கொண்ட மாதிரி. இது சட்ட ஆலோசனை அல்ல.",
   "state.order_created": "ஆர்டர் வைக்கப்பட்டது",
@@ -407,6 +463,7 @@ const te: ExtraCatalog = {
   "pitch.reserveHint": "సగటు కంటే ఎక్కువ నెలకు నియమ-ఆధారిత రిజర్వ్.",
   "pitch.proofTitle": "దశ 4 · ధృవీకరించిన లావాదేవీ రికార్డ్",
   "pitch.proofHint": "కొనుగోలుదారులు నమ్మే షేరబుల్ ప్రూఫ్ — డెమోలో సిమ్యులేటెడ్.",
+  "pitch.reserveOnPlan": "Planలో ఆదాయ రిజర్వ్",
   "pitch.show": "చూపించు",
   "pitch.hide": "దాచు",
   "pitch.ordersEyebrow": "ఆర్డర్లు · కొనుగోలుదారు డిమాండ్ ఫీడ్",
@@ -415,7 +472,7 @@ const te: ExtraCatalog = {
   "pitch.openBuyerPortal": "కొనుగోలుదారు పోర్టల్ తెరవండి",
   "pitch.openBuyerPortalHint":
     "Saffron ({phone1}) లేదా Festival ({phone2}) — సిమ్యులేటెడ్ డెస్క్‌లు.",
-  "pitch.simulatedBuyer": "సిమ్యులేటెడ్ కొనుగోలుదారు",
+  "pitch.simulatedBuyer": "కొనుగోలుదారు",
   "pitch.paymentNote":
     "ఇది నిజమైన డబ్బును కదపదు. RBI అనుమతి పొందిన పేమెంట్ అగ్రిగేటర్ ఎస్క్రో నమూనా. ఇది చట్టపరమైన సలహా కాదు.",
   "state.order_created": "ఆర్డర్ పెట్టారు",
@@ -482,6 +539,7 @@ const kn: ExtraCatalog = {
   "pitch.reserveHint": "ಸರಾಸರಿಗಿಂತ ಹೆಚ್ಚಿನ ತಿಂಗಳಿಗೆ ನಿಯಮ-ಆಧಾರಿತ ರಿಸರ್ವ್.",
   "pitch.proofTitle": "ಹಂತ 4 · ಪರಿಶೀಲಿತ ವಹಿವಾಟು ದಾಖಲೆ",
   "pitch.proofHint": "ಖರೀದಿದಾರರು ನಂಬುವ ಹಂಚಿಕೊಳ್ಳಬಹುದಾದ ಪುರಾವೆ — ಡೆಮೋದಲ್ಲಿ ಸಿಮ್ಯುಲೇಟೆಡ್.",
+  "pitch.reserveOnPlan": "Planನಲ್ಲಿ ಆದಾಯ ರಿಸರ್ವ್",
   "pitch.show": "ತೋರಿಸು",
   "pitch.hide": "ಮರೆಮಾಡು",
   "pitch.ordersEyebrow": "ಆರ್ಡರ್‌ಗಳು · ಖರೀದಿದಾರ ಬೇಡಿಕೆ ಫೀಡ್",
@@ -490,7 +548,7 @@ const kn: ExtraCatalog = {
   "pitch.openBuyerPortal": "ಖರೀದಿದಾರ ಪೋರ್ಟಲ್ ತೆರೆಯಿರಿ",
   "pitch.openBuyerPortalHint":
     "Saffron ({phone1}) ಅಥವಾ Festival ({phone2}) — ಸಿಮ್ಯುಲೇಟೆಡ್ ಡೆಸ್ಕ್‌ಗಳು.",
-  "pitch.simulatedBuyer": "ಸಿಮ್ಯುಲೇಟೆಡ್ ಖರೀದಿದಾರ",
+  "pitch.simulatedBuyer": "ಖರೀದಿದಾರ",
   "pitch.paymentNote":
     "ಇದು ನಿಜವಾದ ಹಣವನ್ನು ಚಲಾಯಿಸುವುದಿಲ್ಲ. RBI ಅಧಿಕೃತ ಪಾವತಿ ಅಗ್ರಿಗೇಟರ್ ಎಸ್ಕ್ರೋ ಮಾದರಿ. ಇದು ಕಾನೂನು ಸಲಹೆಯಲ್ಲ.",
   "state.order_created": "ಆರ್ಡರ್ ಇಡಲಾಗಿದೆ",
@@ -557,6 +615,7 @@ const bn: ExtraCatalog = {
   "pitch.reserveHint": "গড়ের উপরে মাসের জন্য নিয়মভিত্তিক রিজার্ভ।",
   "pitch.proofTitle": "ধাপ ৪ · যাচাইকৃত লেনদেনের রেকর্ড",
   "pitch.proofHint": "ক্রেতারা বিশ্বাস করে এমন শেয়ারযোগ্য প্রমাণ — ডেমোতে সিমুলেটেড।",
+  "pitch.reserveOnPlan": "Plan-এ আয় রিজার্ভ",
   "pitch.show": "দেখান",
   "pitch.hide": "লুকান",
   "pitch.ordersEyebrow": "অর্ডার · ক্রেতার চাহিদা ফিড",
@@ -565,7 +624,7 @@ const bn: ExtraCatalog = {
   "pitch.openBuyerPortal": "ক্রেতা পোর্টাল খুলুন",
   "pitch.openBuyerPortalHint":
     "Saffron ({phone1}) বা Festival ({phone2}) — সিমুলেটেড ডেস্ক।",
-  "pitch.simulatedBuyer": "সিমুলেটেড ক্রেতা",
+  "pitch.simulatedBuyer": "ক্রেতা",
   "pitch.paymentNote":
     "এই প্রবাহ আসল টাকা চালায় না। RBI-অনুমোদিত পেমেন্ট অ্যাগ্রিগেটর এসক্রো মডেল। এটি আইনি পরামর্শ নয়।",
   "state.order_created": "অর্ডার দেওয়া হয়েছে",
@@ -632,6 +691,7 @@ const as: ExtraCatalog = {
   "pitch.reserveHint": "গড়তকৈ ওপৰৰ মাহৰ বাবে নিয়মভিত্তিক ৰিজাৰ্ভ।",
   "pitch.proofTitle": "পৰ্যায় ৪ · প্ৰমাণিত লেনদেন ৰেকৰ্ড",
   "pitch.proofHint": "ক্ৰেতাই বিশ্বাস কৰা শ্বেয়াৰযোগ্য প্ৰমাণ — ডেমোত ছিমুলেটেড।",
+  "pitch.reserveOnPlan": "Planত আয় ৰিজাৰ্ভ",
   "pitch.show": "দেখুৱাওক",
   "pitch.hide": "লুকুৱাওক",
   "pitch.ordersEyebrow": "অৰ্ডাৰ · ক্ৰেতাৰ চাহিদা ফিড",
@@ -640,7 +700,7 @@ const as: ExtraCatalog = {
   "pitch.openBuyerPortal": "ক্ৰেতা প'ৰ্টেল খোলক",
   "pitch.openBuyerPortalHint":
     "Saffron ({phone1}) বা Festival ({phone2}) — ছিমুলেটেড ডেস্ক।",
-  "pitch.simulatedBuyer": "ছিমুলেটেড ক্ৰেতা",
+  "pitch.simulatedBuyer": "ক্ৰেতা",
   "pitch.paymentNote":
     "এই প্ৰবাহে প্ৰকৃত টকা নিচলায়। RBI-অনুমোদিত পেমেণ্ট এগ্ৰিগেটৰ এস্ক্ৰ' মডেল। ই আইনী পৰামৰ্শ নহয়।",
   "state.order_created": "অৰ্ডাৰ দিয়া হৈছে",

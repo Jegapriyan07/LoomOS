@@ -1,4 +1,13 @@
-/** Shared demand / buyer / ledger types for Stage 3 (+ Stage 9 buyer portal). */
+/**
+ * Shared demand / buyer / ledger types for Stage 3 (+ Stage 9 buyer portal).
+ *
+ * Structure (Orders ↔ Plan ↔ Money):
+ * - BuyerRequirement = open boutique demand shown on Orders; Plan opens with
+ *   `?requirementId=` and uses buyerId + buyerName as the boutique identity.
+ * - PaymentOrder = accepted pipeline work on Money (see payments/types);
+ *   may carry the same buyerId / buyerName and optional requirementId.
+ * See also `src/lib/demand/order-plan.ts`.
+ */
 
 import type {
   BuyerProfile,
@@ -24,15 +33,26 @@ export const DEMAND_CATEGORIES: {
   { id: "dhoti-angavastram", label: "Dhoti / angavastram" },
 ];
 
+/**
+ * Open buyer / boutique demand — what the Orders tab lists.
+ * Plan links here via `id` (requirementId); boutique via `buyerId` + `buyerName`.
+ * Geography: `region` = state/UT (e.g. Delhi), optional `district` for
+ * district-level heat (e.g. IIT Delhi / South Delhi).
+ */
 export type BuyerRequirement = {
+  /** Requirement id — Plan deep-link: `/plan?requirementId={id}` */
   id: string;
-  /** Links to BuyerProfile / mock buyer account when posted from portal */
+  /** Boutique / buyer account id (e.g. buyer-demo-001) */
   buyerId?: string;
+  /** Boutique display name (e.g. "Saffron Thread Boutique") */
   buyerName: string;
   categoryId: DemandCategoryId;
+  /** State / UT — primary demo region is Delhi */
   region: string;
+  /** District / micro-hub within the state (e.g. IIT Delhi, South Delhi) */
+  district?: string;
   quantity: number;
-  neededBy: string; // YYYY-MM-DD — target date
+  neededBy: string; // YYYY-MM-DD — target date / Plan ready date
   /** Optional INR price range — Stage 9 buyer portal */
   priceMin?: number;
   priceMax?: number;

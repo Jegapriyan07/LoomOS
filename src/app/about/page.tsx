@@ -1,9 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { HowLoomOsFits } from "@/components/pitch/HowLoomOsFits";
-import { RealVsSimulated } from "@/components/pitch/RealVsSimulated";
-import { DemoModeBanner } from "@/components/demo/DemoModeBanner";
-import { BootstrapPlanNote } from "@/components/demo/BootstrapPlanNote";
 import { DEMO_CLUSTER } from "@/lib/demo/cluster";
 
 export const metadata: Metadata = {
@@ -13,12 +10,11 @@ export const metadata: Metadata = {
 };
 
 /**
- * Pitch-facing About page (Stage 7 + Stage 10 bootstrap + Stage 12 audit).
+ * About page — how LoomOS sits in the stack.
  */
 export default function AboutPage() {
   return (
     <div className="min-h-full bg-[#f3efe6] text-[#1a1f24]">
-      <DemoModeBanner />
       <header className="border-b border-[#d9d2c4] bg-[#fffdf8]">
         <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-4">
           <Link
@@ -43,7 +39,7 @@ export default function AboutPage() {
 
       <main className="mx-auto max-w-3xl px-4 py-10">
         <p className="text-sm font-semibold uppercase tracking-wide text-[#5c6570]">
-          About · pitch narrative
+          About
         </p>
         <h1 className="mt-2 font-[family-name:var(--font-loom-display)] text-3xl font-semibold tracking-tight text-[#1a1f24]">
           How LoomOS fits
@@ -54,24 +50,21 @@ export default function AboutPage() {
           products.
         </p>
 
-        <section className="mt-8" aria-labelledby="bootstrap-heading">
+        <section className="mt-8" aria-labelledby="cluster-heading">
           <h2
-            id="bootstrap-heading"
+            id="cluster-heading"
             className="font-[family-name:var(--font-loom-display)] text-xl font-semibold"
           >
-            Day-one bootstrap
+            Cooperative cluster
           </h2>
           <p className="mt-2 text-sm text-[#5c6570]">
             Seed cluster in this build: <strong>{DEMO_CLUSTER.name}</strong> —{" "}
-            {DEMO_CLUSTER.flavor}
+            Delhi NCT around IIT Delhi ({DEMO_CLUSTER.district} ·{" "}
+            {DEMO_CLUSTER.region}).
           </p>
-          <div className="mt-4">
-            <BootstrapPlanNote />
-          </div>
         </section>
 
         <HowLoomOsFits />
-        <RealVsSimulated />
       </main>
     </div>
   );

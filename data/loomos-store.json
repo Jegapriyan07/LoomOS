@@ -3,171 +3,186 @@
     {
       "id": "req-001",
       "buyerId": "buyer-demo-001",
-      "buyerName": "Saffron Thread Boutique (demo — fictional)",
+      "buyerName": "Saffron Thread Boutique",
       "categoryId": "cotton-saree",
-      "region": "Tamil Nadu",
+      "region": "Delhi",
       "quantity": 12,
       "neededBy": "2026-10-15",
       "status": "open",
-      "notes": "Demo Mode seed requirement — fictional",
-      "createdAt": "2026-07-28T11:09:30.403Z"
+      "notes": "Open buyer requirement",
+      "createdAt": "2026-07-28T11:09:30.403Z",
+      "district": "IIT Delhi"
     },
     {
       "id": "req-002",
       "buyerId": "buyer-demo-002",
-      "buyerName": "Festival Cloth Desk (demo — fictional)",
+      "buyerName": "Festival Cloth Desk",
       "categoryId": "cotton-saree",
-      "region": "Tamil Nadu",
+      "region": "Delhi",
       "quantity": 8,
       "neededBy": "2026-11-01",
       "status": "open",
-      "notes": "Demo Mode seed requirement — fictional",
-      "createdAt": "2026-07-28T11:09:30.403Z"
+      "notes": "Open buyer requirement",
+      "createdAt": "2026-07-28T11:09:30.403Z",
+      "district": "Hauz Khas"
     },
     {
       "id": "req-003",
       "buyerId": "buyer-demo-001",
-      "buyerName": "Saffron Thread Boutique (demo — fictional)",
+      "buyerName": "Saffron Thread Boutique",
       "categoryId": "silk-saree",
-      "region": "Tamil Nadu",
+      "region": "Delhi",
       "quantity": 10,
       "neededBy": "2026-12-01",
       "status": "open",
-      "notes": "Demo Mode seed requirement — fictional",
-      "createdAt": "2026-07-28T11:09:30.403Z"
+      "notes": "Open buyer requirement",
+      "createdAt": "2026-07-28T11:09:30.403Z",
+      "district": "South Delhi"
     },
     {
       "id": "req-004",
       "buyerId": "buyer-demo-003",
-      "buyerName": "Loom Link Resellers (demo — fictional)",
+      "buyerName": "Loom Link Resellers",
       "categoryId": "stole-dupatta",
-      "region": "Tamil Nadu",
+      "region": "Delhi",
       "quantity": 24,
       "neededBy": "2026-09-20",
       "priceMin": 450,
       "priceMax": 750,
       "status": "open",
-      "notes": "Simulated — Loom Link Resellers gift-set stoles for online drop (fictional).",
-      "createdAt": "2026-07-28T11:24:34.618Z"
+      "notes": "Loom Link Resellers gift-set stoles for online drop.",
+      "createdAt": "2026-07-28T11:24:34.618Z",
+      "district": "Karol Bagh"
     },
     {
       "id": "req-005",
       "buyerId": "buyer-demo-002",
-      "buyerName": "Festival Cloth Desk (demo — fictional)",
+      "buyerName": "Festival Cloth Desk",
       "categoryId": "dhoti-angavastram",
-      "region": "Tamil Nadu",
+      "region": "Delhi",
       "quantity": 15,
       "neededBy": "2026-10-05",
       "priceMin": 600,
       "priceMax": 950,
       "status": "open",
-      "notes": "Simulated — Festival Cloth Desk temple-season dhoti set (fictional).",
-      "createdAt": "2026-07-28T11:24:34.618Z"
+      "notes": "Festival Cloth Desk temple-season dhoti set.",
+      "createdAt": "2026-07-28T11:24:34.618Z",
+      "district": "Saket"
     },
     {
       "id": "req-006",
       "buyerId": "buyer-demo-001",
-      "buyerName": "Saffron Thread Boutique (demo — fictional)",
+      "buyerName": "Saffron Thread Boutique",
       "categoryId": "silk-saree",
-      "region": "Uttar Pradesh",
+      "region": "Delhi",
       "quantity": 18,
       "neededBy": "2026-11-20",
       "status": "open",
-      "notes": "Simulated — Banaras-belt silk demand for nationwide heatmap (fictional).",
-      "createdAt": "2026-07-29T06:00:00.000Z"
+      "notes": "Banaras-belt silk demand for nationwide heatmap.",
+      "createdAt": "2026-07-29T06:00:00.000Z",
+      "district": "New Delhi"
     },
     {
       "id": "req-007",
       "buyerId": "buyer-demo-003",
-      "buyerName": "Loom Link Resellers (demo — fictional)",
+      "buyerName": "Loom Link Resellers",
       "categoryId": "cotton-saree",
-      "region": "Telangana",
+      "region": "Delhi",
       "quantity": 20,
       "neededBy": "2026-10-30",
       "status": "open",
-      "notes": "Simulated — Pochampally cotton demand (fictional).",
-      "createdAt": "2026-07-29T06:00:00.000Z"
+      "notes": "Pochampally cotton demand.",
+      "createdAt": "2026-07-29T06:00:00.000Z",
+      "district": "Chandni Chowk"
     },
     {
       "id": "req-008",
       "buyerId": "buyer-demo-002",
-      "buyerName": "Festival Cloth Desk (demo — fictional)",
+      "buyerName": "Festival Cloth Desk",
       "categoryId": "stole-dupatta",
-      "region": "West Bengal",
+      "region": "Delhi",
       "quantity": 30,
       "neededBy": "2026-09-28",
       "status": "open",
-      "notes": "Simulated — Bengal fine-cotton stoles (fictional).",
-      "createdAt": "2026-07-29T06:00:00.000Z"
+      "notes": "Bengal fine-cotton stoles.",
+      "createdAt": "2026-07-29T06:00:00.000Z",
+      "district": "Hauz Khas"
     },
     {
       "id": "req-009",
       "buyerId": "buyer-demo-001",
-      "buyerName": "Saffron Thread Boutique (demo — fictional)",
+      "buyerName": "Saffron Thread Boutique",
       "categoryId": "silk-saree",
-      "region": "Assam",
+      "region": "Delhi",
       "quantity": 10,
       "neededBy": "2026-12-10",
       "status": "open",
-      "notes": "Simulated — Sualkuchi silk (fictional).",
-      "createdAt": "2026-07-29T06:00:00.000Z"
+      "notes": "Sualkuchi silk.",
+      "createdAt": "2026-07-29T06:00:00.000Z",
+      "district": "IIT Delhi"
     },
     {
       "id": "req-010",
       "buyerId": "buyer-demo-003",
-      "buyerName": "Loom Link Resellers (demo — fictional)",
+      "buyerName": "Loom Link Resellers",
       "categoryId": "cotton-saree",
-      "region": "Odisha",
+      "region": "Delhi",
       "quantity": 16,
       "neededBy": "2026-11-05",
       "status": "open",
-      "notes": "Simulated — Sambalpur ikat cotton (fictional).",
-      "createdAt": "2026-07-29T06:00:00.000Z"
+      "notes": "Sambalpur ikat cotton.",
+      "createdAt": "2026-07-29T06:00:00.000Z",
+      "district": "Karol Bagh"
+    },
+    {
+      "id": "req-nat-001",
+      "buyerId": "buyer-demo-002",
+      "buyerName": "Festival Cloth Desk",
+      "categoryId": "cotton-saree",
+      "region": "Tamil Nadu",
+      "district": "Kanchipuram",
+      "quantity": 10,
+      "neededBy": "2026-11-15",
+      "priceMin": 800,
+      "priceMax": 1300,
+      "status": "open",
+      "notes": "National signal — Kanchipuram cotton lot (outside Delhi).",
+      "createdAt": "2026-07-30T15:41:22.931Z"
+    },
+    {
+      "id": "req-nat-002",
+      "buyerId": "buyer-demo-003",
+      "buyerName": "Loom Link Resellers",
+      "categoryId": "silk-saree",
+      "region": "Uttar Pradesh",
+      "district": "Varanasi",
+      "quantity": 6,
+      "neededBy": "2026-12-10",
+      "priceMin": 5000,
+      "priceMax": 9000,
+      "status": "open",
+      "notes": "National signal — Varanasi silk inquiry.",
+      "createdAt": "2026-07-30T15:41:22.931Z"
+    },
+    {
+      "id": "req-nat-003",
+      "buyerId": "buyer-demo-001",
+      "buyerName": "Saffron Thread Boutique",
+      "categoryId": "stole-dupatta",
+      "region": "West Bengal",
+      "district": "Shantipur",
+      "quantity": 20,
+      "neededBy": "2026-10-30",
+      "priceMin": 420,
+      "priceMax": 680,
+      "status": "open",
+      "notes": "National signal — Shantipur stole fill.",
+      "createdAt": "2026-07-30T15:41:22.931Z"
     }
   ],
   "manualTrends": [],
   "ledgerOrders": [],
   "paymentOrders": [
-    {
-      "id": "ord-selvi-001",
-      "weaverId": "weaver-demo-002",
-      "buyerId": "buyer-demo-002",
-      "category": "cotton-saree",
-      "amount": 9000,
-      "advanceAmount": 3000,
-      "state": "production_in_progress",
-      "createdAt": "2026-07-28T11:09:30.403Z",
-      "stateHistory": [
-        {
-          "state": "order_created",
-          "at": "2026-07-28T11:09:30.403Z"
-        },
-        {
-          "state": "production_in_progress",
-          "at": "2026-07-28T11:09:30.403Z"
-        }
-      ]
-    },
-    {
-      "id": "ord-selvi-002",
-      "weaverId": "weaver-demo-002",
-      "buyerId": "buyer-demo-001",
-      "category": "stole-dupatta",
-      "amount": 4000,
-      "advanceAmount": 1000,
-      "state": "advance_paid_escrow_held",
-      "createdAt": "2026-07-28T11:09:30.403Z",
-      "stateHistory": [
-        {
-          "state": "order_created",
-          "at": "2026-07-28T11:09:30.403Z"
-        },
-        {
-          "state": "advance_paid_escrow_held",
-          "at": "2026-07-28T11:09:30.403Z"
-        }
-      ]
-    },
     {
       "id": "ord-kamala-001",
       "weaverId": "weaver-demo-003",
@@ -188,7 +203,9 @@
           "state": "dispatched",
           "at": "2026-07-28T11:09:30.403Z"
         }
-      ]
+      ],
+      "buyerName": "Saffron Thread Boutique",
+      "requirementId": "req-003"
     },
     {
       "id": "ord-lakshmi-001",
@@ -208,7 +225,9 @@
           "state": "advance_paid_escrow_held",
           "at": "2026-07-28T11:36:46.116Z"
         }
-      ]
+      ],
+      "buyerName": "Loom Link Resellers",
+      "requirementId": "req-004"
     },
     {
       "id": "ord-lakshmi-002",
@@ -231,7 +250,8 @@
           "state": "settlement_released",
           "at": "2026-06-29T11:00:00.000Z"
         }
-      ]
+      ],
+      "buyerName": "Festival Cloth Desk"
     },
     {
       "id": "ord-lakshmi-003",
@@ -251,30 +271,8 @@
           "state": "production_in_progress",
           "at": "2026-07-28T11:36:46.116Z"
         }
-      ]
-    },
-    {
-      "id": "ord-selvi-003",
-      "weaverId": "weaver-demo-002",
-      "buyerId": "buyer-demo-002",
-      "category": "cotton-saree",
-      "amount": 16000,
-      "advanceAmount": 5000,
-      "state": "settlement_released",
-      "createdAt": "2026-05-12T10:00:00.000Z",
-      "dispatchedAt": "2026-05-30T10:00:00.000Z",
-      "expectedSettlementAt": "2026-05-31",
-      "settledAt": "2026-05-31T12:00:00.000Z",
-      "stateHistory": [
-        {
-          "state": "order_created",
-          "at": "2026-05-12T10:00:00.000Z"
-        },
-        {
-          "state": "settlement_released",
-          "at": "2026-05-31T12:00:00.000Z"
-        }
-      ]
+      ],
+      "buyerName": "Saffron Thread Boutique"
     },
     {
       "id": "ord-kamala-002",
@@ -297,90 +295,187 @@
           "state": "settlement_released",
           "at": "2026-04-23T09:00:00.000Z"
         }
-      ]
+      ],
+      "buyerName": "Festival Cloth Desk",
+      "requirementId": "req-005"
     },
     {
-      "id": "sim-weaver-demo-001-ms5pzwl6-1",
-      "weaverId": "weaver-demo-001",
+      "id": "sim-weaver-demo-002-ms7u4ow5-1",
+      "weaverId": "weaver-demo-002",
       "buyerId": "buyer-demo-001",
+      "buyerName": "Saffron Thread Boutique",
       "category": "stole-dupatta",
-      "amount": 10000,
-      "advanceAmount": 3000,
+      "amount": 10500,
+      "advanceAmount": 3150,
       "state": "production_in_progress",
-      "createdAt": "2026-07-26T06:45:11.994Z",
+      "createdAt": "2026-07-27T18:16:26.125Z",
       "stateHistory": [
         {
           "state": "production_in_progress",
-          "at": "2026-07-26T06:45:11.994Z"
+          "at": "2026-07-27T18:16:26.125Z"
         }
       ]
     },
     {
-      "id": "sim-weaver-demo-001-ms5pzwl6-2",
-      "weaverId": "weaver-demo-001",
+      "id": "sim-weaver-demo-002-ms7u4ow5-2",
+      "weaverId": "weaver-demo-002",
       "buyerId": "buyer-demo-002",
-      "category": "stole-dupatta",
-      "amount": 14500,
-      "advanceAmount": 4350,
+      "buyerName": "Festival Cloth Desk",
+      "category": "dhoti-angavastram",
+      "amount": 13500,
+      "advanceAmount": 4050,
       "state": "advance_paid_escrow_held",
-      "createdAt": "2026-07-23T06:45:11.994Z",
+      "createdAt": "2026-07-24T18:16:26.125Z",
       "stateHistory": [
         {
           "state": "advance_paid_escrow_held",
-          "at": "2026-07-23T06:45:11.994Z"
+          "at": "2026-07-24T18:16:26.125Z"
         }
       ]
     },
     {
-      "id": "sim-weaver-demo-001-ms5pzwl6-3",
-      "weaverId": "weaver-demo-001",
+      "id": "sim-weaver-demo-002-ms7u4ow5-3",
+      "weaverId": "weaver-demo-002",
       "buyerId": "buyer-demo-003",
-      "category": "dhoti-angavastram",
-      "amount": 14000,
-      "advanceAmount": 4200,
+      "buyerName": "Loom Link Resellers",
+      "category": "cotton-saree",
+      "amount": 14500,
+      "advanceAmount": 4350,
       "state": "dispatched",
-      "createdAt": "2026-07-20T06:45:11.994Z",
-      "dispatchedAt": "2026-07-29T06:45:11.994Z",
-      "expectedSettlementAt": "2026-07-30",
+      "createdAt": "2026-07-21T18:16:26.125Z",
+      "dispatchedAt": "2026-07-30T18:16:26.125Z",
+      "expectedSettlementAt": "2026-07-31",
       "stateHistory": [
         {
           "state": "dispatched",
-          "at": "2026-07-20T06:45:11.994Z"
+          "at": "2026-07-21T18:16:26.125Z"
         }
       ]
     },
     {
-      "id": "sim-weaver-demo-001-ms5pzwl6-4",
-      "weaverId": "weaver-demo-001",
+      "id": "sim-weaver-demo-002-ms7u4ow5-4",
+      "weaverId": "weaver-demo-002",
       "buyerId": "buyer-demo-001",
+      "buyerName": "Saffron Thread Boutique",
       "category": "silk-saree",
-      "amount": 18000,
-      "advanceAmount": 5400,
+      "amount": 20500,
+      "advanceAmount": 6150,
       "state": "settlement_released",
-      "createdAt": "2026-06-19T06:45:11.994Z",
-      "dispatchedAt": "2026-07-23T06:45:11.994Z",
-      "expectedSettlementAt": "2026-07-24",
-      "settledAt": "2026-07-24T06:45:11.994Z",
+      "createdAt": "2026-06-20T18:16:26.125Z",
+      "dispatchedAt": "2026-07-24T18:16:26.125Z",
+      "expectedSettlementAt": "2026-07-25",
+      "settledAt": "2026-07-25T18:16:26.125Z",
       "stateHistory": [
         {
           "state": "settlement_released",
-          "at": "2026-06-19T06:45:11.994Z"
+          "at": "2026-06-20T18:16:26.125Z"
         }
       ]
     },
     {
-      "id": "sim-weaver-demo-001-ms5pzwl6-5",
-      "weaverId": "weaver-demo-001",
+      "id": "sim-weaver-demo-002-ms7u4ow5-5",
+      "weaverId": "weaver-demo-002",
       "buyerId": "buyer-demo-002",
+      "buyerName": "Festival Cloth Desk",
       "category": "stole-dupatta",
-      "amount": 22000,
-      "advanceAmount": 6600,
+      "amount": 20500,
+      "advanceAmount": 6150,
       "state": "order_created",
-      "createdAt": "2026-07-14T06:45:11.994Z",
+      "createdAt": "2026-07-15T18:16:26.125Z",
       "stateHistory": [
         {
           "state": "order_created",
-          "at": "2026-07-14T06:45:11.994Z"
+          "at": "2026-07-15T18:16:26.125Z"
+        }
+      ]
+    },
+    {
+      "id": "sim-weaver-demo-001-ms7vabhn-1",
+      "weaverId": "weaver-demo-001",
+      "buyerId": "buyer-demo-001",
+      "buyerName": "Saffron Thread Boutique",
+      "category": "silk-saree",
+      "amount": 10000,
+      "advanceAmount": 3000,
+      "state": "production_in_progress",
+      "createdAt": "2026-07-27T18:48:48.314Z",
+      "stateHistory": [
+        {
+          "state": "production_in_progress",
+          "at": "2026-07-27T18:48:48.314Z"
+        }
+      ]
+    },
+    {
+      "id": "sim-weaver-demo-001-ms7vabhn-2",
+      "weaverId": "weaver-demo-001",
+      "buyerId": "buyer-demo-002",
+      "buyerName": "Festival Cloth Desk",
+      "category": "silk-saree",
+      "amount": 13500,
+      "advanceAmount": 4050,
+      "state": "advance_paid_escrow_held",
+      "createdAt": "2026-07-24T18:48:48.314Z",
+      "stateHistory": [
+        {
+          "state": "advance_paid_escrow_held",
+          "at": "2026-07-24T18:48:48.314Z"
+        }
+      ]
+    },
+    {
+      "id": "sim-weaver-demo-001-ms7vabhn-3",
+      "weaverId": "weaver-demo-001",
+      "buyerId": "buyer-demo-003",
+      "buyerName": "Loom Link Resellers",
+      "category": "dhoti-angavastram",
+      "amount": 16000,
+      "advanceAmount": 4800,
+      "state": "dispatched",
+      "createdAt": "2026-07-21T18:48:48.314Z",
+      "dispatchedAt": "2026-07-30T18:48:48.314Z",
+      "expectedSettlementAt": "2026-07-31",
+      "stateHistory": [
+        {
+          "state": "dispatched",
+          "at": "2026-07-21T18:48:48.314Z"
+        }
+      ]
+    },
+    {
+      "id": "sim-weaver-demo-001-ms7vabhn-4",
+      "weaverId": "weaver-demo-001",
+      "buyerId": "buyer-demo-001",
+      "buyerName": "Saffron Thread Boutique",
+      "category": "cotton-saree",
+      "amount": 17000,
+      "advanceAmount": 5100,
+      "state": "settlement_released",
+      "createdAt": "2026-06-20T18:48:48.314Z",
+      "dispatchedAt": "2026-07-24T18:48:48.314Z",
+      "expectedSettlementAt": "2026-07-25",
+      "settledAt": "2026-07-25T18:48:48.314Z",
+      "stateHistory": [
+        {
+          "state": "settlement_released",
+          "at": "2026-06-20T18:48:48.314Z"
+        }
+      ]
+    },
+    {
+      "id": "sim-weaver-demo-001-ms7vabhn-5",
+      "weaverId": "weaver-demo-001",
+      "buyerId": "buyer-demo-002",
+      "buyerName": "Festival Cloth Desk",
+      "category": "cotton-saree",
+      "amount": 23500,
+      "advanceAmount": 7050,
+      "state": "order_created",
+      "createdAt": "2026-07-15T18:48:48.314Z",
+      "stateHistory": [
+        {
+          "state": "order_created",
+          "at": "2026-07-15T18:48:48.314Z"
         }
       ]
     }
@@ -389,25 +484,25 @@
   "buyers": [
     {
       "id": "buyer-demo-001",
-      "name": "Saffron Thread Boutique (demo — fictional)",
-      "region": "Tamil Nadu",
+      "name": "Saffron Thread Boutique",
+      "region": "Delhi",
       "email": "saffron@demo.loom"
     },
     {
       "id": "buyer-demo-002",
-      "name": "Festival Cloth Desk (demo — fictional)",
-      "region": "Tamil Nadu",
+      "name": "Festival Cloth Desk",
+      "region": "Delhi",
       "email": "festival@demo.loom"
     }
   ],
   "wallets": [
     {
       "weaverId": "weaver-demo-001",
-      "available": 62000,
+      "available": 134000,
       "reserve": 0,
       "reserveFloor": 2000,
       "surplusSavePercent": 40,
-      "updatedAt": "2026-07-28T11:15:57.940Z"
+      "updatedAt": "2026-07-30T18:28:38.771Z"
     },
     {
       "weaverId": "weaver-6ceeb0e1",
@@ -416,6 +511,14 @@
       "reserveFloor": 2000,
       "surplusSavePercent": 40,
       "updatedAt": "2026-07-28T16:11:48.803Z"
+    },
+    {
+      "weaverId": "weaver-demo-002",
+      "available": 0,
+      "reserve": 0,
+      "reserveFloor": 2000,
+      "surplusSavePercent": 40,
+      "updatedAt": "2026-07-30T16:13:32.472Z"
     }
   ],
   "walletCredits": [
@@ -430,6 +533,22 @@
     {
       "weaverId": "weaver-demo-001",
       "orderId": "ord-hist-003"
+    },
+    {
+      "weaverId": "weaver-demo-001",
+      "orderId": "sim-weaver-demo-001-ms73rbox-3"
+    },
+    {
+      "weaverId": "weaver-demo-001",
+      "orderId": "sim-weaver-demo-001-ms73rbox-4"
+    },
+    {
+      "weaverId": "weaver-demo-001",
+      "orderId": "sim-weaver-demo-001-ms7ov0x6-4"
+    },
+    {
+      "weaverId": "weaver-demo-001",
+      "orderId": "sim-weaver-demo-001-ms7ugr20-4"
     }
   ],
   "weaverStock": [

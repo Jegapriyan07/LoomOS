@@ -43,14 +43,24 @@ export const HAPPY_PATH_STATES: OrderState[] = [
  */
 export const MODELED_SETTLEMENT_WORKING_DAYS = 1;
 
+/**
+ * Accepted work in the payment / Money pipeline.
+ * Boutique identity: `buyerId` + `buyerName`. Optional `requirementId` links
+ * back to the BuyerRequirement the weaver planned from (Orders → Plan → Money).
+ */
 export type PaymentOrder = {
   id: string;
   weaverId: string;
+  /** Boutique / buyer account id */
   buyerId: string;
+  /** Boutique display name — denormalized for UI; resolved from buyers if missing */
+  buyerName?: string;
+  /** Open demand this order fulfilled, when known */
+  requirementId?: string;
   category: DemandCategoryId;
   /** Amount in INR (demo figures) */
   amount: number;
-  /** Advance portion held in the simulated escrow pattern (demo) */
+  /** Advance portion held in the simulated escrow pattern */
   advanceAmount: number;
   state: OrderState;
   createdAt: string;

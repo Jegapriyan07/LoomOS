@@ -8,6 +8,7 @@ import type {
   DailyAction,
   EngineReasonTag,
 } from "@/lib/demand/types";
+import type { DriftScoreResult } from "@/lib/demand/drift";
 import { DEMO_WEAVER_PROFILE } from "@/lib/demo/cluster";
 
 export type Weaver = {
@@ -41,10 +42,15 @@ export type Recommendation = {
   reasonTags: EngineReasonTag[];
   /** Daily Action Plan — What should I do today? */
   dailyActions: DailyAction[];
+  /**
+   * Drift score — intelligence accuracy of this advice (0–100%).
+   * Below 90% → weavers should think carefully before acting.
+   */
+  drift: DriftScoreResult;
 };
 
 /**
- * Demo weaver — fictional profile for Nila Loom Circle (Demo Cluster).
+ * Demo weaver — fictional profile for Nila Loom Circle.
  * Not a real person; not a live profile feed.
  */
 export const DEMO_WEAVER: Weaver = {

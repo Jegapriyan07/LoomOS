@@ -7,7 +7,7 @@
 **Nila Loom Circle (Demo Cluster)** — invented Kanchipuram-style silk/cotton circle in Tamil Nadu.  
 Not a real cooperative. Not real people. Not live ledger numbers.
 
-- Weaver: Meena (demo weaver — fictional)
+- Weaver: Kavita (demo weaver — fictional, North Indian)
 - Buyers: Saffron Thread Boutique / Festival Cloth Desk (demo — fictional)
 - Login: `saffron@demo.loom` / `demo123`
 

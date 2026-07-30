@@ -1,15 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useId, useState } from "react";
-import {
-  ChevronDown,
-  HelpCircle,
-  IndianRupee,
-  Mic,
-  RefreshCw,
-  Volume2,
-  Wallet,
-} from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import { Mic, RefreshCw, Volume2 } from "lucide-react";
 import type { Recommendation } from "@/lib/types";
 import { speakRecommendation, stopSpeaking } from "@/lib/tts";
 import {
@@ -23,8 +15,6 @@ import {
   readStoredLanguage,
   type LanguageCode,
 } from "@/lib/voice/languages";
-import { formatDisplayDate } from "@/lib/production-defaults";
-import type { PaymentOrder } from "@/lib/payments/types";
 import { useI18n } from "@/lib/i18n/context";
 import {
   localizedAdvice,
@@ -36,6 +26,7 @@ import {
   DailyActionPlan,
   ReasonTagsRow,
 } from "@/components/weaver/StandeeEngineUI";
+import { DriftScorePanel } from "@/components/weaver/DriftScorePanel";
 
 /**
  * Weaver Home — Decision Copilot + summary chatbot + Web Speech voice.
@@ -46,15 +37,9 @@ export function DecisionCopilot() {
     null,
   );
   const [error, setError] = useState<string | null>(null);
-  const [whyOpen, setWhyOpen] = useState(false);
   const [lang, setLang] = useState<LanguageCode>("en");
   const [listening, setListening] = useState(false);
   const [voiceStatus, setVoiceStatus] = useState<string | null>(null);
-  const [moneyLine, setMoneyLine] = useState<{
-    held: number;
-    nextDate: string | null;
-  }>({ held: 0, nextDate: null });
-  const whyPanelId = useId();
 
   useEffect(() => {
     setLang(uiLang);
@@ -79,35 +64,6 @@ export function DecisionCopilot() {
       })
     : "";
 
-  const loadMoney = useCallback(async () => {
-    try {
-      const data = await cachedJson<{ orders: { order: PaymentOrder }[] }>(
-        "/api/orders",
-      );
-      const active = data.orders.filter(
-        (r) =>
-          r.order.state !== "settlement_released" && r.order.state !== "resolved",
-      );
-      const held = active
-        .filter((r) =>
-          [
-            "advance_paid_escrow_held",
-            "production_in_progress",
-            "dispatched",
-            "dispute_opened",
-            "under_review",
-          ].includes(r.order.state),
-        )
-        .reduce((s, r) => s + r.order.advanceAmount, 0);
-      const nextDate =
-        active.find((r) => r.order.expectedSettlementAt)?.order
-          .expectedSettlementAt ?? null;
-      setMoneyLine({ held, nextDate });
-    } catch {
-      /* keep prior */
-    }
-  }, []);
-
   const load = useCallback(async () => {
     setError(null);
     const fetchRec = () =>
@@ -116,7 +72,6 @@ export function DecisionCopilot() {
     try {
       const data = await fetchRec();
       setRecommendation(data);
-      await loadMoney();
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Something went wrong";
       // Login rotates the session cookie; an in-flight call can 401 once.
@@ -126,7 +81,6 @@ export function DecisionCopilot() {
           await new Promise((r) => setTimeout(r, 200));
           const data = await fetchRec();
           setRecommendation(data);
-          await loadMoney();
           return;
         } catch (retryErr) {
           setError(
@@ -139,7 +93,7 @@ export function DecisionCopilot() {
       }
       setError(msg);
     }
-  }, [loadMoney]);
+  }, []);
 
   useEffect(() => {
     void load();
@@ -253,6 +207,10 @@ export function DecisionCopilot() {
               .
             </p>
 
+            {recommendation.drift ? (
+              <DriftScorePanel drift={recommendation.drift} />
+            ) : null}
+
             {recommendation.reasonTags?.length ? (
               <ReasonTagsRow tags={recommendation.reasonTags} />
             ) : null}
@@ -292,132 +250,9 @@ export function DecisionCopilot() {
             <p className="mt-2 text-xs leading-snug text-loom-muted">
               {t("home.voiceNote")}
             </p>
-
-            <div className="mt-auto pt-6">
-              <button
-                type="button"
-                onClick={() => setWhyOpen((open) => !open)}
-                aria-expanded={whyOpen}
-                aria-controls={whyPanelId}
-                className="flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-loom-border bg-loom-bg px-4 text-base font-semibold text-loom-primary"
-              >
-                <HelpCircle className="size-6 shrink-0" aria-hidden />
-                <span>{t("home.why")}</span>
-                <ChevronDown
-                  className={`size-5 shrink-0 transition-transform ${
-                    whyOpen ? "rotate-180" : ""
-                  }`}
-                  aria-hidden
-                />
-              </button>
-
-              {whyOpen ? (
-                <div
-                  id={whyPanelId}
-                  className="mt-3 space-y-4 rounded-xl bg-loom-primary-soft/60 px-4 py-3 text-left"
-                >
-                  <p className="text-sm font-semibold text-loom-ink">
-                    {recommendation.formulaSummary}
-                  </p>
-                  <p className="mt-1 text-sm text-loom-muted">
-                    {t("home.whyTotal", { score: recommendation.demandScore })}
-                  </p>
-
-                  {recommendation.factors.map((factor) => (
-                    <div
-                      key={factor.id}
-                      className="rounded-lg border border-loom-border/70 bg-loom-surface/80 p-3"
-                    >
-                      <p className="text-base font-semibold text-loom-ink">
-                        {factor.label}{" "}
-                        <span className="font-medium text-loom-muted">
-                          (weight {Math.round(factor.weight * 100)}%)
-                        </span>
-                      </p>
-                      <p className="mt-1 text-base text-loom-ink">
-                        Raw score{" "}
-                        <span className="font-semibold">
-                          {factor.rawScore}/100
-                        </span>
-                        {" → "}
-                        contributes{" "}
-                        <span className="font-semibold">
-                          {factor.weightedContribution}
-                        </span>{" "}
-                        points
-                      </p>
-                      <ul className="mt-2 space-y-1.5">
-                        {factor.inputs.map((input) => (
-                          <li
-                            key={`${factor.id}-${input.name}`}
-                            className="text-sm leading-snug text-loom-muted"
-                          >
-                            <span className="font-semibold text-loom-ink">
-                              {input.name}:
-                            </span>{" "}
-                            {input.value}
-                          </li>
-                        ))}
-                      </ul>
-                      {factor.note ? (
-                        <p className="mt-2 text-sm italic text-loom-muted">
-                          {factor.note}
-                        </p>
-                      ) : null}
-                    </div>
-                  ))}
-                </div>
-              ) : null}
-            </div>
           </article>
         ) : null}
       </div>
-
-      <aside
-        aria-label={t("home.moneyTitle")}
-        className="mt-8 space-y-3 border-t border-loom-border pt-6"
-      >
-        <p className="text-sm font-semibold uppercase tracking-wide text-loom-muted">
-          {t("home.moneyTitle")}
-        </p>
-        <p className="text-xs text-loom-warning">{t("home.moneySimNote")}</p>
-
-        <div className="flex items-start gap-3 rounded-xl border border-dashed border-loom-border bg-loom-surface/70 px-4 py-3">
-          <IndianRupee
-            className="mt-0.5 size-6 shrink-0 text-loom-muted"
-            aria-hidden
-          />
-          <p className="text-base leading-snug text-loom-muted">
-            {moneyLine.nextDate ? (
-              t("home.nextPayment", {
-                date: formatDisplayDate(moneyLine.nextDate),
-              })
-            ) : (
-              <>{t("home.noPayment")}</>
-            )}
-            <span className="mt-1 block text-sm">
-              {t("home.demoSimulated")}
-            </span>
-          </p>
-        </div>
-
-        <div className="flex items-start gap-3 rounded-xl border border-dashed border-loom-border bg-loom-surface/70 px-4 py-3">
-          <Wallet
-            className="mt-0.5 size-6 shrink-0 text-loom-muted"
-            aria-hidden
-          />
-          <p className="text-base leading-snug text-loom-muted">
-            {moneyLine.held > 0
-              ? t("home.advanceHeld", {
-                  amount: moneyLine.held.toLocaleString("en-IN"),
-                })
-              : t("home.walletQuiet")}
-            <span className="mt-1 block text-sm">
-              {t("home.demoSimulated")}
-            </span>
-          </p>
-        </div>
-      </aside>
     </div>
   );
 }

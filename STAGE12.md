@@ -28,4 +28,4 @@ Also rendered on `/about` as `RealVsSimulated`.
 | ONDC / GeM / NHDC | Honest positioning + verified facts cited | No LoomOS APIs; NHDC = eligibility nudge only |
 | Coop capacity % | Active Stage 4 pipeline counts | Max capacity illustrative (3) |
 
-**People/orgs:** Meena, Selvi, Kamala, Saffron Thread Boutique, Nila Loom Circle — all labeled fictional Demo Mode.
+**People/orgs:** Kavita, Selvi, Kamala, Saffron Thread Boutique, Nila Loom Circle — all labeled fictional Demo Mode.

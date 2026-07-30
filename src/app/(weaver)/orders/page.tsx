@@ -4,6 +4,10 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { ClipboardList, Store } from "lucide-react";
 import type { BuyerRequirement } from "@/lib/demand/types";
+import {
+  buyerDisplayName,
+  planHrefForRequirement,
+} from "@/lib/demand/order-plan";
 import { formatDisplayDate } from "@/lib/production-defaults";
 import { useI18n } from "@/lib/i18n/context";
 import { localizedCategoryLabel } from "@/lib/i18n/extras";
@@ -14,31 +18,72 @@ import {
   PitchOneLiner,
 } from "@/components/pitch/PitchExplain";
 import { WeaverOrdersMap } from "@/components/map/WeaverOrdersMapLazy";
-import type { OrderHeatPoint } from "@/lib/map/build-map-data";
+import type {
+  DemandHeatScope,
+  OrderHeatPoint,
+} from "@/lib/map/build-map-data";
+import { PRIMARY_DEMAND, isIitClusterDistrict } from "@/lib/map/hub-geo";
+
+function filterRows(
+  all: BuyerRequirement[],
+  scope: DemandHeatScope,
+  region: string,
+  district: string,
+): BuyerRequirement[] {
+  const open = all.filter((r) => r.status === "open");
+  if (scope === "national") return open;
+  const state = (region || PRIMARY_DEMAND.region).toLowerCase();
+  const inState = open.filter((r) => r.region.toLowerCase() === state);
+  if (scope === "state") return inState;
+  const d = (district || PRIMARY_DEMAND.district).toLowerCase();
+  return inState.filter((r) => {
+    const rd = (r.district ?? "").toLowerCase();
+    if (rd === d) return true;
+    if (isIitClusterDistrict(d) && isIitClusterDistrict(rd)) return true;
+    return false;
+  });
+}
 
 export default function OrdersPage() {
   const { t, lang } = useI18n();
-  const [rows, setRows] = useState<BuyerRequirement[]>([]);
-  const [region, setRegion] = useState<string>("");
+  const [allRows, setAllRows] = useState<BuyerRequirement[]>([]);
+  const [region, setRegion] = useState<string>(PRIMARY_DEMAND.region);
+  const [district, setDistrict] = useState<string>(PRIMARY_DEMAND.district);
   const [ready, setReady] = useState(false);
-  const [national, setNational] = useState(false);
+  const [scope, setScope] = useState<DemandHeatScope>("district");
   const [heatPoints, setHeatPoints] = useState<OrderHeatPoint[]>([]);
   const [heatDisclaimer, setHeatDisclaimer] = useState("");
-  const [heatFocus, setHeatFocus] = useState<string | null>(null);
+  const [heatFocus, setHeatFocus] = useState<string | null>(PRIMARY_DEMAND.region);
+  const [heatDistrict, setHeatDistrict] = useState<string | null>(
+    PRIMARY_DEMAND.district,
+  );
 
   const loadHeat = useCallback(
-    async (scopeNational: boolean, weaverRegion: string) => {
+    async (
+      heatScope: DemandHeatScope,
+      weaverRegion: string,
+      weaverDistrict: string,
+    ) => {
       try {
-        const qs = scopeNational
-          ? "scope=national"
-          : `region=${encodeURIComponent(weaverRegion)}`;
+        const params = new URLSearchParams({ scope: heatScope });
+        if (heatScope !== "national") {
+          params.set("region", weaverRegion || PRIMARY_DEMAND.region);
+        }
+        if (heatScope === "district") {
+          params.set(
+            "district",
+            weaverDistrict || PRIMARY_DEMAND.district,
+          );
+        }
         const data = await cachedJson<{
           points: OrderHeatPoint[];
           focusRegion: string | null;
+          focusDistrict?: string | null;
           disclaimer: string;
-        }>(`/api/orders/heatmap?${qs}`);
+        }>(`/api/orders/heatmap?${params.toString()}`);
         setHeatPoints(data.points ?? []);
         setHeatFocus(data.focusRegion);
+        setHeatDistrict(data.focusDistrict ?? null);
         setHeatDisclaimer(data.disclaimer ?? "");
       } catch {
         /* keep prior */
@@ -50,21 +95,27 @@ export default function OrdersPage() {
   const load = useCallback(async () => {
     try {
       const me = await cachedJson<{
-        user?: { weaver?: { region?: string } };
+        user?: { weaver?: { region?: string; categories?: string[] } };
       }>("/api/auth/me");
-      const weaverRegion = me.user?.weaver?.region ?? "";
-      setRegion(weaverRegion);
+      // Pitch demand geography is Delhi / IIT Delhi — not the weaver's craft-origin state
+      setRegion(PRIMARY_DEMAND.region);
+      const fromCat = (me.user?.weaver?.categories ?? [])
+        .find((c) => c.toLowerCase().startsWith("district:"))
+        ?.slice("district:".length)
+        .trim();
+      const delhiHub =
+        fromCat &&
+        ["iit delhi", "south delhi", "hauz khas", "saket", "new delhi"].includes(
+          fromCat.toLowerCase(),
+        )
+          ? fromCat
+          : PRIMARY_DEMAND.district;
+      setDistrict(delhiHub);
 
       const all = await cachedJson<BuyerRequirement[]>(
         "/api/admin/requirements",
       );
-      setRows(
-        all.filter(
-          (r) =>
-            r.status === "open" &&
-            r.region.toLowerCase() === weaverRegion.toLowerCase(),
-        ),
-      );
+      setAllRows(all);
     } catch {
       /* keep prior */
     } finally {
@@ -78,8 +129,17 @@ export default function OrdersPage() {
 
   useEffect(() => {
     if (!ready) return;
-    void loadHeat(national, region);
-  }, [national, region, ready, loadHeat]);
+    void loadHeat(scope, region, district);
+  }, [scope, region, district, ready, loadHeat]);
+
+  const rows = filterRows(allRows, scope, region, district);
+
+  const emptyLabel =
+    scope === "national"
+      ? "India"
+      : scope === "state"
+        ? region || "Delhi"
+        : `${district || PRIMARY_DEMAND.district}, ${region || "Delhi"}`;
 
   return (
     <div className="flex flex-1 flex-col gap-4 px-4 pb-8 pt-4">
@@ -91,13 +151,23 @@ export default function OrdersPage() {
 
       <PitchOneLiner>{t("pitch.ordersOneLiner")}</PitchOneLiner>
 
+      <p className="rounded-xl border border-loom-border bg-loom-surface px-3 py-2 text-sm text-loom-muted">
+        Primary cluster:{" "}
+        <span className="font-semibold text-loom-ink">
+          {PRIMARY_DEMAND.district} · {PRIMARY_DEMAND.region}
+        </span>
+        {" — "}
+        IIT / District / Nation.
+      </p>
+
       {ready ? (
         <WeaverOrdersMap
           points={heatPoints}
           focusRegion={heatFocus}
+          focusDistrict={heatDistrict}
           disclaimer={heatDisclaimer}
-          national={national}
-          onToggleNational={setNational}
+          scope={scope}
+          onScopeChange={setScope}
         />
       ) : null}
 
@@ -119,15 +189,11 @@ export default function OrdersPage() {
         </div>
       </Link>
 
-      <p className="rounded-lg border border-amber-400 bg-amber-50 px-3 py-2 text-xs font-semibold text-amber-950">
-        {t("orders.demoNote")}
-      </p>
-
       {ready && rows.length === 0 ? (
         <div className="flex flex-col items-center py-12 text-center">
           <ClipboardList className="size-10 text-loom-muted" aria-hidden />
           <p className="mt-3 text-base text-loom-muted">
-            {t("orders.empty", { region: region || "—" })}
+            {t("orders.empty", { region: emptyLabel })}
           </p>
         </div>
       ) : null}
@@ -136,15 +202,26 @@ export default function OrdersPage() {
         <ul className="space-y-3">
           {rows.map((r) => {
             const label = localizedCategoryLabel(lang, r.categoryId);
+            const boutiqueName = buyerDisplayName(r.buyerId, r.buyerName);
             return (
               <li
                 key={r.id}
                 className="rounded-2xl border border-loom-border bg-loom-surface p-4"
               >
                 <p className="text-xs font-semibold uppercase tracking-wide text-loom-primary">
-                  {t("pitch.simulatedBuyer")}
+                  Boutique · {r.district || "—"}, {r.region}
                 </p>
-                <p className="mt-1 text-base font-semibold text-loom-ink">
+                <p className="mt-1 text-lg font-semibold text-loom-ink">
+                  {boutiqueName}
+                </p>
+                <p className="mt-0.5 font-mono text-xs text-loom-muted">
+                  {r.buyerId
+                    ? t("orders.boutiqueId", { id: r.buyerId })
+                    : null}
+                  {r.buyerId ? " · " : null}
+                  {t("orders.needId", { id: r.id })}
+                </p>
+                <p className="mt-3 text-base font-semibold text-loom-ink">
                   {label}
                 </p>
                 <p className="mt-1 text-base text-loom-muted">
@@ -161,12 +238,15 @@ export default function OrdersPage() {
                     })}
                   </p>
                 ) : null}
-                <p className="mt-2 text-sm font-semibold text-loom-ink">
-                  {t("orders.fromBuyer", { name: r.buyerName })}
-                </p>
                 {r.notes ? (
                   <p className="mt-1 text-xs text-loom-muted">{r.notes}</p>
                 ) : null}
+                <Link
+                  href={planHrefForRequirement(r.id)}
+                  className="mt-3 inline-flex h-11 items-center justify-center rounded-xl bg-loom-primary px-4 text-sm font-semibold text-white"
+                >
+                  {t("orders.planThis")}
+                </Link>
               </li>
             );
           })}

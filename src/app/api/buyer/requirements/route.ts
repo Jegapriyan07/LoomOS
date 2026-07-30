@@ -41,6 +41,7 @@ export async function POST(request: Request) {
     buyerName: auth.buyer.name,
     categoryId: body.categoryId as DemandCategoryId,
     region: String(body.region ?? auth.buyer.region),
+    district: body.district ? String(body.district) : undefined,
     quantity: Number(body.quantity),
     neededBy: String(body.neededBy),
     priceMin: body.priceMin != null ? Number(body.priceMin) : undefined,

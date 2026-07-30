@@ -3,8 +3,8 @@
  * with stable ids so JSON payment/wallet rows still match.
  *
  * Demo phones:
- *   Weavers: 9000000001 Meena, 9000000002 Selvi, 9000000003 Kamala, 9000000004 Lakshmi
- *   Buyers:  9100000001 Saffron, 9100000002 Festival, 9100000003 Loom Link
+ *   Weavers: 9876543210 Kavita (North), 9876543211 Selvi (South), 9876543212 Kamala, 9876543213 Lakshmi
+ *   Buyers:  9840010001 Saffron, 9840010002 Festival, 9840010003 Loom Link
  */
 import dotenv from "dotenv";
 import path from "node:path";
@@ -31,7 +31,7 @@ const prisma = new PrismaClient({ adapter });
 
 async function main() {
   const { DEMO_COOPS } = await import("../src/lib/auth/regions");
-  const coopId = "demo-cluster-nila";
+  const coopId = "demo-cluster-delhi";
 
   for (const coop of DEMO_COOPS) {
     await prisma.cooperative.upsert({
@@ -58,38 +58,48 @@ async function main() {
     {
       id: "weaver-demo-001",
       userId: "user-weaver-001",
-      phone: "9000000001",
-      name: "Meena (demo weaver — fictional)",
-      givenName: "Meena",
-      primaryLanguage: "ta",
-      categories: ["cotton saree", "silk saree", "cotton lungi", "district:Kanchipuram"],
+      phone: "9876543210",
+      name: "Kavita",
+      givenName: "Kavita",
+      primaryLanguage: "hi",
+      categories: [
+        "cotton saree",
+        "silk saree",
+        "cotton lungi",
+        "district:IIT Delhi",
+      ],
     },
     {
       id: "weaver-demo-002",
       userId: "user-weaver-002",
-      phone: "9000000002",
-      name: "Selvi (demo weaver — fictional)",
+      phone: "9876543211",
+      name: "Selvi",
       givenName: "Selvi",
       primaryLanguage: "ta",
-      categories: ["cotton saree", "stole / dupatta", "district:Salem"],
+      categories: ["cotton saree", "stole / dupatta", "district:South Delhi"],
     },
     {
       id: "weaver-demo-003",
       userId: "user-weaver-003",
-      phone: "9000000003",
-      name: "Kamala (demo weaver — fictional)",
+      phone: "9876543212",
+      name: "Kamala",
       givenName: "Kamala",
-      primaryLanguage: "ta",
-      categories: ["silk saree", "dhoti / angavastram", "district:Kumbakonam"],
+      primaryLanguage: "hi",
+      categories: ["silk saree", "dhoti / angavastram", "district:Hauz Khas"],
     },
     {
       id: "weaver-demo-004",
       userId: "user-weaver-004",
-      phone: "9000000004",
-      name: "Lakshmi (demo weaver — fictional)",
+      phone: "9876543213",
+      name: "Lakshmi",
       givenName: "Lakshmi",
       primaryLanguage: "hi",
-      categories: ["stole / dupatta", "dhoti / angavastram", "cotton saree", "district:Madurai"],
+      categories: [
+        "stole / dupatta",
+        "dhoti / angavastram",
+        "cotton saree",
+        "district:Saket",
+      ],
     },
   ];
 
@@ -106,12 +116,14 @@ async function main() {
           id: w.id,
           userId: w.userId,
           cooperativeId: coopId,
-          region: "Tamil Nadu",
+          region: "Delhi",
           primaryLanguage: w.primaryLanguage,
           categoriesJson: JSON.stringify(w.categories),
           givenName: w.givenName,
         },
         update: {
+          cooperativeId: coopId,
+          region: "Delhi",
           primaryLanguage: w.primaryLanguage,
           categoriesJson: JSON.stringify(w.categories),
           givenName: w.givenName,
@@ -128,7 +140,7 @@ async function main() {
             create: {
               id: w.id,
               cooperativeId: coopId,
-              region: "Tamil Nadu",
+              region: "Delhi",
               primaryLanguage: w.primaryLanguage,
               categoriesJson: JSON.stringify(w.categories),
               givenName: w.givenName,
@@ -143,22 +155,22 @@ async function main() {
     {
       id: "buyer-demo-001",
       userId: "user-buyer-001",
-      phone: "9100000001",
-      businessName: "Saffron Thread Boutique (demo — fictional)",
+      phone: "9840010001",
+      businessName: "Saffron Thread Boutique",
       email: "saffron@demo.loom",
     },
     {
       id: "buyer-demo-002",
       userId: "user-buyer-002",
-      phone: "9100000002",
-      businessName: "Festival Cloth Desk (demo — fictional)",
+      phone: "9840010002",
+      businessName: "Festival Cloth Desk",
       email: "festival@demo.loom",
     },
     {
       id: "buyer-demo-003",
       userId: "user-buyer-003",
-      phone: "9100000003",
-      businessName: "Loom Link Resellers (demo — fictional)",
+      phone: "9840010003",
+      businessName: "Loom Link Resellers",
       email: "loomlink@demo.loom",
     },
   ];
@@ -175,11 +187,12 @@ async function main() {
         create: {
           id: b.id,
           userId: b.userId,
-          region: "Tamil Nadu",
+          region: "Delhi",
           businessName: b.businessName,
           email: b.email,
         },
         update: {
+          region: "Delhi",
           businessName: b.businessName,
           email: b.email,
         },
@@ -194,7 +207,7 @@ async function main() {
           buyer: {
             create: {
               id: b.id,
-              region: "Tamil Nadu",
+              region: "Delhi",
               businessName: b.businessName,
               email: b.email,
             },

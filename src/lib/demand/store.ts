@@ -18,6 +18,7 @@ import {
   DEMO_BUYERS,
   DEMO_CLUSTER,
 } from "@/lib/demo/cluster";
+import { buyerDisplayName } from "@/lib/demand/order-plan";
 import { canTransition } from "@/lib/payments/states";
 import { projectedSettlementDate } from "@/lib/payments/trust";
 import {
@@ -80,6 +81,23 @@ function mergeBuyerProfiles(
   });
 }
 
+/** Fill missing buyerName on payment orders from buyer profiles / demo cluster. */
+function enrichPaymentOrders(
+  orders: PaymentOrder[],
+  buyers: BuyerProfile[],
+): PaymentOrder[] {
+  return orders.map((o) => {
+    if (o.buyerName?.trim()) return o;
+    return {
+      ...o,
+      buyerName: buyerDisplayName(
+        o.buyerId,
+        buyers.find((b) => b.id === o.buyerId)?.name,
+      ),
+    };
+  });
+}
+
 /** Ensure fictional cluster pipeline seed orders exist for Stage 11 dashboard.
  * Skip weavers that already have a fresh per-login `sim-*` pipeline.
  */
@@ -87,9 +105,19 @@ function mergeClusterPipelineOrders(
   existing: PaymentOrder[],
   seeded: PaymentOrder[],
 ): PaymentOrder[] {
-  const ids = new Set(existing.map((o) => o.id));
+  const seedById = new Map(seeded.map((o) => [o.id, o]));
+  const patched = existing.map((o) => {
+    const seed = seedById.get(o.id);
+    if (!seed) return o;
+    return {
+      ...o,
+      buyerName: o.buyerName ?? seed.buyerName,
+      requirementId: o.requirementId ?? seed.requirementId,
+    };
+  });
+  const ids = new Set(patched.map((o) => o.id));
   const weaversWithSim = new Set(
-    existing
+    patched
       .filter((o) => o.id.startsWith("sim-"))
       .map((o) => o.weaverId),
   );
@@ -101,7 +129,7 @@ function mergeClusterPipelineOrders(
         o.id.startsWith("ord-kamala-") ||
         o.id.startsWith("ord-lakshmi-")),
   );
-  return [...existing, ...extras];
+  return [...patched, ...extras];
 }
 
 function seedPaymentSlice(): Pick<
@@ -122,6 +150,7 @@ function seedPaymentSlice(): Pick<
       id: "ord-hist-001",
       weaverId: DEMO_WEAVER.id,
       buyerId: "buyer-demo-001",
+      buyerName: DEMO_BUYERS[0].name,
       category: "cotton-saree",
       amount: 18000,
       advanceAmount: 5000,
@@ -139,6 +168,7 @@ function seedPaymentSlice(): Pick<
       id: "ord-hist-002",
       weaverId: DEMO_WEAVER.id,
       buyerId: "buyer-demo-001",
+      buyerName: DEMO_BUYERS[0].name,
       category: "cotton-saree",
       amount: 12000,
       advanceAmount: 4000,
@@ -156,6 +186,7 @@ function seedPaymentSlice(): Pick<
       id: "ord-hist-003",
       weaverId: DEMO_WEAVER.id,
       buyerId: "buyer-demo-001",
+      buyerName: DEMO_BUYERS[0].name,
       category: "silk-saree",
       amount: 32000,
       advanceAmount: 10000,
@@ -175,6 +206,8 @@ function seedPaymentSlice(): Pick<
     id: "ord-walk-001",
     weaverId: DEMO_WEAVER.id,
     buyerId: "buyer-demo-001",
+    buyerName: DEMO_BUYERS[0].name,
+    requirementId: "req-001",
     category: "cotton-saree",
     amount: 15000,
     advanceAmount: 4500,
@@ -189,6 +222,8 @@ function seedPaymentSlice(): Pick<
       id: "ord-selvi-001",
       weaverId: "weaver-demo-002",
       buyerId: "buyer-demo-002",
+      buyerName: DEMO_BUYERS[1].name,
+      requirementId: "req-002",
       category: "cotton-saree",
       amount: 9000,
       advanceAmount: 3000,
@@ -203,6 +238,7 @@ function seedPaymentSlice(): Pick<
       id: "ord-selvi-002",
       weaverId: "weaver-demo-002",
       buyerId: "buyer-demo-001",
+      buyerName: DEMO_BUYERS[0].name,
       category: "stole-dupatta",
       amount: 4000,
       advanceAmount: 1000,
@@ -217,6 +253,7 @@ function seedPaymentSlice(): Pick<
       id: "ord-selvi-003",
       weaverId: "weaver-demo-002",
       buyerId: "buyer-demo-002",
+      buyerName: DEMO_BUYERS[1].name,
       category: "cotton-saree",
       amount: 16000,
       advanceAmount: 5000,
@@ -234,6 +271,8 @@ function seedPaymentSlice(): Pick<
       id: "ord-kamala-001",
       weaverId: "weaver-demo-003",
       buyerId: "buyer-demo-001",
+      buyerName: DEMO_BUYERS[0].name,
+      requirementId: "req-003",
       category: "silk-saree",
       amount: 28000,
       advanceAmount: 8000,
@@ -250,6 +289,8 @@ function seedPaymentSlice(): Pick<
       id: "ord-kamala-002",
       weaverId: "weaver-demo-003",
       buyerId: "buyer-demo-002",
+      buyerName: DEMO_BUYERS[1].name,
+      requirementId: "req-005",
       category: "dhoti-angavastram",
       amount: 9500,
       advanceAmount: 2800,
@@ -267,6 +308,8 @@ function seedPaymentSlice(): Pick<
       id: "ord-lakshmi-001",
       weaverId: "weaver-demo-004",
       buyerId: "buyer-demo-003",
+      buyerName: DEMO_BUYERS[2].name,
+      requirementId: "req-004",
       category: "stole-dupatta",
       amount: 7200,
       advanceAmount: 2200,
@@ -281,6 +324,7 @@ function seedPaymentSlice(): Pick<
       id: "ord-lakshmi-002",
       weaverId: "weaver-demo-004",
       buyerId: "buyer-demo-002",
+      buyerName: DEMO_BUYERS[1].name,
       category: "dhoti-angavastram",
       amount: 11000,
       advanceAmount: 3500,
@@ -298,6 +342,7 @@ function seedPaymentSlice(): Pick<
       id: "ord-lakshmi-003",
       weaverId: "weaver-demo-004",
       buyerId: "buyer-demo-001",
+      buyerName: DEMO_BUYERS[0].name,
       category: "cotton-saree",
       amount: 13500,
       advanceAmount: 4000,
@@ -317,7 +362,7 @@ function seedPaymentSlice(): Pick<
   };
 }
 
-/** Seed open buyer requirements so Buyer Signal is real from our DB (Stage 9 portal later). */
+/** Seed open buyer requirements — Delhi-primary (IIT Delhi) + a few national hubs. */
 function seedStore(): LoomStore {
   const now = new Date().toISOString();
   return {
@@ -327,14 +372,15 @@ function seedStore(): LoomStore {
         buyerId: "buyer-demo-001",
         buyerName: DEMO_BUYERS[0].name,
         categoryId: "cotton-saree",
-        region: DEMO_CLUSTER.region,
+        region: "Delhi",
+        district: "IIT Delhi",
         quantity: 12,
         neededBy: "2026-10-15",
         priceMin: 900,
         priceMax: 1400,
         status: "open",
         notes:
-          "Simulated — Saffron Thread Boutique wants cotton sarees before Diwali window (fictional).",
+          "Saffron Thread Boutique — cotton sarees for walk-in buyers around IIT Delhi.",
         createdAt: now,
       },
       {
@@ -342,14 +388,15 @@ function seedStore(): LoomStore {
         buyerId: "buyer-demo-002",
         buyerName: DEMO_BUYERS[1].name,
         categoryId: "cotton-saree",
-        region: DEMO_CLUSTER.region,
+        region: "Delhi",
+        district: "Hauz Khas",
         quantity: 8,
         neededBy: "2026-11-01",
         priceMin: 850,
         priceMax: 1200,
         status: "open",
         notes:
-          "Simulated — Festival Cloth Desk wholesale fill for early November (fictional).",
+          "Festival Cloth Desk — Hauz Khas wholesale fill for early November.",
         createdAt: now,
       },
       {
@@ -357,14 +404,15 @@ function seedStore(): LoomStore {
         buyerId: "buyer-demo-001",
         buyerName: DEMO_BUYERS[0].name,
         categoryId: "silk-saree",
-        region: DEMO_CLUSTER.region,
+        region: "Delhi",
+        district: "South Delhi",
         quantity: 10,
         neededBy: "2026-12-01",
         priceMin: 4500,
         priceMax: 7800,
         status: "open",
         notes:
-          "Simulated — Saffron silk lot for wedding retail racks (fictional).",
+          "Saffron silk lot for South Delhi wedding retail racks.",
         createdAt: now,
       },
       {
@@ -372,14 +420,15 @@ function seedStore(): LoomStore {
         buyerId: "buyer-demo-003",
         buyerName: DEMO_BUYERS[2].name,
         categoryId: "stole-dupatta",
-        region: DEMO_CLUSTER.region,
+        region: "Delhi",
+        district: "Karol Bagh",
         quantity: 24,
         neededBy: "2026-09-20",
         priceMin: 450,
         priceMax: 750,
         status: "open",
         notes:
-          "Simulated — Loom Link Resellers gift-set stoles for online drop (fictional).",
+          "Loom Link Resellers — Karol Bagh gift-set stoles for Delhi drop.",
         createdAt: now,
       },
       {
@@ -387,14 +436,93 @@ function seedStore(): LoomStore {
         buyerId: "buyer-demo-002",
         buyerName: DEMO_BUYERS[1].name,
         categoryId: "dhoti-angavastram",
-        region: DEMO_CLUSTER.region,
+        region: "Delhi",
+        district: "Saket",
         quantity: 15,
         neededBy: "2026-10-05",
         priceMin: 600,
         priceMax: 950,
         status: "open",
         notes:
-          "Simulated — Festival Cloth Desk temple-season dhoti set (fictional).",
+          "Festival Cloth Desk — Saket temple-season dhoti set.",
+        createdAt: now,
+      },
+      {
+        id: "req-006",
+        buyerId: "buyer-demo-001",
+        buyerName: DEMO_BUYERS[0].name,
+        categoryId: "cotton-saree",
+        region: "Delhi",
+        district: "New Delhi",
+        quantity: 18,
+        neededBy: "2026-10-22",
+        priceMin: 950,
+        priceMax: 1500,
+        status: "open",
+        notes:
+          "New Delhi boutique restock — Connaught Place belt, Delhi district cluster.",
+        createdAt: now,
+      },
+      {
+        id: "req-007",
+        buyerId: "buyer-demo-003",
+        buyerName: DEMO_BUYERS[2].name,
+        categoryId: "stole-dupatta",
+        region: "Delhi",
+        district: "Chandni Chowk",
+        quantity: 30,
+        neededBy: "2026-09-28",
+        priceMin: 400,
+        priceMax: 700,
+        status: "open",
+        notes:
+          "Chandni Chowk wholesale stoles — Delhi district cluster hub.",
+        createdAt: now,
+      },
+      // National / other-state demand (visible on National scope)
+      {
+        id: "req-nat-001",
+        buyerId: "buyer-demo-002",
+        buyerName: DEMO_BUYERS[1].name,
+        categoryId: "cotton-saree",
+        region: "Tamil Nadu",
+        district: "Kanchipuram",
+        quantity: 10,
+        neededBy: "2026-11-15",
+        priceMin: 800,
+        priceMax: 1300,
+        status: "open",
+        notes: "National signal — Kanchipuram cotton lot (outside Delhi).",
+        createdAt: now,
+      },
+      {
+        id: "req-nat-002",
+        buyerId: "buyer-demo-003",
+        buyerName: DEMO_BUYERS[2].name,
+        categoryId: "silk-saree",
+        region: "Uttar Pradesh",
+        district: "Varanasi",
+        quantity: 6,
+        neededBy: "2026-12-10",
+        priceMin: 5000,
+        priceMax: 9000,
+        status: "open",
+        notes: "National signal — Varanasi silk inquiry.",
+        createdAt: now,
+      },
+      {
+        id: "req-nat-003",
+        buyerId: "buyer-demo-001",
+        buyerName: DEMO_BUYERS[0].name,
+        categoryId: "stole-dupatta",
+        region: "West Bengal",
+        district: "Shantipur",
+        quantity: 20,
+        neededBy: "2026-10-30",
+        priceMin: 420,
+        priceMax: 680,
+        status: "open",
+        notes: "National signal — Shantipur stole fill.",
         createdAt: now,
       },
     ],
@@ -428,11 +556,18 @@ function normalizeStore(raw: Partial<LoomStore>): LoomStore {
 
   return {
     buyerRequirements: (() => {
-      const mapped = (raw.buyerRequirements ?? base.buyerRequirements).map(
-        (r) => {
+      const mapped: BuyerRequirement[] = (
+        raw.buyerRequirements ?? base.buyerRequirements
+      ).map((r) => {
           const demoBuyer = DEMO_BUYERS.find((b) => b.id === r.buyerId);
+          const seed = base.buyerRequirements.find((s) => s.id === r.id);
           if (demoBuyer) {
-            return { ...r, buyerName: demoBuyer.name };
+            return {
+              ...r,
+              buyerName: demoBuyer.name,
+              region: seed?.region ?? demoBuyer.region ?? r.region,
+              district: r.district ?? seed?.district ?? demoBuyer.district,
+            };
           }
           if (r.id.startsWith("req-00") && !r.buyerId) {
             const fallback = DEMO_BUYERS[0];
@@ -440,15 +575,20 @@ function normalizeStore(raw: Partial<LoomStore>): LoomStore {
               ...r,
               buyerId: fallback.id,
               buyerName: fallback.name,
+              region: seed?.region ?? "Delhi",
+              district: r.district ?? seed?.district ?? "IIT Delhi",
               notes: r.notes?.includes("Demo Mode") || r.notes?.includes("Simulated")
                 ? r.notes
-                : "Demo Mode seed requirement — fictional",
+                : "Open buyer requirement",
             };
           }
-          return r;
-        },
-      );
-      // Ensure pitch seed posts (req-004/005) exist even on older JSON files
+          return {
+            ...r,
+            region: seed?.region ?? r.region,
+            district: r.district ?? seed?.district,
+          };
+        });
+      // Ensure pitch seed posts exist even on older JSON files
       const ids = new Set(mapped.map((r) => r.id));
       for (const seed of base.buyerRequirements) {
         if (!ids.has(seed.id)) mapped.push(seed);
@@ -457,7 +597,12 @@ function normalizeStore(raw: Partial<LoomStore>): LoomStore {
     })(),
     manualTrends: raw.manualTrends ?? [],
     ledgerOrders: raw.ledgerOrders ?? [],
-    ...paymentSlice,
+    paymentOrders: enrichPaymentOrders(
+      paymentSlice.paymentOrders,
+      paymentSlice.buyers,
+    ),
+    disputes: paymentSlice.disputes,
+    buyers: paymentSlice.buyers,
     wallets: raw.wallets ?? [],
     walletCredits: raw.walletCredits ?? [],
     weaverStock: (() => {
@@ -523,8 +668,21 @@ function storeNeedsMigration(parsed: Partial<LoomStore>): boolean {
         (o.weaverId === "weaver-demo-004" && o.id.startsWith("sim-")),
     ) ||
     !(parsed.buyerRequirements ?? []).some((r) => r.id === "req-004") ||
+    !(parsed.buyerRequirements ?? []).some(
+      (r) =>
+        r.id === "req-001" &&
+        normalizeStateName(r.region) === "Delhi" &&
+        Boolean(r.district),
+    ) ||
+    !(parsed.buyerRequirements ?? []).some((r) => r.id === "req-006") ||
     !parsed.weaverStock
   );
+}
+
+function normalizeStateName(region: string): string {
+  const cleaned = region.trim().toLowerCase();
+  if (cleaned === "delhi" || cleaned.includes("delhi")) return "Delhi";
+  return region;
 }
 
 async function ensureStore(): Promise<LoomStore> {
@@ -920,6 +1078,8 @@ export async function resetWalkOrder(): Promise<PaymentOrder> {
     id: `ord-walk-${Date.now()}`,
     weaverId: DEMO_WEAVER.id,
     buyerId: "buyer-demo-001",
+    buyerName: DEMO_BUYERS[0].name,
+    requirementId: "req-001",
     category: "cotton-saree",
     amount: 15000,
     advanceAmount: 4500,
@@ -1056,7 +1216,7 @@ export async function getBuyerById(id: string): Promise<BuyerProfile | null> {
   return store.buyers.find((b) => b.id === id) ?? null;
 }
 
-/** Buyer nationwide weaver map — DB weavers + national demo cluster pins. */
+/** Buyer weaver map — Delhi-primary clusters (IIT → District → Nation). */
 export async function getBuyerWeaverMapData() {
   const { listWeaversFromDb } = await import("@/lib/auth/identity");
   const {
@@ -1081,25 +1241,45 @@ export async function getBuyerWeaverMapData() {
     stateClusters: clusterByState(pins),
     demoMode: true as const,
     disclaimer:
-      "Demo Mode heatmap — hub coordinates are approximate. Ratings derived from Settlement Released counts + verified badge, not a live review database.",
+      "Default cluster: IIT Delhi · Delhi. Hub coordinates are approximate. Ratings from Settlement Released counts + verified badge.",
   };
 }
 
 /** Weaver order-demand heatmap (requirements + open pipeline orders). */
-export async function getWeaverOrdersHeatmap(focusRegion?: string) {
+export async function getWeaverOrdersHeatmap(opts?: {
+  scope?: "district" | "state" | "national";
+  region?: string;
+  district?: string;
+}) {
   const { buildWeaverOrdersHeat } = await import("@/lib/map/build-map-data");
+  const { PRIMARY_DEMAND } = await import("@/lib/map/hub-geo");
   const store = await readStore();
+
+  const scope = opts?.scope ?? "district";
+  const region =
+    opts?.region ??
+    (scope === "national" ? undefined : PRIMARY_DEMAND.region);
+  const district =
+    opts?.district ??
+    (scope === "district" ? PRIMARY_DEMAND.district : undefined);
+
   const heat = buildWeaverOrdersHeat(
     store.buyerRequirements,
     store.paymentOrders,
     store.buyers,
-    focusRegion,
+    { scope, region, district },
   );
   return {
     points: heat,
-    focusRegion: focusRegion ?? null,
+    scope,
+    focusRegion: region ?? null,
+    focusDistrict: district ?? null,
     demoMode: true as const,
     disclaimer:
-      "Demo Mode orders heatmap — intensity from open buyer requirements and pipeline orders near handloom hubs.",
+      scope === "district"
+        ? `IIT cluster — hubs near ${district ?? "IIT Delhi"}, Delhi (open requirements + pipeline).`
+        : scope === "state"
+          ? `District cluster — Delhi NCT hubs (open requirements + pipeline).`
+          : "Nation cluster — hubs across India (open requirements + pipeline).",
   };
 }

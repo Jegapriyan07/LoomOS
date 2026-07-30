@@ -168,7 +168,7 @@ export function PhoneOtpLogin({
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder={
-                  role === "BUYER" ? "Your shop / brand" : "e.g. Meena"
+                  role === "BUYER" ? "Your shop / brand" : "e.g. Kavita"
                 }
                 required={mode === "register"}
               />

@@ -4,9 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Mic, Square } from "lucide-react";
 import { useI18n } from "@/lib/i18n/context";
+import { answerChat } from "@/lib/chat/assistant";
+import { fetchLoomSnapshot } from "@/lib/chat/snapshot";
 import {
-  helpHint,
   navConfirm,
+  prefersNavigation,
   resolveVoiceNavIntent,
 } from "@/lib/voice/navigate";
 import {
@@ -18,8 +20,9 @@ import {
 } from "@/lib/voice/speech";
 
 /**
- * Raised center mic above BottomNav — app-wide voice navigation
- * (English / Hindi / Tamil) to Home, Orders, Plan, Money, Profile.
+ * Raised center mic above BottomNav — app-wide voice:
+ * navigate tabs, speak the page, or ask the Loom assistant
+ * (same answers as Home chat) on Plan / Orders / Money / anywhere.
  */
 export function VoiceNavFab() {
   const { t, lang } = useI18n();
@@ -57,6 +60,20 @@ export function VoiceNavFab() {
       setStatus(null);
     } catch {
       setStatus(t("voice.speakFailed"));
+    }
+  }
+
+  /** Same path as Home SummaryChatbot mic — answer + speak. */
+  async function askAssistant(transcript: string) {
+    setStatus(t("chat.thinking"));
+    try {
+      const snap = await fetchLoomSnapshot();
+      const reply = answerChat(transcript, snap, lang);
+      setStatus(reply.slice(0, 220) + (reply.length > 220 ? "…" : ""));
+      await speakAck(reply);
+      window.setTimeout(() => setStatus(null), 5000);
+    } catch {
+      setStatus(t("chat.error"));
     }
   }
 
@@ -99,17 +116,15 @@ export function VoiceNavFab() {
         return;
       }
 
-      if (intent.kind === "navigate") {
+      if (intent.kind === "navigate" && prefersNavigation(transcript, intent)) {
         router.push(intent.href);
         await speakAck(navConfirm(lang, intent.pageKey));
         window.setTimeout(() => setStatus(null), 2200);
         return;
       }
 
-      const hint = helpHint(lang);
-      setStatus(hint);
-      await speakAck(hint);
-      window.setTimeout(() => setStatus(null), 4000);
+      // Questions (and anything else) → Loom assistant, like Home mic
+      await askAssistant(transcript);
     } catch {
       setListening(false);
       setStatus(t("voice.micError"));

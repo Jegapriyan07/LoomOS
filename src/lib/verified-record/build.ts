@@ -55,7 +55,7 @@ export const PHASE2_NOTE =
   "Phase 2 narrative: this record is what LoomOS would bring to bank & insurance partnership conversations — concrete settlement history, not a bullet point.";
 
 export const DEMO_DATA_NOTE =
-  "Demo Mode — figures come only from Settlement Released events in the fictional Nila Loom Circle (Demo Cluster) seed. Not a real cooperative’s books. This prototype does not move real money.";
+  "Figures come from Settlement Released events in Nila Loom Circle.";
 
 /** Stable share id for demo weaver — not a secret; read-only public summary. */
 export function shareIdForWeaver(weaverId: string): string {

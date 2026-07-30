@@ -7,9 +7,10 @@ export default function AdminRequirementsPage() {
   const [rows, setRows] = useState<BuyerRequirement[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [form, setForm] = useState({
-    buyerName: "Demo buyer",
+    buyerName: "Sample buyer",
     categoryId: "cotton-saree",
-    region: "Tamil Nadu",
+    region: "Delhi",
+    district: "IIT Delhi",
     quantity: 20,
     neededBy: "2026-11-01",
     status: "open" as const,
@@ -97,11 +98,19 @@ export default function AdminRequirementsPage() {
           </select>
         </label>
         <label className="block text-sm">
-          Region
+          Region (state / UT)
           <input
             className="mt-1 w-full rounded border border-slate-300 px-3 py-2"
             value={form.region}
             onChange={(e) => setForm({ ...form, region: e.target.value })}
+          />
+        </label>
+        <label className="block text-sm">
+          District / hub
+          <input
+            className="mt-1 w-full rounded border border-slate-300 px-3 py-2"
+            value={form.district}
+            onChange={(e) => setForm({ ...form, district: e.target.value })}
           />
         </label>
         <label className="block text-sm">
@@ -141,7 +150,9 @@ export default function AdminRequirementsPage() {
             className="rounded-lg border border-slate-200 bg-white p-4 text-sm"
           >
             <p className="font-semibold">
-              {row.buyerName} · {row.categoryId} · {row.region}
+              {row.buyerName} · {row.categoryId} ·{" "}
+              {row.district ? `${row.district}, ` : ""}
+              {row.region}
             </p>
             <p className="text-slate-600">
               Qty {row.quantity} · needed {row.neededBy} · {row.status}

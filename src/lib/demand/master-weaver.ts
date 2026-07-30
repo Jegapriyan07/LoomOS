@@ -22,7 +22,7 @@ export const MASTER_WEAVER_RULES: MasterWeaverRule[] = [
   {
     id: "mw-cotton-fest",
     categoryId: "cotton-saree",
-    regions: ["Tamil Nadu", "India"],
+    regions: ["Delhi", "Tamil Nadu", "India"],
     preferenceScore: 78,
     tradition:
       "Cotton sarees move faster before regional festivals when buyers restock everyday wear.",
@@ -34,7 +34,7 @@ export const MASTER_WEAVER_RULES: MasterWeaverRule[] = [
   {
     id: "mw-silk-wedding",
     categoryId: "silk-saree",
-    regions: ["Tamil Nadu", "India"],
+    regions: ["Delhi", "Tamil Nadu", "India"],
     preferenceScore: 72,
     tradition:
       "Silk with zari holds wedding and gift demand; master weavers pace complex pieces.",
@@ -46,7 +46,7 @@ export const MASTER_WEAVER_RULES: MasterWeaverRule[] = [
   {
     id: "mw-stole-gift",
     categoryId: "stole-dupatta",
-    regions: ["Tamil Nadu", "India"],
+    regions: ["Delhi", "Tamil Nadu", "India"],
     preferenceScore: 70,
     tradition:
       "Stoles and dupattas fill gift-set and exhibition demand with shorter cycles.",
@@ -58,7 +58,7 @@ export const MASTER_WEAVER_RULES: MasterWeaverRule[] = [
   {
     id: "mw-dhoti-temple",
     categoryId: "dhoti-angavastram",
-    regions: ["Tamil Nadu", "India"],
+    regions: ["Delhi", "Tamil Nadu", "India"],
     preferenceScore: 68,
     tradition:
       "Temple and ceremonial seasons lift dhoti / angavastram orders in the region.",

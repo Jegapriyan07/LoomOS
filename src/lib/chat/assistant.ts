@@ -117,9 +117,13 @@ export function answerFiveQuestion(
     const days = daysUntilFestival(rec);
     const reqs = snap.openRequirementCount;
     const score = rec?.demandScore ?? 0;
+    const drift = rec?.drift;
     const lines = [
       `${name}, here's your demand picture from your account:`,
       `• Top match demand score: ${score}/100${rec ? ` (${rec.categoryLabel})` : ""}.`,
+      drift
+        ? `• Drift score (intelligence accuracy): ${drift.percentage}%${drift.belowThreshold ? ` — below ${drift.threshold}%, think carefully before acting.` : ` — above ${drift.threshold}% trust line.`}`
+        : null,
       `• Open buyer requirements in your region: ${reqs}.`,
       `• Buyer signal strength: ${buyer}/100.`,
       seasonal > 0
@@ -129,7 +133,7 @@ export function answerFiveQuestion(
         ? `• You already have ${snap.money.openCount} open order(s) in the pipeline.`
         : "• No open production orders yet — demand is mostly from buyer posts + season.",
     ];
-    return lines.join("\n");
+    return lines.filter(Boolean).join("\n");
   }
 
   if (id === "product") {
@@ -144,12 +148,24 @@ export function answerFiveQuestion(
       .slice(0, 2)
       .map((c) => `${c.categoryLabel} (${c.demandScore})`)
       .join("; ");
+    const drift = rec.drift;
+    const driftLines =
+      drift && drift.belowThreshold
+        ? [
+            `⚠ Drift ${drift.percentage}% (below ${drift.threshold}%) — intelligence accuracy is low.`,
+            ...drift.whyLow.map((w) => `• Why: ${w}`),
+            ...drift.weaverMindfulness.slice(0, 3).map((m) => `• Keep in mind: ${m}`),
+          ]
+        : drift
+          ? [`Drift ${drift.percentage}% — advice is above the ${drift.threshold}% trust line (Estimated).`]
+          : [];
     return [
       `What you should weave next (from your profile + live signals):`,
       `→ ${rec.categoryLabel} — demand score ${rec.demandScore}/100.`,
       rec.action,
       tags.length ? `Why: ${tags.join(" · ")}.` : "",
       others ? `Also ranked: ${others}.` : "",
+      ...driftLines,
     ]
       .filter(Boolean)
       .join("\n");
@@ -195,20 +211,19 @@ export function answerFiveQuestion(
         `When will you get paid (from your Money pipeline):`,
         `• No open orders right now — nothing in escrow.`,
         `• Check Orders for new buyer requirements, or Money after a buyer places work.`,
-        `• Reminder: amounts here are simulated Demo Mode — not real bank transfers.`,
       ].join("\n");
     }
     return [
       `When will you get paid (from your account):`,
       `• ${openCount} open order(s) in the pipeline.`,
       held > 0
-        ? `• About ₹${held.toLocaleString("en-IN")} advance held (simulated escrow).`
+        ? `• About ₹${held.toLocaleString("en-IN")} advance held.`
         : "• No advance held yet on open orders.",
       nextDate
         ? `• Next projected settlement: ${nextDate.slice(0, 10)}.`
         : "• No settlement date projected yet — advance / dispatch may still be pending.",
       states.length ? `• States: ${states.join("; ")}.` : "",
-      `• Open Money for the full escrow walk and wallet. Demo / Simulated only.`,
+      `• Open Money for the full escrow walk and wallet.`,
     ]
       .filter(Boolean)
       .join("\n");
@@ -237,7 +252,7 @@ export function summarizeOverall(
 
   if (lang === "hi") {
     const advice = rec
-      ? `आज की सलाह: ${rec.categoryLabel} सबसे मजबूत दिख रहा है (माँग स्कोर ${rec.demandScore}/100)। ${rec.action}`
+      ? `आज की सलाह: ${rec.categoryLabel} सबसे मजबूत दिख रहा है (माँग स्कोर ${rec.demandScore}/100)। ड्रिफ्ट ${rec.drift?.percentage ?? "—"}%${rec.drift?.belowThreshold ? " — 90% से कम, सोच-समझकर आगे बढ़ें।" : "।"} ${rec.action}`
       : "आज की बुनाई सलाह अभी उपलब्ध नहीं है।";
     const money =
       openCount === 0
@@ -298,7 +313,7 @@ export function summarizeOverall(
   }
 
   const advice = rec
-    ? `Today's advice: ${rec.categoryLabel} looks strongest (demand score ${rec.demandScore}/100). ${rec.action}`
+    ? `Today's advice: ${rec.categoryLabel} looks strongest (demand score ${rec.demandScore}/100). Drift score ${rec.drift?.percentage ?? "—"}% intelligence accuracy${rec.drift?.belowThreshold ? " — below 90%, think carefully." : "."} ${rec.action}`
     : "Today's weaving advice is not available yet.";
   const money =
     openCount === 0
@@ -355,6 +370,39 @@ export function answerChat(
     t.includes("daily action")
   ) {
     return answerFiveQuestion("today", snap, lang);
+  }
+
+  if (
+    t.includes("drift") ||
+    t.includes("accuracy") ||
+    t.includes("trust this advice") ||
+    t.includes("how sure") ||
+    t.includes("ड्रिफ्ट")
+  ) {
+    const drift = snap.recommendation?.drift;
+    if (!drift) {
+      return "Drift score is not available yet — refresh Home advice first.";
+    }
+    if (drift.belowThreshold) {
+      return [
+        `Drift score (intelligence accuracy): ${drift.percentage}% — below the ${drift.threshold}% trust line.`,
+        `Why it is low:`,
+        ...drift.whyLow.map((w) => `• ${w}`),
+        `What weavers should keep in mind:`,
+        ...drift.weaverMindfulness.map((m) => `• ${m}`),
+        drift.simulated ? `(${drift.simulatedNote ?? "Demo / Simulated"})` : "",
+      ]
+        .filter(Boolean)
+        .join("\n");
+    }
+    return [
+      `Drift score (intelligence accuracy): ${drift.percentage}% — above the ${drift.threshold}% trust line.`,
+      `Signals agree enough to plan with more confidence (still Estimated).`,
+      drift.formulaSummary,
+      drift.simulated ? `(${drift.simulatedNote ?? "Demo / Simulated"})` : "",
+    ]
+      .filter(Boolean)
+      .join("\n");
   }
 
   const moneyCues = [

@@ -11,6 +11,7 @@ import type { PaymentOrder } from "@/lib/payments/types";
 import {
   DISTRICT_GEO,
   STATE_GEO,
+  isIitClusterDistrict,
   jitterAround,
   resolveHub,
   type HubCoord,
@@ -104,7 +105,7 @@ export function resolveWeaverPlace(
   regionRaw: string,
   categories: string[],
 ): { region: string; district: string } {
-  const region = normalizeState(regionRaw || "Tamil Nadu");
+  const region = normalizeState(regionRaw || "Delhi");
   const fromTag = parseDistrictFromCategories(categories);
   if (fromTag) {
     return { region, district: normalizeDistrict(region, fromTag) };
@@ -255,7 +256,7 @@ export function buildBuyerMapDirectory(
       menu: stockToMenu(stock),
       yarnNote: yarnNoteFromStock(stock),
       demoDisclaimer:
-        "Demo Mode — fictional map weaver for nationwide cluster pitch. Not a real person.",
+        "",
       source: "map-demo",
     });
   }
@@ -314,19 +315,50 @@ export function clusterByState(pins: MapWeaverPin[]): StateCluster[] {
   });
 }
 
-/** Buyer-city map for seeded buyers (order heat join). */
+/** Buyer-city map for seeded buyers (order heat join) — Delhi primary. */
 const BUYER_PLACE: Record<string, { region: string; district: string }> = {
-  "buyer-demo-001": { region: "Tamil Nadu", district: "Kanchipuram" },
-  "buyer-demo-002": { region: "Tamil Nadu", district: "Coimbatore" },
-  "buyer-demo-003": { region: "Tamil Nadu", district: "Madurai" },
+  "buyer-demo-001": { region: "Delhi", district: "IIT Delhi" },
+  "buyer-demo-002": { region: "Delhi", district: "Hauz Khas" },
+  "buyer-demo-003": { region: "Delhi", district: "Karol Bagh" },
+};
+
+/**
+ * Heatmap geography scope (UI labels: IIT → District → Nation).
+ * Internal ids stay district | state | national for API compatibility.
+ *   district = IIT micro-hub (default IIT Delhi)
+ *   state    = Delhi NCT / district belt
+ *   national = India
+ */
+export type DemandHeatScope = "district" | "state" | "national";
+
+export type HeatFocus = {
+  scope: DemandHeatScope;
+  /** State / UT — default Delhi for LoomOS pitch */
+  region?: string;
+  /** District / micro-hub — default IIT Delhi */
+  district?: string;
 };
 
 export function buildWeaverOrdersHeat(
   requirements: BuyerRequirement[],
   orders: PaymentOrder[],
   buyers: { id: string; region: string }[],
-  focusRegion?: string,
+  focus?: string | HeatFocus,
 ): OrderHeatPoint[] {
+  const opts: HeatFocus =
+    typeof focus === "string" || focus === undefined
+      ? {
+          scope: focus ? "state" : "national",
+          region: focus,
+        }
+      : focus;
+
+  const focusRegion = opts.region
+    ? normalizeState(opts.region)
+    : undefined;
+  const focusDistrict = opts.district?.trim() || undefined;
+  const scope = opts.scope ?? (focusRegion ? "state" : "national");
+
   const byKey = new Map<
     string,
     {
@@ -338,6 +370,21 @@ export function buildWeaverOrdersHeat(
     }
   >();
 
+  function inScope(regionRaw: string, district: string | undefined): boolean {
+    const region = normalizeState(regionRaw);
+    if (scope === "national") return true;
+    if (!focusRegion) return true;
+    if (region.toLowerCase() !== focusRegion.toLowerCase()) return false;
+    if (scope === "state") return true;
+    // district scope — match hub, or South Delhi cluster around IIT Delhi
+    if (!focusDistrict) return true;
+    const d = (district ?? "").toLowerCase();
+    const fd = focusDistrict.toLowerCase();
+    if (d === fd) return true;
+    if (isIitClusterDistrict(fd) && isIitClusterDistrict(d)) return true;
+    return false;
+  }
+
   function bump(
     regionRaw: string,
     district: string | undefined,
@@ -346,12 +393,7 @@ export function buildWeaverOrdersHeat(
     orderCount: number,
   ) {
     const region = normalizeState(regionRaw);
-    if (
-      focusRegion &&
-      region.toLowerCase() !== normalizeState(focusRegion).toLowerCase()
-    ) {
-      return;
-    }
+    if (!inScope(region, district)) return;
     const key = district ? `${region}::${district}` : region;
     const cur = byKey.get(key) ?? {
       region,
@@ -368,16 +410,21 @@ export function buildWeaverOrdersHeat(
 
   for (const r of requirements) {
     if (r.status !== "open") continue;
-    const districts = STATE_DISTRICTS[normalizeState(r.region)] ?? [];
-    // Spread demand across a few hubs in the region for a readable heat surface
-    const hubs =
-      districts.length > 0
-        ? districts.slice(0, Math.min(4, districts.length))
-        : [undefined];
-    const per = r.quantity / hubs.length;
-    for (const d of hubs) {
-      bump(r.region, d, per, 0, 1 / hubs.length);
+    const region = normalizeState(r.region);
+    if (r.district) {
+      bump(
+        region,
+        normalizeDistrict(region, r.district),
+        r.quantity,
+        0,
+        1,
+      );
+      continue;
     }
+    // Legacy rows without district — pin to first hub, don't smear statewide
+    const districts = STATE_DISTRICTS[region] ?? [];
+    const hub = districts[0];
+    bump(region, hub, r.quantity, 0, 1);
   }
 
   for (const o of orders) {
@@ -390,18 +437,29 @@ export function buildWeaverOrdersHeat(
             region: buyer.region,
             district: (STATE_DISTRICTS[normalizeState(buyer.region)] ?? [])[0],
           }
-        : { region: "Tamil Nadu", district: "Kanchipuram" });
+        : { region: "Delhi", district: "IIT Delhi" });
     bump(place.region, place.district, 1, o.amount, 1);
   }
 
-  // Seed faint national hubs so the weaver map isn't empty outside TN
-  if (!focusRegion) {
+  // Soft national filler only on national scope
+  if (scope === "national") {
     for (const state of INDIA_STATES) {
-      if (byKey.has(state)) continue;
       const districts = STATE_DISTRICTS[state] ?? [];
       if (districts.length === 0) continue;
-      // tiny baseline so national heat shows weaving geography
-      bump(state, districts[0], 0.4, 0, 0.2);
+      for (const d of districts.slice(0, Math.min(3, districts.length))) {
+        const key = `${normalizeState(state)}::${d}`;
+        if (byKey.has(key)) continue;
+        bump(state, d, 0.35, 0, 0.15);
+      }
+    }
+  }
+
+  // Soft state filler so Delhi NCT map isn't empty outside posted hubs
+  if (scope === "state" && focusRegion) {
+    for (const d of (STATE_DISTRICTS[focusRegion] ?? []).slice(0, 8)) {
+      const key = `${focusRegion}::${d}`;
+      if (byKey.has(key)) continue;
+      bump(focusRegion, d, 0.4, 0, 0.2);
     }
   }
 

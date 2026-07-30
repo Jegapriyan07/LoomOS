@@ -15,6 +15,7 @@ import {
   stockReadinessScore,
   yarnReadyFor,
 } from "@/lib/demand/stock";
+import { computeDriftScore } from "@/lib/demand/drift";
 import {
   DEMAND_CATEGORIES,
   DEMAND_WEIGHTS,
@@ -151,6 +152,10 @@ export async function getTodaysRecommendation(
   const openReqs = await listOpenRequirements({ region: weaver.region });
   const stock = await getWeaverStock(weaverId);
   const orders = await listPaymentOrders({ weaverId });
+  const district =
+    weaver.categories
+      .map((c) => /^district:(.+)$/i.exec(c.trim())?.[1]?.trim())
+      .find(Boolean) ?? null;
 
   const scored: ScoredCategory[] = [];
   for (const categoryId of preferred) {
@@ -159,6 +164,7 @@ export async function getTodaysRecommendation(
     const result = scoreCategory({
       categoryId,
       region: weaver.region,
+      district,
       requirements: openReqs,
       ledgerOrders,
       manualTrend,
@@ -250,6 +256,17 @@ export async function getTodaysRecommendation(
     return `${f.label} (weight ${weightPct}%): raw ${f.rawScore}/100 → contributes ${f.weightedContribution} points. ${f.note ?? ""}`.trim();
   });
 
+  const drift = computeDriftScore({
+    weaverId: weaver.id,
+    factors: top.factors,
+    allCategoryScores: scored.map((s) => ({
+      categoryId: s.categoryId,
+      demandScore: s.demandScore,
+    })),
+    topCategoryId: top.categoryId,
+    stockReadiness: stockReadinessScore(stock, top.categoryId),
+  });
+
   return {
     weaverId: weaver.id,
     categoryId: top.categoryId,
@@ -267,6 +284,7 @@ export async function getTodaysRecommendation(
     generatedAt: new Date().toISOString(),
     reasonTags,
     dailyActions,
+    drift,
   };
 }
 

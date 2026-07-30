@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { UserRole } from "@/generated/prisma/client";
 import { prisma } from "@/lib/auth/db";
-import { isValidIndianMobile, normalizePhone } from "@/lib/auth/phone";
+import { isValidAuthPhone, toAuthPhone } from "@/lib/auth/phone";
 import { resolveUserAfterOtp } from "@/lib/auth/resolve-user";
 import {
   clearSessionCookie,
@@ -26,13 +26,14 @@ function parseRole(raw: unknown): UserRole | null {
 
 /**
  * Pitch-friendly login — no OTP.
- * Login (demo): fresh simulated orders/production each time.
+ * Login: fresh simulated orders/production each time.
  * Register (new phone): empty data + client tour.
  */
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const phone = normalizePhone(String(body.phone ?? ""));
+    const dialCode = String(body.dialCode ?? "91").replace(/\D/g, "") || "91";
+    const phone = toAuthPhone(String(body.phone ?? ""), dialCode);
     const role = parseRole(body.role);
     const modeRaw = String(body.mode ?? "login").toLowerCase();
     const mode = modeRaw === "register" ? "register" : "login";
@@ -43,9 +44,14 @@ export async function POST(request: Request) {
         { status: 400 },
       );
     }
-    if (!isValidIndianMobile(phone)) {
+    if (!isValidAuthPhone(phone, dialCode)) {
       return NextResponse.json(
-        { error: "Enter a valid 10-digit Indian mobile number" },
+        {
+          error:
+            dialCode === "91"
+              ? "Enter a valid 10-digit Indian mobile number"
+              : "Enter a valid phone number for the selected country",
+        },
         { status: 400 },
       );
     }

@@ -3,7 +3,7 @@
 ## Pitch mode
 
 - **No OTP / SMS.** `POST /api/auth/login` with `{ phone, role }` creates the session cookie.
-- Weaver UI: tap a demo name (Meena / Selvi / …) or enter phone → **Continue**.
+- Weaver UI: tap a demo name (Kavita / Selvi / …) or enter phone → **Continue**.
 - Buyer UI: enter demo phone → **Continue**, or Register with a business name.
 
 ## Setup
@@ -17,11 +17,13 @@
 
 | Role   | Phone      | Person / org                          |
 |--------|------------|----------------------------------------|
-| Weaver | 9000000001 | Meena                                  |
-| Weaver | 9000000002 | Selvi                                  |
-| Weaver | 9000000003 | Kamala                                 |
-| Buyer  | 9100000001 | Saffron Thread Boutique                |
-| Buyer  | 9100000002 | Festival Cloth Desk                    |
+| Weaver | 9876543210 | Kavita (North Indian)                   |
+| Weaver | 9876543211 | Selvi (South Indian)                    |
+| Weaver | 9876543212 | Kamala                                 |
+| Weaver | 9876543213 | Lakshmi                                |
+| Buyer  | 9840010001 | Saffron Thread Boutique                |
+| Buyer  | 9840010002 | Festival Cloth Desk                    |
+| Buyer  | 9840010003 | Loom Link Resellers                    |
 
 ## API
 

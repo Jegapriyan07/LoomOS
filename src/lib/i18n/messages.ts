@@ -152,6 +152,9 @@ export type MessageKey =
   | "wallet.incomeLog"
   | "wallet.noSettlements"
   | "wallet.loading"
+  | "wallet.monthlyHistory"
+  | "wallet.monthlyHistoryNote"
+  | "wallet.demoTag"
   | "record.title"
   | "record.loading"
   | "record.copyLink"
@@ -191,7 +194,7 @@ const en: Catalog = {
   "auth.categories": "What you weave",
   "auth.categoriesHint": "Select at least one category for your profile.",
   "auth.seedHint":
-    "Demo weavers: 9000000001 Meena, 9000000002 Selvi, 9000000003 Kamala. New numbers can Register.",
+    "Sample weavers: 9876543210 Kavita (North), 9876543211 Selvi (South), 9876543212 Kamala. New numbers can Register.",
   "auth.checkingSignIn": "Checking sign-in…",
   "auth.skipToSignIn": "Skip to sign in",
   "home.question": "What should I weave this week?",
@@ -205,18 +208,18 @@ const en: Catalog = {
   "home.why": "Why?",
   "home.moneyTitle": "Money coming your way",
   "home.moneySimNote":
-    "Prototype / simulated payment snapshot — not real money movement.",
+    "Payment snapshot for your open orders.",
   "home.nextPayment":
     "Next payment is projected around {date}.",
   "home.noPayment": "No projected payment date yet for open orders.",
   "home.advanceHeld":
-    "About ₹{amount} advance is held for open orders (simulated escrow pattern).",
+    "About ₹{amount} advance is held for open orders.",
   "home.walletQuiet":
     "Your wallet is quiet for now — no advance waiting to clear.",
-  "home.demoSimulated": "Demo / Simulated",
+  "home.demoSimulated": "",
   "voice.speaking": "Speaking…",
   "voice.notSupported":
-    "Speaking is not supported in this browser. Use Chrome for the demo.",
+    "Speaking is not supported in this browser. Use Chrome for best results.",
   "voice.speakFailed": "Could not speak — try Chrome, or tap Hear again.",
   "voice.listeningHint": "Listening… ask what to weave",
   "voice.micUnavailable":
@@ -229,8 +232,8 @@ const en: Catalog = {
   "voice.ask": "Voice ask",
   "voice.a11yLabel": "Voice accessibility",
   "voice.navListening":
-    "Listening… say plan, orders, home, money, or profile",
-  "voice.navMic": "Voice navigate",
+    "Listening… ask about money, orders, or weaving — or say plan, home, profile",
+  "voice.navMic": "Voice ask or navigate",
   "voice.navLabel": "Voice",
   "voice.navA11yLabel": "App voice assistant",
   "chat.title": "Loom assistant",
@@ -246,14 +249,14 @@ const en: Catalog = {
   "chat.assistant": "Assistant",
   "chat.error": "Could not build a summary right now. Try again.",
   "common.loading": "Loading…",
-  "common.demoSimulated": "Demo / Simulated",
+  "common.demoSimulated": "",
   "plan.title": "When to start",
   "plan.subtitle":
-    "Third tab in the pitch walk — after Orders shows demand, set a ready date and we work the calendar backward for you.",
+    "After Orders shows demand, set a ready date and we work the calendar backward for you.",
   "plan.whatWeave": "What will you weave?",
   "plan.whenReady": "When must it be ready?",
   "plan.festivalNote":
-    "Sample festival dates for the demo — not a live festival calendar.",
+    "Curated handloom festival dates for your state/hub — not a live festival API.",
   "plan.ownDate": "Or set your own date",
   "plan.daysHeading": "Days we use to plan",
   "plan.daysWarning":
@@ -281,17 +284,17 @@ const en: Catalog = {
   "timeline.readyDetail": "{days} days shipping before this date",
   "timeline.moneyExpected": "Money expected",
   "timeline.moneyDetail":
-    "Dispatch + {days} day(s) — modeled T+1 PA settlement window (simulated). Demo / Simulated",
+    "Dispatch + {days} day(s) — modeled T+1 PA settlement window.",
   "timeline.estimated": "Estimated",
   "timeline.nhdcTitle": "Check if you can get yarn help",
   "timeline.nhdcBody":
     "NHDC's Raw Material Supply Scheme offers a 15% price subsidy on yarn, paid to your linked bank account via Direct Benefit Transfer. Ask your cooperative or check with NHDC whether you are eligible — LoomOS only reminds you; it does not file claims or connect to NHDC.",
   "money.title": "Money coming your way",
   "money.subtitle": "See where each payment is — calm and clear.",
-  "money.prototypeLabel": "Prototype / simulated.",
+  "money.prototypeLabel": "",
   "money.walletSnapshot": "Wallet snapshot",
   "money.advanceHeld":
-    "About ₹{amount} in advance is held for your open orders — modeled on an RBI-authorised payment aggregator's escrow settlement pattern (simulated).",
+    "About ₹{amount} in advance is held for your open orders — modeled on an RBI-authorised payment aggregator's escrow settlement pattern.",
   "money.noAdvance": "No advance is currently held for open orders.",
   "money.nextProjected":
     "Next money is projected around {date} (modeled T+1 after dispatch).",
@@ -300,15 +303,15 @@ const en: Catalog = {
   "money.yourOrders": "Your orders",
   "money.buyerFallback": "Buyer",
   "money.buyerTrust": "Buyer trust: {label} ({score}/100)",
-  "money.demoNext": "Demo: next step → {state}",
+  "money.demoNext": "Next step → {state}",
   "money.question": "Question: {reason} ({status})",
   "money.adminHint": "Team: walk every state on Admin → Payments.",
   "money.loadingError": "Could not load money status",
   "orders.title": "Buyer demand near you",
   "orders.subtitle":
-    "Second tab in the pitch walk — open requirements in your region. Same posts buyers publish in the Buyer Portal.",
+    "Open requirements in your region. Same posts buyers publish in the Buyer Portal.",
   "orders.demoNote":
-    "Demo Mode — seed requirements may include fictional buyers from Nila Loom Circle. Not live marketplace orders.",
+    "Requirements from buyers in your region.",
   "orders.empty": "No open buyer needs in {region} right now.",
   "orders.piecesNeeded": "{qty} pieces · needed by {date}",
   "orders.priceRange": "Price range ₹{min}–₹{max}",
@@ -318,7 +321,7 @@ const en: Catalog = {
   "wallet.subtitle":
     "Rule-based smoothing — not a prediction model. Only Settlement Released amounts count.",
   "wallet.demoNote":
-    "Demo / Simulated — Available and Reserve come from Settlement Released events in the fictional Nila Loom Circle seed (not live bank balances).",
+    "Available and Reserve come from Settlement Released events.",
   "wallet.available": "Available",
   "wallet.reserve": "Reserve",
   "wallet.floor": "Floor {amount}",
@@ -341,6 +344,10 @@ const en: Catalog = {
   "wallet.incomeLog": "Income log (settlements only)",
   "wallet.noSettlements": "No Settlement Released events yet.",
   "wallet.loading": "Loading income wallet…",
+  "wallet.monthlyHistory": "Monthly income history",
+  "wallet.monthlyHistoryNote":
+    "Settled totals by calendar month — Settlement Released only. Empty months show ₹0 when the 6-month window is ready.",
+  "wallet.demoTag": "Demo / Simulated",
   "record.title": "Verified Transaction Record",
   "record.loading": "Loading record…",
   "record.copyLink": "Copy share link",
@@ -389,13 +396,13 @@ const hi: Catalog = {
   "home.listening": "सुन रहे हैं…",
   "home.why": "क्यों?",
   "home.moneyTitle": "आपके रास्ते में पैसे",
-  "home.moneySimNote": "प्रोटोटाइप / सिम्युलेटेड भुगतान — असली पैसा नहीं।",
+  "home.moneySimNote": "खुले ऑर्डर का भुगतान स्नैपशॉट।",
   "home.nextPayment": "अगला भुगतान लगभग {date} के आसपास अनुमानित है।",
   "home.noPayment": "खुले ऑर्डर के लिए अभी कोई भुगतान तिथि नहीं।",
   "home.advanceHeld":
-    "खुले ऑर्डर के लिए लगभग ₹{amount} एडवांस होल्ड है (सिम्युलेटेड)।",
+    "खुले ऑर्डर के लिए लगभग ₹{amount} एडवांस होल्ड है।",
   "home.walletQuiet": "वॉलेट शांत है — कोई एडवांस क्लीयर होने को नहीं।",
-  "home.demoSimulated": "डेमो / सिम्युलेटेड",
+  "home.demoSimulated": "",
   "voice.speaking": "बोल रहे हैं…",
   "voice.notSupported": "इस ब्राउज़र में आवाज़ उपलब्ध नहीं। Chrome आज़माएँ।",
   "voice.speakFailed": "बोल नहीं सके — Chrome आज़माएँ या फिर सुनें दबाएँ।",
@@ -409,8 +416,8 @@ const hi: Catalog = {
   "voice.ask": "आवाज़ से पूछें",
   "voice.a11yLabel": "आवाज़ पहुँच",
   "voice.navListening":
-    "सुन रहे हैं… योजना, ऑर्डर, होम, पैसे या प्रोफ़ाइल कहें",
-  "voice.navMic": "आवाज़ से नेविगेट",
+    "सुन रहे हैं… पैसे, ऑर्डर या बुनाई पूछें — या योजना, होम, प्रोफ़ाइल कहें",
+  "voice.navMic": "आवाज़ से पूछें या नेविगेट",
   "voice.navLabel": "आवाज़",
   "voice.navA11yLabel": "ऐप आवाज़ सहायक",
   "chat.title": "लूम सहायक",
@@ -425,14 +432,14 @@ const hi: Catalog = {
   "chat.assistant": "सहायक",
   "chat.error": "सारांश नहीं बन सका। फिर कोशिश करें।",
   "common.loading": "लोड हो रहा है…",
-  "common.demoSimulated": "डेमो / सिम्युलेटेड",
+  "common.demoSimulated": "",
   "plan.title": "कब शुरू करें",
   "plan.subtitle":
     "चुनें क्या बुनेंगे और कब तैयार होना चाहिए। हम तिथियाँ पीछे से निकालते हैं।",
   "plan.whatWeave": "आप क्या बुनेंगे?",
   "plan.whenReady": "कब तक तैयार होना चाहिए?",
   "plan.festivalNote":
-    "डेमो के लिए नमूना त्योहार तिथियाँ — लाइव कैलेंडर नहीं।",
+    "आपके राज्य/हब के हथकरघा त्योहार — लाइव API नहीं (संकलित कैलेंडर)।",
   "plan.ownDate": "या अपनी तिथि तय करें",
   "plan.daysHeading": "योजना के दिन",
   "plan.daysWarning":
@@ -459,17 +466,17 @@ const hi: Catalog = {
   "timeline.readyDetail": "इस तिथि से पहले {days} दिन शिपिंग",
   "timeline.moneyExpected": "पैसे की उम्मीद",
   "timeline.moneyDetail":
-    "डिस्पैच + {days} दिन — मॉडल T+1 निपटान (सिम्युलेटेड)। डेमो / सिम्युलेटेड",
+    "डिस्पैच + {days} दिन — मॉडल T+1 निपटान।",
   "timeline.estimated": "अनुमानित",
   "timeline.nhdcTitle": "धागे की मदद मिल सकती है या नहीं देखें",
   "timeline.nhdcBody":
     "NHDC कच्चे माल योजना में धागे पर 15% सब्सिडी DBT से बैंक में आती है। सहकारी या NHDC से पात्रता पूछें — LoomOS केवल याद दिलाता है, दावा नहीं भरता।",
   "money.title": "आपके रास्ते में पैसे",
   "money.subtitle": "हर भुगतान कहाँ है — शांत और साफ़ देखें।",
-  "money.prototypeLabel": "प्रोटोटाइप / सिम्युलेटेड।",
+  "money.prototypeLabel": "",
   "money.walletSnapshot": "वॉलेट झलक",
   "money.advanceHeld":
-    "खुले ऑर्डर के लिए लगभग ₹{amount} एडवांस होल्ड है — RBI-अधिकृत एस्क्रो पैटर्न (सिम्युलेटेड)।",
+    "खुले ऑर्डर के लिए लगभग ₹{amount} एडवांस होल्ड है — RBI-अधिकृत एस्क्रो पैटर्न।",
   "money.noAdvance": "खुले ऑर्डर पर अभी कोई एडवांस होल्ड नहीं।",
   "money.nextProjected":
     "अगला पैसा लगभग {date} के आसपास अनुमानित है (डिस्पैच के बाद T+1)।",
@@ -478,7 +485,7 @@ const hi: Catalog = {
   "money.yourOrders": "आपके ऑर्डर",
   "money.buyerFallback": "खरीदार",
   "money.buyerTrust": "खरीदार भरोसा: {label} ({score}/100)",
-  "money.demoNext": "डेमो: अगला चरण → {state}",
+  "money.demoNext": "अगला चरण → {state}",
   "money.question": "सवाल: {reason} ({status})",
   "money.adminHint": "टीम: Admin → Payments पर हर स्थिति देखें।",
   "money.loadingError": "पैसे की स्थिति लोड नहीं हुई",
@@ -486,7 +493,7 @@ const hi: Catalog = {
   "orders.subtitle":
     "आपके पास खरीदार ज़रूरतें — पोर्टल पर पोस्ट। होम की सलाह इन्हीं से बनती है।",
   "orders.demoNote":
-    "डेमो मोड — बीज ज़रूरतों में काल्पनिक खरीदार हो सकते हैं। लाइव बाज़ार नहीं।",
+    "आपके क्षेत्र की खरीदार ज़रूरतें।",
   "orders.empty": "अभी {region} में कोई खुली खरीदार ज़रूरत नहीं।",
   "orders.piecesNeeded": "{qty} पीस · {date} तक चाहिए",
   "orders.priceRange": "मूल्य सीमा ₹{min}–₹{max}",
@@ -496,7 +503,7 @@ const hi: Catalog = {
   "wallet.subtitle":
     "नियम-आधारित समतलन — भविष्यवाणी मॉडल नहीं। केवल Settlement Released गिना जाता है।",
   "wallet.demoNote":
-    "डेमो / सिम्युलेटेड — Available और Reserve निपटान घटनाओं से (लाइव बैंक नहीं)।",
+    "Available और Reserve निपटान घटनाओं से आते हैं।",
   "wallet.available": "उपलब्ध",
   "wallet.reserve": "रिज़र्व",
   "wallet.floor": "फ़्लोर {amount}",
@@ -519,6 +526,10 @@ const hi: Catalog = {
   "wallet.incomeLog": "आय लॉग (केवल निपटान)",
   "wallet.noSettlements": "अभी कोई Settlement Released नहीं।",
   "wallet.loading": "आय वॉलेट लोड हो रहा है…",
+  "wallet.monthlyHistory": "मासिक आय इतिहास",
+  "wallet.monthlyHistoryNote":
+    "कैलेंडर माह के निपटान योग — केवल Settlement Released। 6-महीने की खिड़की तैयार होने पर खाली महीने ₹0 दिखाते हैं।",
+  "wallet.demoTag": "डेमो / सिम्युलेटेड",
   "record.title": "सत्यापित लेनदेन रिकॉर्ड",
   "record.loading": "रिकॉर्ड लोड हो रहा है…",
   "record.copyLink": "शेयर लिंक कॉपी करें",
@@ -567,13 +578,13 @@ const ta: Catalog = {
   "home.listening": "கேட்கிறது…",
   "home.why": "ஏன்?",
   "home.moneyTitle": "உங்களுக்கு வரும் பணம்",
-  "home.moneySimNote": "முன்மாதிரி / போலி கட்டணம் — உண்மையான பணம் அல்ல.",
+  "home.moneySimNote": "திறந்த ஆர்டர் கட்டண சுருக்கம்.",
   "home.nextPayment": "அடுத்த கட்டணம் சுமார் {date} அன்று எதிர்பார்க்கப்படுகிறது.",
   "home.noPayment": "திறந்த ஆர்டர்களுக்கு இன்னும் கட்டண தேதி இல்லை.",
   "home.advanceHeld":
     "திறந்த ஆர்டர்களுக்கு சுமார் ₹{amount} முன்பணம் பிடிக்கப்பட்டுள்ளது.",
   "home.walletQuiet": "வாலட் அமைதியாக உள்ளது — முன்பணம் இல்லை.",
-  "home.demoSimulated": "டெமோ / போலி",
+  "home.demoSimulated": "",
   "voice.speaking": "பேசுகிறது…",
   "voice.notSupported": "இந்த உலாவியில் பேச்சு இல்லை. Chrome பயன்படுத்துங்கள்.",
   "voice.speakFailed": "பேச முடியவில்லை — Chrome முயற்சிக்கவும்.",
@@ -587,8 +598,8 @@ const ta: Catalog = {
   "voice.ask": "குரல் கேள்வி",
   "voice.a11yLabel": "குரல் அணுகல்",
   "voice.navListening":
-    "கேட்கிறது… திட்டம், ஆர்டர், முகப்பு, பணம் அல்லது சுயவிவரம் சொல்லுங்கள்",
-  "voice.navMic": "குரல் வழிசெலுத்தல்",
+    "கேட்கிறது… பணம், ஆர்டர் அல்லது நெசவு கேளுங்கள் — அல்லது திட்டம், முகப்பு, சுயவிவரம் சொல்லுங்கள்",
+  "voice.navMic": "குரலால் கேள் அல்லது செல்",
   "voice.navLabel": "குரல்",
   "voice.navA11yLabel": "பயன்பாட்டு குரல் உதவியாளர்",
   "chat.title": "லூம் உதவியாளர்",
@@ -603,14 +614,14 @@ const ta: Catalog = {
   "chat.assistant": "உதவியாளர்",
   "chat.error": "சுருக்கம் தயாரிக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.",
   "common.loading": "ஏற்றுகிறது…",
-  "common.demoSimulated": "டெமோ / போலி",
+  "common.demoSimulated": "",
   "plan.title": "எப்போது தொடங்குவது",
   "plan.subtitle":
     "என்ன நெசவு செய்வீர்கள், எப்போது தயாராக வேண்டும் என்பதைத் தேர்வு செய்யுங்கள். நாங்கள் தேதிகளைப் பின்னோக்கிக் கணக்கிடுவோம்.",
   "plan.whatWeave": "நீங்கள் என்ன நெசவு செய்வீர்கள்?",
   "plan.whenReady": "எப்போது தயாராக வேண்டும்?",
   "plan.festivalNote":
-    "டெமோவுக்கான மாதிரி விழா தேதிகள் — நேரடி நாட்காட்டி அல்ல.",
+    "உங்கள் மாநில/மைய கைத்தறி விழா தேதிகள் — நேரடி API அல்ல.",
   "plan.ownDate": "அல்லது உங்கள் சொந்த தேதியை அமைக்கவும்",
   "plan.daysHeading": "திட்டத்திற்குப் பயன்படுத்தும் நாட்கள்",
   "plan.daysWarning":
@@ -638,14 +649,14 @@ const ta: Catalog = {
   "timeline.readyDetail": "இந்தத் தேதிக்கு முன் {days} நாள் அனுப்புதல்",
   "timeline.moneyExpected": "பணம் எதிர்பார்ப்பு",
   "timeline.moneyDetail":
-    "அனுப்புதல் + {days} நாள்(கள்) — மாதிரி T+1 தீர்வு (போலி). டெமோ / போலி",
+    "அனுப்புதல் + {days} நாள்(கள்) — மாதிரி T+1 தீர்வு.",
   "timeline.estimated": "மதிப்பீடு",
   "timeline.nhdcTitle": "நூல் உதவி கிடைக்குமா எனப் பாருங்கள்",
   "timeline.nhdcBody":
     "NHDC மூலப்பொருள் திட்டம் நூலுக்கு 15% மானியம் DBT மூலம் வழங்குகிறது. கூட்டுறவு அல்லது NHDC-இடம் தகுதி கேளுங்கள் — LoomOS நினைவூட்டுகிறது மட்டும்; விண்ணப்பம் செய்யாது.",
   "money.title": "உங்களுக்கு வரும் பணம்",
   "money.subtitle": "ஒவ்வொரு கட்டணமும் எங்கே — அமைதியாகத் தெளிவாக.",
-  "money.prototypeLabel": "முன்மாதிரி / போலி.",
+  "money.prototypeLabel": "",
   "money.walletSnapshot": "வாலட் சுருக்கம்",
   "money.advanceHeld":
     "திறந்த ஆர்டர்களுக்கு சுமார் ₹{amount} முன்பணம் பிடிக்கப்பட்டுள்ளது — RBI அங்கீகரித்த எஸ்க்ரோ முறை (போலி).",
@@ -657,7 +668,7 @@ const ta: Catalog = {
   "money.yourOrders": "உங்கள் ஆர்டர்கள்",
   "money.buyerFallback": "வாங்குபவர்",
   "money.buyerTrust": "வாங்குபவர் நம்பிக்கை: {label} ({score}/100)",
-  "money.demoNext": "டெமோ: அடுத்த படி → {state}",
+  "money.demoNext": "Next step → {state}",
   "money.question": "கேள்வி: {reason} ({status})",
   "money.adminHint": "குழு: Admin → Payments-இல் ஒவ்வொரு நிலையும் பாருங்கள்.",
   "money.loadingError": "பண நிலையை ஏற்ற முடியவில்லை",
@@ -752,7 +763,7 @@ const te: Catalog = {
   "home.advanceHeld":
     "ఓపెన్ ఆర్డర్లకు సుమారు ₹{amount} అడ్వాన్స్ హోల్డ్‌లో ఉంది.",
   "home.walletQuiet": "వాలెట్ నిశ్శబ్దంగా ఉంది — అడ్వాన్స్ లేదు.",
-  "home.demoSimulated": "డెమో / సిమ్యులేటెడ్",
+  "home.demoSimulated": "",
   "voice.speaking": "మాట్లాడుతోంది…",
   "voice.notSupported": "ఈ బ్రౌజర్‌లో స్పీచ్ లేదు. Chrome ఉపయోగించండి.",
   "voice.speakFailed": "మాట్లాడలేకపోయాం — Chrome ప్రయత్నించండి.",
@@ -766,8 +777,8 @@ const te: Catalog = {
   "voice.ask": "వాయిస్ అడుగు",
   "voice.a11yLabel": "వాయిస్ యాక్సెస్",
   "voice.navListening":
-    "వింటోంది… ప్లాన్, ఆర్డర్లు, హోమ్, డబ్బు లేదా ప్రొఫైల్ చెప్పండి",
-  "voice.navMic": "వాయిస్ నావిగేట్",
+    "వింటోంది… డబ్బు, ఆర్డర్లు లేదా నేయడం అడగండి — లేదా ప్లాన్, హోమ్, ప్రొఫైల్ చెప్పండి",
+  "voice.navMic": "వాయిస్ అడగండి లేదా నావిగేట్",
   "voice.navLabel": "వాయిస్",
   "voice.navA11yLabel": "యాప్ వాయిస్ సహాయకుడు",
   "chat.title": "లూమ్ సహాయకుడు",
@@ -782,14 +793,14 @@ const te: Catalog = {
   "chat.assistant": "సహాయకుడు",
   "chat.error": "సారాంశం తయారు కాలేదు. మళ్లీ ప్రయత్నించండి.",
   "common.loading": "లోడ్ అవుతోంది…",
-  "common.demoSimulated": "డెమో / సిమ్యులేటెడ్",
+  "common.demoSimulated": "",
   "plan.title": "ఎప్పుడు ప్రారంభించాలి",
   "plan.subtitle":
     "మీరు ఏమి నేస్తారో, ఎప్పటికి సిద్ధం కావాలో ఎంచుకోండి. మేము తేదీలను వెనక్కి లెక్కిస్తాం.",
   "plan.whatWeave": "మీరు ఏమి నేస్తారు?",
   "plan.whenReady": "ఎప్పటికి సిద్ధం కావాలి?",
   "plan.festivalNote":
-    "డెమో కోసం నమూనా పండుగ తేదీలు — లైవ్ క్యాలెండర్ కాదు.",
+    "మీ రాష్ట్ర/హబ్ చేనేత పండుగ తేదీలు — లైవ్ API కాదు.",
   "plan.ownDate": "లేదా మీ స్వంత తేదీ సెట్ చేయండి",
   "plan.daysHeading": "ప్లాన్‌కు ఉపయోగించే రోజులు",
   "plan.daysWarning":
@@ -835,7 +846,7 @@ const te: Catalog = {
   "money.yourOrders": "మీ ఆర్డర్లు",
   "money.buyerFallback": "కొనుగోలుదారు",
   "money.buyerTrust": "కొనుగోలుదారు నమ్మకం: {label} ({score}/100)",
-  "money.demoNext": "డెమో: తదుపరి దశ → {state}",
+  "money.demoNext": "Next step → {state}",
   "money.question": "ప్రశ్న: {reason} ({status})",
   "money.adminHint": "టీమ్: Admin → Paymentsలో ప్రతి స్థితిని చూడండి.",
   "money.loadingError": "డబ్బు స్థితి లోడ్ కాలేదు",
@@ -930,7 +941,7 @@ const kn: Catalog = {
   "home.advanceHeld":
     "ತೆರೆದ ಆರ್ಡರ್‌ಗಳಿಗೆ ಸುಮಾರು ₹{amount} ಅಡ್ವಾನ್ಸ್ ಹೋಲ್ಡ್‌ನಲ್ಲಿದೆ.",
   "home.walletQuiet": "ವಾಲೆಟ್ ನಿಶ್ಶಬ್ದ — ಅಡ್ವಾನ್ಸ್ ಇಲ್ಲ.",
-  "home.demoSimulated": "ಡೆಮೊ / ಸಿಮ್ಯುಲೇಟೆಡ್",
+  "home.demoSimulated": "",
   "voice.speaking": "ಮಾತನಾಡುತ್ತಿದೆ…",
   "voice.notSupported": "ಈ ಬ್ರೌಸರ್‌ನಲ್ಲಿ ಮಾತು ಇಲ್ಲ. Chrome ಬಳಸಿ.",
   "voice.speakFailed": "ಮಾತನಾಡಲಾಗಲಿಲ್ಲ — Chrome ಪ್ರಯತ್ನಿಸಿ.",
@@ -944,8 +955,8 @@ const kn: Catalog = {
   "voice.ask": "ಧ್ವನಿ ಪ್ರಶ್ನೆ",
   "voice.a11yLabel": "ಧ್ವನಿ ಪ್ರವೇಶ",
   "voice.navListening":
-    "ಕೇಳುತ್ತಿದೆ… ಯೋಜನೆ, ಆರ್ಡರ್, ಮುಖಪುಟ, ಹಣ ಅಥವಾ ಪ್ರೊಫೈಲ್ ಹೇಳಿ",
-  "voice.navMic": "ಧ್ವನಿ ನ್ಯಾವಿಗೇಟ್",
+    "ಕೇಳುತ್ತಿದೆ… ಹಣ, ಆರ್ಡರ್ ಅಥವಾ ನೇಯುವಿಕೆ ಕೇಳಿ — ಅಥವಾ ಯೋಜನೆ, ಮುಖಪುಟ, ಪ್ರೊಫೈಲ್ ಹೇಳಿ",
+  "voice.navMic": "ಧ್ವನಿಯಿಂದ ಕೇಳಿ ಅಥವಾ ನ್ಯಾವಿಗೇಟ್",
   "voice.navLabel": "ಧ್ವನಿ",
   "voice.navA11yLabel": "ಅಪ್ ಧ್ವನಿ ಸಹಾಯಕ",
   "chat.title": "ಲೂಮ್ ಸಹಾಯಕ",
@@ -960,14 +971,14 @@ const kn: Catalog = {
   "chat.assistant": "ಸಹಾಯಕ",
   "chat.error": "ಸಾರಾಂಶ ತಯಾರಾಗಲಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
   "common.loading": "ಲೋಡ್ ಆಗುತ್ತಿದೆ…",
-  "common.demoSimulated": "ಡೆಮೊ / ಸಿಮ್ಯುಲೇಟೆಡ್",
+  "common.demoSimulated": "",
   "plan.title": "ಯಾವಾಗ ಪ್ರಾರಂಭಿಸುವುದು",
   "plan.subtitle":
     "ನೀವು ಏನು ನೇಯುತ್ತೀರಿ ಮತ್ತು ಯಾವಾಗ ಸಿದ್ಧವಾಗಬೇಕು ಎಂದು ಆಯ್ಕೆಮಾಡಿ. ನಾವು ದಿನಾಂಕಗಳನ್ನು ಹಿಂದಕ್ಕೆ ಲೆಕ್ಕ ಹಾಕುತ್ತೇವೆ.",
   "plan.whatWeave": "ನೀವು ಏನು ನೇಯುತ್ತೀರಿ?",
   "plan.whenReady": "ಯಾವಾಗ ಸಿದ್ಧವಾಗಬೇಕು?",
   "plan.festivalNote":
-    "ಡೆಮೊಗಾಗಿ ಮಾದರಿ ಹಬ್ಬದ ದಿನಾಂಕಗಳು — ಲೈವ್ ಕ್ಯಾಲೆಂಡರ್ ಅಲ್ಲ.",
+    "ನಿಮ್ಮ ರಾಜ್ಯ/ಹಬ್ ಕೈಮಗ್ಗ ಹಬ್ಬದ ದಿನಾಂಕಗಳು — ಲೈವ್ API ಅಲ್ಲ.",
   "plan.ownDate": "ಅಥವಾ ನಿಮ್ಮ ಸ್ವಂತ ದಿನಾಂಕ ಹೊಂದಿಸಿ",
   "plan.daysHeading": "ಯೋಜನೆಗೆ ಬಳಸುವ ದಿನಗಳು",
   "plan.daysWarning":
@@ -1013,7 +1024,7 @@ const kn: Catalog = {
   "money.yourOrders": "ನಿಮ್ಮ ಆರ್ಡರ್‌ಗಳು",
   "money.buyerFallback": "ಖರೀದಿದಾರ",
   "money.buyerTrust": "ಖರೀದಿದಾರ ನಂಬಿಕೆ: {label} ({score}/100)",
-  "money.demoNext": "ಡೆಮೊ: ಮುಂದಿನ ಹಂತ → {state}",
+  "money.demoNext": "Next step → {state}",
   "money.question": "ಪ್ರಶ್ನೆ: {reason} ({status})",
   "money.adminHint": "ತಂಡ: Admin → Paymentsನಲ್ಲಿ ಪ್ರತಿ ಸ್ಥಿತಿ ನೋಡಿ.",
   "money.loadingError": "ಹಣದ ಸ್ಥಿತಿ ಲೋಡ್ ಆಗಲಿಲ್ಲ",
@@ -1093,7 +1104,7 @@ const bn: Catalog = {
   "auth.categories": "আপনি কী বোনেন",
   "auth.categoriesHint": "প্রোফাইলের জন্য অন্তত একটি শ্রেণি বেছে নিন।",
   "auth.seedHint":
-    "ডেমো তাঁতি: 9000000001 মীনা, 9000000002 সেলভি, 9000000003 কমলা। নতুন নম্বর নিবন্ধন করতে পারে।",
+    "ডেমো তাঁতি: 9876543210 কবিতা (উত্তর), 9876543211 সেলভি (দক্ষিণ), 9876543212 কমলা। নতুন নম্বর নিবন্ধন করতে পারে।",
   "auth.checkingSignIn": "সাইন-ইন যাচাই…",
   "auth.skipToSignIn": "সাইন ইনে যান",
   "home.question": "এই সপ্তাহে কী বোনব?",
@@ -1113,7 +1124,7 @@ const bn: Catalog = {
   "home.advanceHeld":
     "খোলা অর্ডারের জন্য প্রায় ₹{amount} অ্যাডভান্স হোল্ডে আছে (সিমুলেটেড)।",
   "home.walletQuiet": "ওয়ালেট শান্ত — কোনো অ্যাডভান্স ক্লিয়ার হওয়ার অপেক্ষায় নেই।",
-  "home.demoSimulated": "ডেমো / সিমুলেটেড",
+  "home.demoSimulated": "",
   "voice.speaking": "বলছি…",
   "voice.notSupported": "এই ব্রাউজারে কথা বলা নেই। ডেমোর জন্য Chrome ব্যবহার করুন।",
   "voice.speakFailed": "বলা যায়নি — Chrome চেষ্টা করুন বা আবার শুনুন চাপুন।",
@@ -1127,8 +1138,8 @@ const bn: Catalog = {
   "voice.ask": "কণ্ঠে জিজ্ঞাসা",
   "voice.a11yLabel": "কণ্ঠ অ্যাক্সেস",
   "voice.navListening":
-    "শুনছি… পরিকল্পনা, অর্ডার, হোম, টাকা বা প্রোফাইল বলুন",
-  "voice.navMic": "কণ্ঠে নেভিগেট",
+    "শুনছি… টাকা, অর্ডার বা বোনা নিয়ে জিজ্ঞাসা করুন — অথবা পরিকল্পনা, হোম, প্রোফাইল বলুন",
+  "voice.navMic": "কণ্ঠে জিজ্ঞাসা বা নেভিগেট",
   "voice.navLabel": "কণ্ঠ",
   "voice.navA11yLabel": "অ্যাপ কণ্ঠ সহায়ক",
   "chat.title": "লুম সহায়ক",
@@ -1143,14 +1154,14 @@ const bn: Catalog = {
   "chat.assistant": "সহায়ক",
   "chat.error": "সারাংশ তৈরি হয়নি। আবার চেষ্টা করুন।",
   "common.loading": "লোড হচ্ছে…",
-  "common.demoSimulated": "ডেমো / সিমুলেটেড",
+  "common.demoSimulated": "",
   "plan.title": "কখন শুরু করবেন",
   "plan.subtitle":
     "কী বোনেন এবং কখন প্রস্তুত হতে হবে বেছে নিন। আমরা তারিখ পেছন থেকে বের করি।",
   "plan.whatWeave": "আপনি কী বোনেন?",
   "plan.whenReady": "কখন প্রস্তুত হতে হবে?",
   "plan.festivalNote":
-    "ডেমোর জন্য নমুনা উৎসবের তারিখ — লাইভ ক্যালেন্ডার নয়।",
+    "আপনার রাজ্য/হাবের হ্যান্ডলুম উৎসবের তারিখ — লাইভ API নয়।",
   "plan.ownDate": "অথবা নিজের তারিখ দিন",
   "plan.daysHeading": "পরিকল্পনায় ব্যবহৃত দিন",
   "plan.daysWarning":
@@ -1196,7 +1207,7 @@ const bn: Catalog = {
   "money.yourOrders": "আপনার অর্ডার",
   "money.buyerFallback": "ক্রেতা",
   "money.buyerTrust": "ক্রেতার বিশ্বাস: {label} ({score}/100)",
-  "money.demoNext": "ডেমো: পরবর্তী ধাপ → {state}",
+  "money.demoNext": "Next step → {state}",
   "money.question": "প্রশ্ন: {reason} ({status})",
   "money.adminHint": "টিম: Admin → Payments-এ প্রতিটি অবস্থা দেখুন।",
   "money.loadingError": "টাকার অবস্থা লোড হয়নি",
@@ -1276,7 +1287,7 @@ const as: Catalog = {
   "auth.categories": "আপুনি কি বোৱে",
   "auth.categoriesHint": "প্ৰ'ফাইলৰ বাবে কমেও এটা শ্ৰেণী বাছনি কৰক।",
   "auth.seedHint":
-    "ডেম' তাঁতী: 9000000001 মীনা, 9000000002 চেल्ভি, 9000000003 কমলা। নতুন নম্বৰে পঞ্জীয়ন কৰিব পাৰে।",
+    "ডেম' তাঁতী: 9876543210 কবিতা (উত্তৰ), 9876543211 চেल्ভি (দক্ষিণ), 9876543212 কমলা। নতুন নম্বৰে পঞ্জীয়ন কৰিব পাৰে।",
   "auth.checkingSignIn": "ছাইন-ইন পৰীক্ষা…",
   "auth.skipToSignIn": "ছাইন ইনলৈ যাওক",
   "home.question": "এই সপ্তাহত কি ব'ব?",
@@ -1296,7 +1307,7 @@ const as: Catalog = {
   "home.advanceHeld":
     "খোলা অৰ্ডাৰৰ বাবে প্ৰায় ₹{amount} এডভান্স হ'ল্ডত আছে (ছিমুলেটেড)।",
   "home.walletQuiet": "ৱালেট শান্ত — কোনো এডভান্স ক্লিয়াৰ হ'বলৈ নাই।",
-  "home.demoSimulated": "ডেম' / ছিমুলেটেড",
+  "home.demoSimulated": "",
   "voice.speaking": "কৈ আছে…",
   "voice.notSupported": "এই ব্ৰাউজাৰত কথা কোৱা নাই। ডেম'ৰ বাবে Chrome ব্যৱহাৰ কৰক।",
   "voice.speakFailed": "ক'ব পৰা নগ'ল — Chrome চেষ্টা কৰক বা পুনৰ শুনক টিপক।",
@@ -1310,8 +1321,8 @@ const as: Catalog = {
   "voice.ask": "কণ্ঠেৰে সোধক",
   "voice.a11yLabel": "কণ্ঠ এক্সেছ",
   "voice.navListening":
-    "শুনি আছে… পৰিকল্পনা, অৰ্ডাৰ, হোম, টকা বা প্ৰফাইল কওক",
-  "voice.navMic": "কণ্ঠেৰে নেভিগেট",
+    "শুনি আছে… টকা, অৰ্ডাৰ বা বোৱা সম্পৰ্কে সোধক — বা পৰিকল্পনা, হোম, প্ৰফাইল কওক",
+  "voice.navMic": "কণ্ঠেৰে সোধক বা নেভিগেট",
   "voice.navLabel": "কণ্ঠ",
   "voice.navA11yLabel": "এপ কণ্ঠ সহায়ক",
   "chat.title": "লুম সহায়ক",
@@ -1326,14 +1337,14 @@ const as: Catalog = {
   "chat.assistant": "সহায়ক",
   "chat.error": "সাৰাংশ বনাব পৰা নগ'ল। পুনৰ চেষ্টা কৰক।",
   "common.loading": "ল'ড হৈ আছে…",
-  "common.demoSimulated": "ডেম' / ছিমুলেটেড",
+  "common.demoSimulated": "",
   "plan.title": "কেতিয়া আৰম্ভ কৰিব",
   "plan.subtitle":
     "কি ব'ব আৰু কেতিয়া সাজু হ'ব লাগে বাছনি কৰক। আমি তাৰিখ পিছফালৰ পৰা উলিয়াওঁ।",
   "plan.whatWeave": "আপুনি কি ব'ব?",
   "plan.whenReady": "কেতিয়া সাজু হ'ব লাগে?",
   "plan.festivalNote":
-    "ডেম'ৰ বাবে নমুনা উৎসৱৰ তাৰিখ — লাইভ কেলেণ্ডাৰ নহয়।",
+    "আপোনাৰ ৰাজ্য/হাবৰ হাততাঁত উৎসৱৰ তাৰিখ — লাইভ API নহয়।",
   "plan.ownDate": "নাইবা নিজৰ তাৰিখ দিয়ক",
   "plan.daysHeading": "পৰিকল্পনাত ব্যৱহাৰ কৰা দিন",
   "plan.daysWarning":
@@ -1379,7 +1390,7 @@ const as: Catalog = {
   "money.yourOrders": "আপোনাৰ অৰ্ডাৰ",
   "money.buyerFallback": "ক্ৰেতা",
   "money.buyerTrust": "ক্ৰেতাৰ বিশ্বাস: {label} ({score}/100)",
-  "money.demoNext": "ডেম': পৰৱৰ্তী পদক্ষেপ → {state}",
+  "money.demoNext": "Next step → {state}",
   "money.question": "প্ৰশ্ন: {reason} ({status})",
   "money.adminHint": "টিম: Admin → Payments-ত প্ৰতিটো অৱস্থা চাওক।",
   "money.loadingError": "টকাৰ অৱস্থা ল'ড নহ'ল",

@@ -14,7 +14,7 @@ const ROWS: { area: string; real: string; simulated: string }[] = [
     area: "Demand score & Home advice",
     real: "Formula + Why? + standee reason tags; Buyer Signal from requirement store; Master Weaver rules + market-extra in score",
     simulated:
-      "Festival calendar hardcoded; yarn/tenders/exhibitions = demo seed (not live APIs); Trends = manual admin",
+      "Festival calendar = curated public seed (state/district hubs, sourced notes) — not a live festival API; yarn/tenders/exhibitions = demo seed; Trends = manual admin",
   },
   {
     area: "Master weaver knowledge",
@@ -34,7 +34,7 @@ const ROWS: { area: string; real: string; simulated: string }[] = [
   {
     area: "Production plan dates",
     real: "Backward calendar math from target date + editable day counts",
-    simulated: "Default weave/yarn days are illustrative; sample festival chips",
+    simulated: "Default weave/yarn days are illustrative; festival chips from curated public calendar",
   },
   {
     area: "Payments / escrow / trust",
@@ -114,7 +114,7 @@ export function RealVsSimulated() {
       </div>
 
       <p className="mt-4 text-xs leading-snug text-[#5c6570]">
-        People &amp; orgs in this build (Meena, Selvi, Kamala, Saffron Thread
+        People &amp; orgs in this build (Kavita, Selvi, Kamala, Saffron Thread
         Boutique, Nila Loom Circle) are labeled fictional Demo Mode — not real
         persons or cooperatives. Auth uses real PostgreSQL + phone login (no OTP /
         SMS not wired). LoomOS does not claim RBI licensing,

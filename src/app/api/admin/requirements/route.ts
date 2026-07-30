@@ -18,6 +18,7 @@ export async function POST(request: Request) {
     buyerName: body.buyerName ?? "Buyer",
     categoryId: body.categoryId as DemandCategoryId,
     region: body.region,
+    district: body.district,
     quantity: Number(body.quantity),
     neededBy: body.neededBy ?? new Date().toISOString().slice(0, 10),
     priceMin:

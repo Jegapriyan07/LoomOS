@@ -1,5 +1,8 @@
 import { parseDateOnly, toDateOnly } from "@/lib/production-defaults";
-import { PUBLIC_FESTIVAL_CALENDAR } from "@/lib/demand/public-festivals";
+import {
+  festivalMatchTier,
+  PUBLIC_FESTIVAL_CALENDAR,
+} from "@/lib/demand/public-festivals";
 import { computeMarketExtraSignal } from "@/lib/demand/market-signals";
 import { computeMasterWeaverSignal } from "@/lib/demand/master-weaver";
 import {
@@ -57,25 +60,30 @@ export function computeBuyerSignal(
 
 /**
  * Seasonal Proximity (0–100) — closeness to nearest relevant public calendar event.
+ * Prefers district-tagged festivals, then state, then pan-India.
  */
 export function computeSeasonalProximity(
   categoryId: DemandCategoryId,
   region: string,
   asOf: Date = new Date(),
+  district?: string | null,
 ): { score: number; factor: DemandFactorBreakdown } {
   const today = parseDateOnly(toDateOnly(asOf));
   const relevant = PUBLIC_FESTIVAL_CALENDAR.filter((e) => {
-    const regionOk =
-      e.regions.some((r) => r.toLowerCase() === "india") ||
-      e.regions.some((r) => r.toLowerCase() === region.toLowerCase());
-    return regionOk && e.categoryIds.includes(categoryId);
+    if (!e.categoryIds.includes(categoryId)) return false;
+    return festivalMatchTier(e, region, district) !== null;
   });
+
+  const tierRank = (t: ReturnType<typeof festivalMatchTier>) =>
+    t === "district" ? 0 : t === "state" ? 1 : t === "national" ? 2 : 3;
 
   let best: {
     name: string;
     daysUntil: number;
     startDate: string;
     sourceNote: string;
+    tier: NonNullable<ReturnType<typeof festivalMatchTier>>;
+    handloomDemand: string;
   } | null = null;
 
   for (const event of relevant) {
@@ -89,12 +97,20 @@ export function computeSeasonalProximity(
     } else {
       continue;
     }
-    if (!best || daysUntil < best.daysUntil) {
+    const tier = festivalMatchTier(event, region, district);
+    if (!tier) continue;
+    const better =
+      !best ||
+      daysUntil < best.daysUntil ||
+      (daysUntil === best.daysUntil && tierRank(tier) < tierRank(best.tier));
+    if (better) {
       best = {
         name: event.name,
         daysUntil,
         startDate: event.startDate,
         sourceNote: event.sourceNote,
+        tier,
+        handloomDemand: event.handloomDemand,
       };
     }
   }
@@ -114,7 +130,7 @@ export function computeSeasonalProximity(
             value: "None upcoming in seeded public calendar",
           },
         ],
-        note: "Source: public calendar (hardcoded seed).",
+        note: "Source: curated public handloom festival calendar (hardcoded seed).",
       },
     };
   }
@@ -135,15 +151,17 @@ export function computeSeasonalProximity(
       weightedContribution: round1(DEMAND_WEIGHTS.seasonal * score),
       inputs: [
         { name: "Nearest relevant event", value: best.name },
+        { name: "Match level", value: best.tier },
         { name: "Event start", value: best.startDate },
         { name: "Days until start", value: String(best.daysUntil) },
+        { name: "Handloom demand", value: best.handloomDemand },
         {
           name: "Formula",
           value: `clamp(0,100, round(100×(1−days/90))) = ${score}`,
         },
         { name: "Calendar source", value: best.sourceNote },
       ],
-      note: "Source: public calendar (hardcoded).",
+      note: "Source: curated public handloom festival calendar (hardcoded seed).",
     },
   };
 }
@@ -247,9 +265,17 @@ export function scoreCategory(args: {
   ledgerOrders: LedgerOrder[];
   manualTrend: ManualTrendEntry | null;
   asOf?: Date;
+  district?: string | null;
 }): ScoredCategory {
-  const { categoryId, region, requirements, ledgerOrders, manualTrend, asOf } =
-    args;
+  const {
+    categoryId,
+    region,
+    requirements,
+    ledgerOrders,
+    manualTrend,
+    asOf,
+    district,
+  } = args;
   const label =
     DEMAND_CATEGORIES.find((c) => c.id === categoryId)?.label ?? categoryId;
 
@@ -260,7 +286,12 @@ export function scoreCategory(args: {
         r.region.toLowerCase() === region.toLowerCase(),
     ),
   );
-  const seasonal = computeSeasonalProximity(categoryId, region, asOf);
+  const seasonal = computeSeasonalProximity(
+    categoryId,
+    region,
+    asOf,
+    district,
+  );
   const historical = computeHistoricalSignal(ledgerOrders, manualTrend);
   const market = computeMarketExtraSignal(categoryId, region, asOf);
   const master = computeMasterWeaverSignal(categoryId, region);
@@ -272,7 +303,7 @@ export function scoreCategory(args: {
     rawScore: market.score,
     weightedContribution: round1(DEMAND_WEIGHTS.marketExtra * market.score),
     inputs: market.inputs,
-    note: "Yarn / exhibitions / tenders from Demo seed — not live market APIs.",
+    note: "Yarn / exhibitions / tenders from market signals.",
   };
 
   const masterFactor: DemandFactorBreakdown = {

@@ -1,6 +1,6 @@
 /**
  * Pitch demo weavers — each phone unlocks a full app story
- * (orders, earnings, plan, advice).
+ * (orders, earnings, plan, advice). Primary geography: Delhi / IIT Delhi.
  */
 
 export const DEMO_OTP_CODE = "123456";
@@ -15,61 +15,66 @@ export type DemoWeaverLogin = {
   primaryLanguage: "ta" | "te" | "kn" | "hi";
   categories: string[];
   region: string;
+  district: string;
 };
 
 export const DEMO_WEAVER_LOGINS: DemoWeaverLogin[] = [
   {
-    phone: "9000000001",
+    phone: "9876543210",
     weaverId: "weaver-demo-001",
     userId: "user-weaver-001",
-    givenName: "Meena",
-    name: "Meena (demo weaver — fictional)",
-    blurb: "Settled earnings + open order · cotton & silk",
-    primaryLanguage: "ta",
-    categories: ["cotton saree", "silk saree", "cotton lungi"],
-    region: "Tamil Nadu",
+    givenName: "Kavita",
+    name: "Kavita",
+    blurb: "North Indian · high drift ≥90% · cotton & silk · IIT Delhi",
+    primaryLanguage: "hi",
+    categories: [
+      "cotton saree",
+      "silk saree",
+      "cotton lungi",
+      "district:IIT Delhi",
+    ],
+    region: "Delhi",
+    district: "IIT Delhi",
   },
   {
-    phone: "9000000002",
+    phone: "9876543211",
     weaverId: "weaver-demo-002",
     userId: "user-weaver-002",
     givenName: "Selvi",
-    name: "Selvi (demo weaver — fictional)",
-    blurb: "In production + advance held · cotton & stoles",
+    name: "Selvi",
+    blurb: "South Indian · low drift ~70% · think carefully · South Delhi",
     primaryLanguage: "ta",
-    categories: ["cotton saree", "stole / dupatta"],
-    region: "Tamil Nadu",
+    categories: ["cotton saree", "stole / dupatta", "district:South Delhi"],
+    region: "Delhi",
+    district: "South Delhi",
   },
   {
-    phone: "9000000003",
+    phone: "9876543212",
     weaverId: "weaver-demo-003",
     userId: "user-weaver-003",
     givenName: "Kamala",
-    name: "Kamala (demo weaver — fictional)",
-    blurb: "Dispatched silk · settlement projected soon",
-    primaryLanguage: "ta",
-    categories: ["silk saree", "dhoti / angavastram"],
-    region: "Tamil Nadu",
+    name: "Kamala",
+    blurb: "Dispatched silk · settlement projected · Hauz Khas",
+    primaryLanguage: "hi",
+    categories: ["silk saree", "dhoti / angavastram", "district:Hauz Khas"],
+    region: "Delhi",
+    district: "Hauz Khas",
   },
   {
-    phone: "9000000004",
+    phone: "9876543213",
     weaverId: "weaver-demo-004",
     userId: "user-weaver-004",
     givenName: "Lakshmi",
-    name: "Lakshmi (demo weaver — fictional)",
-    blurb: "Fresh pipeline · stoles + dhoti, early earnings",
+    name: "Lakshmi",
+    blurb: "Fresh pipeline · stoles & dhoti · Saket",
     primaryLanguage: "hi",
-    categories: ["stole / dupatta", "dhoti / angavastram", "cotton saree"],
-    region: "Tamil Nadu",
+    categories: [
+      "stole / dupatta",
+      "dhoti / angavastram",
+      "cotton saree",
+      "district:Saket",
+    ],
+    region: "Delhi",
+    district: "Saket",
   },
 ];
-
-export function isDemoWeaverPhone(phone: string): boolean {
-  const p = phone.replace(/\D/g, "").slice(-10);
-  return DEMO_WEAVER_LOGINS.some((d) => d.phone === p);
-}
-
-export function demoWeaverByPhone(phone: string): DemoWeaverLogin | undefined {
-  const p = phone.replace(/\D/g, "").slice(-10);
-  return DEMO_WEAVER_LOGINS.find((d) => d.phone === p);
-}

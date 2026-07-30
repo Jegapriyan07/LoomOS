@@ -19,8 +19,7 @@ export default function BuyerLayout({
               LoomOS Buyer Portal
             </Link>
             <p className="text-xs text-slate-500">
-              Boutique / exporter tools · mocked auth (hackathon) · Demo Mode
-              seed cluster
+              Boutique / exporter tools
             </p>
           </div>
           <nav className="flex flex-wrap gap-3 text-sm font-medium">

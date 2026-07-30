@@ -105,9 +105,6 @@ export function VerifiedRecordView({ record, shareable }: Props) {
 
       {shareable ? (
         <div className="mt-8 flex flex-col gap-2 print:hidden">
-          <p className="rounded-lg border-2 border-amber-500 bg-amber-100 px-3 py-2 text-center text-sm font-semibold text-amber-950">
-            Demo Mode — fictional seed cluster. Not live cooperative data.
-          </p>
           <button
             type="button"
             onClick={() => window.print()}
@@ -124,8 +121,7 @@ export function VerifiedRecordView({ record, shareable }: Props) {
 
       <footer className="mt-10 border-t border-[#d9d2c4] pt-4 text-xs text-[#5c6570]">
         LoomOS Verified Transaction Record — factual settlement history only.
-        Not a financial product. Demo Mode — fictional Nila Loom Circle seed;
-        not live cooperative books.
+        Not a financial product.
       </footer>
     </main>
   );

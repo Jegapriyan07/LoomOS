@@ -231,6 +231,28 @@ export function resolveVoiceNavIntent(transcript: string): VoiceNavIntent {
   return { kind: "unknown" };
 }
 
+const NAV_ACTION_RE =
+  /\b(go to|open|show|need to)\b|खोलो|दिखाओ|திற|காட்டு|खोल|दिखा/;
+
+const QUESTION_RE =
+  /\b(how|what|when|where|why|which|do i|can i|will i|should i|tell me|how many|summar|status|advice|paid|payment|weave|today)\b|[?？]|क्या|कब|कैसे|कितने|पैसे|भुगतान|सलाह|என்ன|எப்போது|எப்படி|பணம்|ఏమి|ఎప్పుడు|ಏನು/;
+
+/**
+ * True when the utterance is a short nav command — not a question that
+ * happens to mention "orders" / "money" / "plan".
+ */
+export function prefersNavigation(
+  transcript: string,
+  intent: VoiceNavIntent,
+): boolean {
+  if (intent.kind !== "navigate") return false;
+  const text = normalize(transcript);
+  const words = text.split(/\s+/).filter(Boolean);
+  if (NAV_ACTION_RE.test(text)) return true;
+  if (QUESTION_RE.test(text) || QUESTION_RE.test(transcript)) return false;
+  return words.length <= 4;
+}
+
 /** Short spoken confirmations when opening a page. */
 export const NAV_CONFIRM: Record<
   string,
@@ -268,9 +290,9 @@ export function navConfirm(lang: string, pageKey: VoiceNavPageKey): string {
 }
 
 export const HELP_HINT: Record<string, string> = {
-  en: "Say home, orders, plan, money, or profile — in English, Hindi, or Tamil.",
-  hi: "होम, ऑर्डर, योजना, पैसे या प्रोफ़ाइल कहें — अंग्रेज़ी, हिंदी या तमिल में।",
-  ta: "முகப்பு, ஆர்டர், திட்டம், பணம் அல்லது சுயவிவரம் என்று சொல்லுங்கள் — ஆங்கிலம், இந்தி அல்லது தமிழில்.",
+  en: "Ask about weaving, money, or orders — or say home, orders, plan, money, or profile.",
+  hi: "बुनाई, पैसे या ऑर्डर पूछें — या होम, ऑर्डर, योजना, पैसे या प्रोफ़ाइल कहें।",
+  ta: "நெசவு, பணம் அல்லது ஆர்டர் கேளுங்கள் — அல்லது முகப்பு, ஆர்டர், திட்டம், பணம் அல்லது சுயவிவரம் சொல்லுங்கள்.",
 };
 
 export function helpHint(lang: string): string {

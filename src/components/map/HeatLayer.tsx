@@ -26,10 +26,19 @@ function getHeatLayer(): HeatFactory {
   return factory.bind(L) as HeatFactory;
 }
 
+/** LoomOS heat — cream → amber → brown → rust (no blue). */
+export const LOOM_HEAT_GRADIENT: Record<number, string> = {
+  0.15: "#f5e6b8",
+  0.35: "#e0b45a",
+  0.55: "#c4920a",
+  0.75: "#3c2415",
+  1: "#8f2f2f",
+};
+
 export function HeatLayer({
   points,
-  radius = 28,
-  blur = 22,
+  radius = 36,
+  blur = 28,
 }: {
   points: HeatPoint[];
   radius?: number;
@@ -45,19 +54,14 @@ export function HeatLayer({
     const latlngs: Array<[number, number, number]> = points.map((p) => [
       p.lat,
       p.lng,
-      Math.max(0.1, p.weight),
+      Math.max(0.15, Math.min(1, p.weight)),
     ]);
     const layer = heatLayer(latlngs, {
       radius,
       blur,
-      maxZoom: 12,
+      maxZoom: 14,
       max: 1,
-      gradient: {
-        0.2: "#f5e6b8",
-        0.45: "#c4920a",
-        0.7: "#1e3a5f",
-        1: "#8f2f2f",
-      },
+      gradient: LOOM_HEAT_GRADIENT,
     });
     layer.addTo(map);
     return () => {

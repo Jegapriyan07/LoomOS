@@ -7,6 +7,7 @@ export const SIM_EPOCH_COOKIE = "loomos_sim_epoch";
  */
 import { randomInt } from "node:crypto";
 import { DEMO_WEAVER_LOGINS } from "@/lib/demo/logins";
+import { DEMO_BUYERS } from "@/lib/demo/cluster";
 import { readStore, writeStore } from "@/lib/demand/store";
 import type { DemandCategoryId } from "@/lib/demand/types";
 import type { OrderState, PaymentOrder } from "@/lib/payments/types";
@@ -42,10 +43,12 @@ function orderStub(args: {
   expectedSettlementAt?: string;
   settledAt?: string;
 }): PaymentOrder {
+  const demo = DEMO_BUYERS.find((b) => b.id === args.buyerId);
   return {
     id: args.id,
     weaverId: args.weaverId,
     buyerId: args.buyerId,
+    buyerName: demo?.name,
     category: args.category,
     amount: args.amount,
     advanceAmount: args.advanceAmount,

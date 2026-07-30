@@ -25,7 +25,6 @@ import type {
   TrustScoreBreakdown,
 } from "@/lib/payments/types";
 import { formatDisplayDate } from "@/lib/production-defaults";
-import { IncomeStabilityWallet } from "@/components/weaver/IncomeStabilityWallet";
 import { VerifiedRecordCard } from "@/components/weaver/VerifiedRecordCard";
 import { useI18n } from "@/lib/i18n/context";
 import {
@@ -35,8 +34,6 @@ import {
 import {
   PitchHero,
   PitchOneLiner,
-  PitchStepBlock,
-  PitchSteps,
 } from "@/components/pitch/PitchExplain";
 import { cachedJson, invalidateCached } from "@/lib/client-cache";
 
@@ -80,7 +77,6 @@ export function MoneyComingYourWay() {
   const { t, lang } = useI18n();
   const [rows, setRows] = useState<EnrichedOrder[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [walletOpen, setWalletOpen] = useState(false);
   const [proofOpen, setProofOpen] = useState(false);
 
   const load = useCallback(async () => {
@@ -125,16 +121,6 @@ export function MoneyComingYourWay() {
 
       <PitchOneLiner>{t("pitch.moneyOneLiner")}</PitchOneLiner>
 
-      <PitchSteps
-        active={1}
-        steps={[
-          { n: 1, label: t("pitch.stepSnapshot") },
-          { n: 2, label: t("pitch.stepOrders") },
-          { n: 3, label: t("pitch.stepReserve") },
-          { n: 4, label: t("pitch.stepProof") },
-        ]}
-      />
-
       <div
         role="note"
         className="flex gap-2 rounded-xl border border-loom-warning bg-loom-warning-soft px-3 py-3 text-sm leading-snug text-loom-ink"
@@ -143,10 +129,7 @@ export function MoneyComingYourWay() {
           className="mt-0.5 size-5 shrink-0 text-loom-warning"
           aria-hidden
         />
-        <p>
-          <span className="font-semibold">{t("money.prototypeLabel")} </span>
-          {t("pitch.paymentNote")}
-        </p>
+        <p>{t("pitch.paymentNote")}</p>
       </div>
 
       {error ? (
@@ -155,11 +138,10 @@ export function MoneyComingYourWay() {
         </p>
       ) : null}
 
-      <PitchStepBlock
-        step={1}
-        title={t("money.walletSnapshot")}
-        hint={t("pitch.walletHint")}
-      >
+      <section className="rounded-2xl border border-loom-border bg-loom-surface p-4">
+        <h2 className="mb-3 text-base font-semibold text-loom-ink">
+          {t("money.walletSnapshot")}
+        </h2>
         <div className="flex items-start gap-3">
           <Banknote className="mt-0.5 size-7 shrink-0 text-loom-primary" aria-hidden />
           <div>
@@ -179,13 +161,12 @@ export function MoneyComingYourWay() {
             </p>
           </div>
         </div>
-      </PitchStepBlock>
+      </section>
 
-      <PitchStepBlock
-        step={2}
-        title={t("money.yourOrders")}
-        hint={t("pitch.ordersHint")}
-      >
+      <section className="rounded-2xl border border-loom-border bg-loom-surface p-4">
+        <h2 className="mb-3 text-base font-semibold text-loom-ink">
+          {t("money.yourOrders")}
+        </h2>
         <ul className="space-y-3">
           {rows
             .slice()
@@ -197,30 +178,7 @@ export function MoneyComingYourWay() {
         {rows.length === 0 ? (
           <p className="text-sm text-loom-muted">{t("pitch.noOrders")}</p>
         ) : null}
-      </PitchStepBlock>
-
-      <div className="rounded-2xl border border-dashed border-loom-border bg-loom-bg/80 p-3">
-        <button
-          type="button"
-          onClick={() => setWalletOpen((v) => !v)}
-          className="flex h-12 w-full items-center justify-between px-1 text-left text-base font-semibold text-loom-primary"
-          aria-expanded={walletOpen}
-        >
-          <span>{t("pitch.reserveTitle")}</span>
-          <span className="text-sm">
-            {walletOpen ? t("pitch.hide") : t("pitch.show")}
-          </span>
-        </button>
-        {walletOpen ? (
-          <div className="mt-2">
-            <IncomeStabilityWallet />
-          </div>
-        ) : (
-          <p className="px-1 pb-2 text-sm text-loom-muted">
-            {t("pitch.reserveHint")}
-          </p>
-        )}
-      </div>
+      </section>
 
       <div className="rounded-2xl border border-dashed border-loom-border bg-loom-bg/80 p-3">
         <button
@@ -246,6 +204,10 @@ export function MoneyComingYourWay() {
       </div>
 
       <p className="text-sm text-loom-muted">
+        <Link href="/plan" className="font-semibold text-loom-primary underline">
+          {t("pitch.reserveOnPlan")}
+        </Link>
+        {" · "}
         <Link href="/buyer" className="font-semibold text-loom-primary underline">
           {t("pitch.buyerPortal")}
         </Link>
@@ -294,8 +256,10 @@ function OrderMoneyCard({
         <div className="min-w-0 flex-1">
           <p className="text-base font-semibold text-loom-ink">{category}</p>
           <p className="text-sm text-loom-muted">
-            {row.buyer?.name ?? t("money.buyerFallback")} · ₹
-            {row.order.amount.toLocaleString("en-IN")}
+            {row.order.buyerName ??
+              row.buyer?.name ??
+              t("money.buyerFallback")}{" "}
+            · ₹{row.order.amount.toLocaleString("en-IN")}
           </p>
           <p className="mt-2">
             <span

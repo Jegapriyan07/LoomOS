@@ -2,16 +2,20 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   DEFAULT_PRODUCTION,
   formatDisplayDate,
-  getSampleFestivalCalendar,
   toDateOnly,
   type CategoryDuration,
   type ItemCategoryId,
   type PlanBuffers,
   type ProductionDefaults,
 } from "@/lib/production-defaults";
+import {
+  getPlanFestivalChips,
+  PUBLIC_FESTIVAL_CALENDAR,
+} from "@/lib/demand/public-festivals";
 import { calculateReverseSchedule } from "@/lib/reverse-schedule";
 import { DurationDefaultsEditor } from "@/components/weaver/DurationDefaultsEditor";
 import { PlanTimeline } from "@/components/weaver/PlanTimeline";
@@ -24,6 +28,11 @@ import {
   PitchSteps,
 } from "@/components/pitch/PitchExplain";
 import type { BuyerRequirement } from "@/lib/demand/types";
+import {
+  buyerDisplayName,
+  planSourceFromRequirement,
+  type PlanSource,
+} from "@/lib/demand/order-plan";
 import { cachedJson } from "@/lib/client-cache";
 
 const STORAGE_KEY = "loomos-production-defaults";
@@ -41,20 +50,37 @@ function loadDefaults(): ProductionDefaults {
   }
 }
 
-export function ReverseProductionPlanner() {
+export function ReverseProductionPlanner({
+  initialRequirementId,
+  initialFestivalId,
+}: {
+  initialRequirementId?: string;
+  initialFestivalId?: string;
+}) {
   const { t, lang } = useI18n();
-  const festivals = useMemo(() => getSampleFestivalCalendar(), []);
+  const router = useRouter();
+  const [weaverPlace, setWeaverPlace] = useState<{
+    region: string;
+    district: string | null;
+  }>({ region: "", district: null });
   const [defaults, setDefaults] = useState<ProductionDefaults>(DEFAULT_PRODUCTION);
   const [hydrated, setHydrated] = useState(false);
   const [categoryId, setCategoryId] = useState<ItemCategoryId>("cotton-saree");
-  const [targetDate, setTargetDate] = useState(
-    festivals[0]?.date ?? toDateOnly(new Date()),
+  const festivals = useMemo(
+    () =>
+      getPlanFestivalChips({
+        region: weaverPlace.region || undefined,
+        district: weaverPlace.district,
+        categoryId,
+        limit: 5,
+      }),
+    [weaverPlace.region, weaverPlace.district, categoryId],
   );
-  const [selectedFestivalId, setSelectedFestivalId] = useState(
-    festivals[0]?.id ?? "",
-  );
+  const [targetDate, setTargetDate] = useState(toDateOnly(new Date()));
+  const [selectedFestivalId, setSelectedFestivalId] = useState("");
   const [tuneOpen, setTuneOpen] = useState(false);
   const [buyerNeeds, setBuyerNeeds] = useState<BuyerRequirement[]>([]);
+  const [linked, setLinked] = useState<PlanSource | null>(null);
 
   useEffect(() => {
     setDefaults(loadDefaults());
@@ -70,27 +96,63 @@ export function ReverseProductionPlanner() {
     void (async () => {
       try {
         const me = await cachedJson<{
-          user?: { weaver?: { region?: string } };
+          user?: { weaver?: { region?: string; categories?: string[] } };
         }>("/api/auth/me");
         const region = me?.user?.weaver?.region ?? "";
+        const district =
+          me?.user?.weaver?.categories
+            ?.map((c) => /^district:(.+)$/i.exec(c.trim())?.[1]?.trim())
+            .find(Boolean) ?? null;
+        setWeaverPlace({ region, district });
+
         const all = await cachedJson<BuyerRequirement[]>(
           "/api/admin/requirements",
         );
-        setBuyerNeeds(
-          all
-            .filter(
-              (r) =>
-                r.status === "open" &&
-                (!region ||
-                  r.region.toLowerCase() === region.toLowerCase()),
-            )
-            .slice(0, 4),
+        const open = all.filter(
+          (r) =>
+            r.status === "open" &&
+            (!region || r.region.toLowerCase() === region.toLowerCase()),
         );
+        setBuyerNeeds(open.slice(0, 4));
+
+        const fromUrl = initialRequirementId
+          ? open.find((r) => r.id === initialRequirementId) ??
+            all.find((r) => r.id === initialRequirementId)
+          : undefined;
+        if (fromUrl) {
+          applyBuyerNeed(fromUrl, true);
+          return;
+        }
+
+        if (initialFestivalId) {
+          const fest = PUBLIC_FESTIVAL_CALENDAR.find(
+            (f) => f.id === initialFestivalId,
+          );
+          if (fest) {
+            setSelectedFestivalId(fest.id);
+            setTargetDate(fest.startDate);
+          }
+        }
       } catch {
         /* keep empty */
       }
     })();
-  }, []);
+    // initialRequirementId / festivalId from server; apply once when list loads
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialRequirementId, initialFestivalId]);
+
+  // Once place + chips resolve, default to nearest festival if nothing selected
+  useEffect(() => {
+    if (initialRequirementId || initialFestivalId || selectedFestivalId) return;
+    if (festivals.length === 0) return;
+    setSelectedFestivalId(festivals[0].id);
+    setTargetDate(festivals[0].date);
+  }, [
+    festivals,
+    initialRequirementId,
+    initialFestivalId,
+    selectedFestivalId,
+  ]);
 
   const category =
     defaults.categories.find((c) => c.id === categoryId) ??
@@ -119,19 +181,54 @@ export function ReverseProductionPlanner() {
   }
 
   function applyFestival(id: string) {
-    const fest = festivals.find((f) => f.id === id);
+    const fest =
+      festivals.find((f) => f.id === id) ??
+      (() => {
+        const full = PUBLIC_FESTIVAL_CALENDAR.find((f) => f.id === id);
+        return full
+          ? { id: full.id, name: full.name, date: full.startDate, tier: "state" as const }
+          : undefined;
+      })();
     if (!fest) return;
     setSelectedFestivalId(id);
     setTargetDate(fest.date);
+    if (linked) {
+      setLinked(null);
+      router.replace("/plan", { scroll: false });
+    }
   }
 
-  function applyBuyerNeed(req: BuyerRequirement) {
+  function applyBuyerNeed(req: BuyerRequirement, keepUrl = false) {
     setTargetDate(req.neededBy);
     setSelectedFestivalId("");
-    const match = defaults.categories.find((c) =>
-      c.id === (req.categoryId as ItemCategoryId),
+    const match = defaults.categories.find(
+      (c) => c.id === (req.categoryId as ItemCategoryId),
     );
     if (match) setCategoryId(match.id);
+    const source = planSourceFromRequirement({
+      ...req,
+      buyerName: buyerDisplayName(req.buyerId, req.buyerName),
+    });
+    setLinked(
+      source ?? {
+        requirementId: req.id,
+        buyerId: req.buyerId ?? "unknown",
+        buyerName: buyerDisplayName(req.buyerId, req.buyerName),
+        categoryId: req.categoryId,
+        quantity: req.quantity,
+        neededBy: req.neededBy,
+      },
+    );
+    if (!keepUrl && typeof window !== "undefined") {
+      router.replace(`/plan?requirementId=${encodeURIComponent(req.id)}`, {
+        scroll: false,
+      });
+    }
+  }
+
+  function clearLinked() {
+    setLinked(null);
+    router.replace("/plan", { scroll: false });
   }
 
   return (
@@ -154,6 +251,27 @@ export function ReverseProductionPlanner() {
         ]}
       />
 
+      {linked ? (
+        <div className="rounded-2xl border border-loom-accent bg-loom-accent-soft/50 px-4 py-3">
+          <p className="text-base font-semibold text-loom-ink">
+            {t("pitch.planLinked", { name: linked.buyerName })}
+          </p>
+          <p className="mt-1 font-mono text-xs text-loom-muted">
+            {t("pitch.planLinkedMeta", {
+              buyerId: linked.buyerId,
+              requirementId: linked.requirementId,
+            })}
+          </p>
+          <button
+            type="button"
+            onClick={clearLinked}
+            className="mt-2 text-sm font-semibold text-loom-primary underline"
+          >
+            {t("pitch.planClearLink")}
+          </button>
+        </div>
+      ) : null}
+
       {buyerNeeds.length > 0 ? (
         <PitchStepBlock
           title={t("pitch.buyerNeeds")}
@@ -162,17 +280,27 @@ export function ReverseProductionPlanner() {
           <ul className="space-y-2">
             {buyerNeeds.map((r) => {
               const label = localizedCategoryLabel(lang, r.categoryId);
+              const name = buyerDisplayName(r.buyerId, r.buyerName);
+              const selected = linked?.requirementId === r.id;
               return (
                 <li key={r.id}>
                   <button
                     type="button"
                     onClick={() => applyBuyerNeed(r)}
-                    className="flex w-full flex-col items-start rounded-xl border border-dashed border-loom-accent bg-loom-accent-soft/40 px-3 py-3 text-left"
+                    aria-pressed={selected}
+                    className={`flex w-full flex-col items-start rounded-xl border border-dashed px-3 py-3 text-left ${
+                      selected
+                        ? "border-loom-primary bg-loom-primary-soft/60"
+                        : "border-loom-accent bg-loom-accent-soft/40"
+                    }`}
                   >
                     <span className="text-sm font-semibold text-loom-ink">
-                      {r.buyerName}
+                      {name}
                     </span>
-                    <span className="text-sm text-loom-muted">
+                    <span className="font-mono text-[11px] text-loom-muted">
+                      {r.buyerId ?? "—"} · {r.id}
+                    </span>
+                    <span className="mt-1 text-sm text-loom-muted">
                       {t("pitch.buyerNeedsLine", {
                         category: label,
                         qty: r.quantity,
@@ -185,6 +313,10 @@ export function ReverseProductionPlanner() {
             })}
           </ul>
           <p className="mt-3 text-sm text-loom-muted">
+            <Link href="/orders" className="font-semibold text-loom-primary underline">
+              {t("nav.orders")}
+            </Link>
+            {" · "}
             <Link href="/buyer" className="font-semibold text-loom-primary underline">
               {t("pitch.buyerPortal")}
             </Link>
@@ -222,12 +354,18 @@ export function ReverseProductionPlanner() {
       <PitchStepBlock
         step={2}
         title={t("plan.whenReady")}
-        hint={`${t("plan.festivalNote")} ${t("common.demoSimulated")}`}
+        hint={t("plan.festivalNote")}
       >
         <div className="mb-3 flex flex-col gap-2">
           {festivals.map((f) => {
             const selected =
               selectedFestivalId === f.id && targetDate === f.date;
+            const tierNote =
+              f.tier === "district"
+                ? "Your hub"
+                : f.tier === "state"
+                  ? "Your state"
+                  : "India";
             return (
               <button
                 key={f.id}
@@ -241,19 +379,21 @@ export function ReverseProductionPlanner() {
                 }`}
               >
                 <span className="text-base font-semibold text-loom-ink">
-                  {f.id === "sample-near"
-                    ? t("festival.nearby")
-                    : f.id === "sample-later"
-                      ? t("festival.later")
-                      : f.name}
+                  {f.name}
                 </span>
                 <span className="text-sm text-loom-muted">
-                  {formatDisplayDate(f.date)}
+                  {formatDisplayDate(f.date)} · {tierNote}
                 </span>
               </button>
             );
           })}
         </div>
+        <Link
+          href="/plan/festivals"
+          className="mb-3 inline-flex min-h-10 items-center text-sm font-semibold text-loom-primary"
+        >
+          Browse full state / district calendar →
+        </Link>
         <label className="block text-base font-semibold text-loom-ink">
           {t("plan.ownDate")}
           <input
@@ -262,6 +402,10 @@ export function ReverseProductionPlanner() {
             onChange={(e) => {
               setTargetDate(e.target.value);
               setSelectedFestivalId("");
+              if (linked) {
+                setLinked(null);
+                router.replace("/plan", { scroll: false });
+              }
             }}
             className="mt-2 flex h-12 w-full rounded-xl border border-loom-border bg-loom-bg px-3 text-base text-loom-ink"
           />

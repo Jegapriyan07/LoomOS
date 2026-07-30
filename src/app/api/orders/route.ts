@@ -36,7 +36,23 @@ export async function GET(request: Request) {
     const buyer = buyers.find((b) => b.id === order.buyerId) ?? null;
     const trust = computeBuyerTrustScore(order.buyerId, allOrders, disputes);
     const dispute = disputes.find((d) => d.orderId === order.id) ?? null;
-    return { order, buyer, trust, dispute };
+    return {
+      order: {
+        ...order,
+        buyerName: order.buyerName ?? buyer?.name,
+      },
+      buyer: buyer
+        ? buyer
+        : order.buyerName
+          ? {
+              id: order.buyerId,
+              name: order.buyerName,
+              region: "",
+            }
+          : null,
+      trust,
+      dispute,
+    };
   });
 
   return NextResponse.json({

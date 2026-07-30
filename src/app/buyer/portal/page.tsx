@@ -66,7 +66,8 @@ export default function BuyerPortalPage() {
     neededBy: "2026-10-15",
     priceMin: 800,
     priceMax: 1200,
-    region: "Tamil Nadu",
+    region: "Delhi",
+    district: "IIT Delhi",
     notes: "",
   });
 
@@ -177,7 +178,7 @@ export default function BuyerPortalPage() {
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-amber-800">
-            Buyer Portal · simulated workspace
+            Buyer Portal
           </p>
           <h1 className="font-[family-name:var(--font-loom-display)] text-3xl font-semibold text-[#1e3a5f]">
             {session.name}
@@ -206,14 +207,14 @@ export default function BuyerPortalPage() {
       </div>
 
       <p className="mt-4 rounded-xl border-l-4 border-[#1e3a5f] bg-white px-4 py-3 text-sm font-semibold text-slate-800">
-        Pitch loop: post a requirement here → weaver Orders / Plan / Home update
-        from the same JSON store → Money shows simulated escrow for orders.
+        Post a requirement here → weaver Orders / Plan / Home update from the
+        same store → Money shows escrow status for orders.
       </p>
 
       <div className="mt-6 flex flex-wrap gap-2 border-b border-slate-200 pb-2">
         {(
           [
-            ["desks", "Simulated desks"],
+            ["desks", "Sample desks"],
             ["map", "Weaver map"],
             ["post", "Post requirement"],
             ["mine", "My requirements"],
@@ -269,7 +270,7 @@ export default function BuyerPortalPage() {
             >
               Weaver map
             </button>{" "}
-            for nationwide clusters.
+            for Delhi clusters (IIT → District → Nation).
           </p>
         </div>
       ) : null}
@@ -277,8 +278,8 @@ export default function BuyerPortalPage() {
       {tab === "map" ? (
         <div className="mt-6 space-y-3">
           <p className="text-sm text-slate-600">
-            Nationwide heat → tap a state → district clusters (e.g. Kanchipuram)
-            → tap a weaver for rating and ready-stock menu.
+            Default cluster is IIT Delhi. Use IIT / District / Nation to zoom
+            out — tap a district hub or weaver for rating and ready-stock menu.
           </p>
           {mapData ? (
             <BuyerWeaversMap
@@ -369,11 +370,19 @@ export default function BuyerPortalPage() {
             </label>
           </div>
           <label className="block text-sm">
-            Region
+            Region (state / UT)
             <input
               className="mt-1 w-full rounded border border-slate-300 px-3 py-2"
               value={form.region}
               onChange={(e) => setForm({ ...form, region: e.target.value })}
+            />
+          </label>
+          <label className="block text-sm">
+            District / hub (e.g. IIT Delhi, South Delhi)
+            <input
+              className="mt-1 w-full rounded border border-slate-300 px-3 py-2"
+              value={form.district}
+              onChange={(e) => setForm({ ...form, district: e.target.value })}
             />
           </label>
           <label className="block text-sm">
@@ -479,8 +488,7 @@ export default function BuyerPortalPage() {
       {tab === "orders" ? (
         <div className="mt-6 overflow-x-auto rounded-lg border border-slate-200 bg-white">
           <p className="border-b px-3 py-2 text-sm text-slate-600">
-            Same Stage 4 payment states as the weaver Money tab (simulated
-            escrow pattern).
+            Same payment states as the weaver Money tab.
           </p>
           <table className="min-w-full text-left text-sm">
             <thead className="border-b bg-slate-50 text-slate-600">
@@ -496,8 +504,7 @@ export default function BuyerPortalPage() {
               {orders.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="px-3 py-4 text-slate-500">
-                    No orders for this buyer yet — seed history is on Meena /
-                    Saffron for the pitch.
+                    No orders for this buyer yet.
                   </td>
                 </tr>
               ) : (

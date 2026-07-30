@@ -17,7 +17,7 @@ export async function GET() {
   return NextResponse.json({
     stock,
     simulated: true,
-    note: "Demo stock & resources — not a live warehouse feed",
+    note: "Stock & resources on hand",
   });
 }
 

@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
 import { ChevronDown } from "lucide-react";
 import { DEMAND_CATEGORIES } from "@/lib/demand/types";
 import {
@@ -18,6 +17,7 @@ import {
   coopForLocation,
   districtsForState,
 } from "@/lib/auth/regions";
+import { PHONE_COUNTRY_OPTIONS } from "@/lib/auth/phone";
 
 type AuthMode = "login" | "register";
 type Role = "WEAVER" | "BUYER";
@@ -57,15 +57,13 @@ export function WeaverLoginScreen({
   const { t, lang, setLang } = useI18n();
   const [role, setRole] = useState<Role>(defaultRole);
   const [mode, setMode] = useState<AuthMode>("login");
-  const [phone, setPhone] = useState(
-    defaultRole === "BUYER"
-      ? DEMO_BUYERS[0].phone
-      : DEMO_WEAVER_LOGINS[0].phone,
-  );
+  /** National number only — empty by default so users type 10 digits */
+  const [phone, setPhone] = useState("");
+  const [dialCode, setDialCode] = useState("91");
   const [name, setName] = useState("");
-  const [region, setRegion] = useState("Tamil Nadu");
+  const [region, setRegion] = useState("Delhi");
   const [district, setDistrict] = useState(
-    () => districtsForState("Tamil Nadu")[0] ?? "Kanchipuram",
+    () => districtsForState("Delhi")[0] ?? "IIT Delhi",
   );
   const [yearsWeaving, setYearsWeaving] = useState("");
   const [businessType, setBusinessType] = useState(BUYER_BUSINESS_TYPES[0]);
@@ -91,6 +89,10 @@ export function WeaverLoginScreen({
     () => districtsForState(region),
     [region],
   );
+  const selectedCountry =
+    PHONE_COUNTRY_OPTIONS.find((c) => c.dial === dialCode) ??
+    PHONE_COUNTRY_OPTIONS[0];
+  const nationalMaxLen = selectedCountry.nationalLength;
 
   function onStateChange(nextState: string) {
     setRegion(nextState);
@@ -111,17 +113,15 @@ export function WeaverLoginScreen({
     setRole(next);
     setMode("login");
     setError(null);
-    setPhone(
-      next === "BUYER"
-        ? DEMO_BUYERS[0].phone
-        : DEMO_WEAVER_LOGINS[0].phone,
-    );
+    setPhone("");
+    setDialCode("91");
   }
 
   async function loginWithPhone(
     nextPhone: string,
     nextMode: AuthMode = "login",
     nextRole: Role = role,
+    nextDial: string = dialCode,
   ) {
     if (busyPhone) return;
     setError(null);
@@ -132,6 +132,7 @@ export function WeaverLoginScreen({
     try {
       const body: Record<string, unknown> = {
         phone: nextPhone,
+        dialCode: nextRole === "WEAVER" ? "91" : nextDial,
         role: nextRole,
         mode: nextMode,
       };
@@ -207,15 +208,21 @@ export function WeaverLoginScreen({
         return;
       }
     }
-    await loginWithPhone(phone, mode, role);
+    const digits = phone.replace(/\D/g, "");
+    if (digits.length !== nationalMaxLen) {
+      setError(`Enter ${nationalMaxLen}-digit mobile number`);
+      return;
+    }
+    await loginWithPhone(digits, mode, role, dialCode);
   }
 
   async function enterAsDemo(demoPhone: string, demoRole: Role) {
     setRole(demoRole);
     setMode("login");
+    setDialCode("91");
     setPhone(demoPhone);
     setError(null);
-    await loginWithPhone(demoPhone, "login", demoRole);
+    await loginWithPhone(demoPhone, "login", demoRole, "91");
   }
 
   return (
@@ -281,7 +288,7 @@ export function WeaverLoginScreen({
           <p className="text-xs text-white/70">{t("auth.checkingSignIn")}</p>
         ) : (
           <p className="text-xs text-white/70">
-            Choose Weaver or Buyer, then Continue — or tap a demo below.
+            Choose Weaver or Buyer, then Continue — or tap a sample account below.
           </p>
         )}
       </div>
@@ -319,8 +326,8 @@ export function WeaverLoginScreen({
               onClick={() => switchRole("BUYER")}
               className={`rounded-lg px-2 py-3 text-center text-sm font-semibold leading-snug ${
                 role === "BUYER"
-                  ? "bg-[#1e3a5f] text-white shadow-sm"
-                  : "text-[#1e3a5f]/80"
+                  ? "bg-[#3c2415] text-white shadow-sm"
+                  : "text-[#3c2415]/80"
               }`}
             >
               Buyer login
@@ -337,7 +344,7 @@ export function WeaverLoginScreen({
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder={
-                      role === "BUYER" ? "Your shop / brand" : "e.g. Meena"
+                      role === "BUYER" ? "Your shop / brand" : "e.g. Kavita"
                     }
                     required
                   />
@@ -488,25 +495,55 @@ export function WeaverLoginScreen({
               </>
             ) : null}
 
-            <label className="block text-sm font-medium text-[#1a1f24]">
-              Mobile number
-              <input
-                inputMode="numeric"
-                autoComplete="tel"
-                className="mt-1.5 w-full rounded-xl border border-[#d9d2c4] bg-[#fffdf8] px-3 py-3 text-base tracking-wide"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="10-digit mobile"
-                required
-              />
-            </label>
+            <div>
+              <label className="block text-sm font-medium text-[#1a1f24]">
+                Mobile number
+              </label>
+              <div className="mt-1.5 flex gap-2">
+                {role === "BUYER" ? (
+                  <select
+                    aria-label="Country code"
+                    className="w-[7.5rem] shrink-0 rounded-xl border border-[#d9d2c4] bg-[#fffdf8] px-2 py-3 text-sm font-semibold text-[#3c2415]"
+                    value={dialCode}
+                    onChange={(e) => {
+                      setDialCode(e.target.value);
+                      setPhone("");
+                    }}
+                  >
+                    {PHONE_COUNTRY_OPTIONS.map((c) => (
+                      <option key={c.dial} value={c.dial}>
+                        +{c.dial} {c.flag}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <div
+                    className="flex w-[4.75rem] shrink-0 items-center justify-center rounded-xl border border-[#d9d2c4] bg-[#f3efe6] px-2 py-3 text-sm font-semibold text-[#3c2415]"
+                    aria-label="India country code"
+                  >
+                    +91
+                  </div>
+                )}
+                <input
+                  inputMode="numeric"
+                  autoComplete="tel-national"
+                  className="min-w-0 flex-1 rounded-xl border border-[#d9d2c4] bg-[#fffdf8] px-3 py-3 text-base tracking-wide"
+                  value={phone}
+                  onChange={(e) => {
+                    const digits = e.target.value.replace(/\D/g, "");
+                    setPhone(digits.slice(0, nationalMaxLen));
+                  }}
+                  placeholder={`Enter ${nationalMaxLen}-digit number`}
+                  maxLength={nationalMaxLen}
+                  required
+                />
+              </div>
+            </div>
             {error ? <p className="text-sm text-red-700">{error}</p> : null}
             <button
               type="submit"
               disabled={busy}
-              className={`flex h-12 w-full items-center justify-center rounded-xl text-base font-semibold text-white disabled:opacity-60 ${
-                role === "BUYER" ? "bg-[#1e3a5f]" : "bg-[#3c2415]"
-              }`}
+              className="flex h-12 w-full items-center justify-center rounded-xl bg-[#3c2415] text-base font-semibold text-white disabled:opacity-60"
             >
               {busy && busyPhone === phone
                 ? "Signing in…"
@@ -549,16 +586,16 @@ export function WeaverLoginScreen({
 
         <div className="rounded-2xl bg-white p-4 shadow-[0_8px_24px_rgba(60,36,21,0.1)]">
           <h2 className="text-base font-semibold text-[#1a1f24]">
-            {role === "BUYER" ? "Demo buyers (pitch)" : "Demo weavers (pitch)"}
+            {role === "BUYER" ? "Sample buyers" : "Sample weavers"}
           </h2>
           <p className="mt-1 text-xs text-[#5c6570]">
             {role === "BUYER"
-              ? "Tap a desk to post simulated buying needs for weavers."
-              : "Tap a name for a fresh simulated orders + production story. Use Register for an empty account + tour."}
+              ? "Tap a desk to post buying needs for weavers."
+              : "Tap a name to sign in with sample orders and production. Use Register for a new empty account."}
           </p>
           <ul className="mt-3 space-y-2">
             {role === "WEAVER"
-              ? DEMO_WEAVER_LOGINS.map((d) => (
+              ? DEMO_WEAVER_LOGINS.slice(0, 2).map((d) => (
                   <li key={d.phone}>
                     <button
                       type="button"
@@ -583,12 +620,12 @@ export function WeaverLoginScreen({
                         </span>
                       </span>
                       <code className="shrink-0 rounded bg-[#f3efe6] px-2 py-1 text-xs font-semibold text-[#3c2415]">
-                        {d.phone}
+                        +91 {d.phone}
                       </code>
                     </button>
                   </li>
                 ))
-              : DEMO_BUYERS.map((d) => (
+              : DEMO_BUYERS.slice(0, 2).map((d) => (
                   <li key={d.phone}>
                     <button
                       type="button"
@@ -596,10 +633,10 @@ export function WeaverLoginScreen({
                       onClick={() => void enterAsDemo(d.phone, "BUYER")}
                       className={`flex w-full items-start justify-between gap-2 rounded-xl border px-3 py-3 text-left transition disabled:opacity-60 ${
                         busyPhone === d.phone
-                          ? "border-[#1e3a5f] bg-[#1e3a5f]/15"
+                          ? "border-[#3c2415] bg-[#3c2415]/15"
                           : phone === d.phone
-                            ? "border-[#1e3a5f] bg-[#1e3a5f]/8"
-                            : "border-[#e8e2d8] hover:border-[#1e3a5f]/40"
+                            ? "border-[#3c2415] bg-[#3c2415]/8"
+                            : "border-[#e8e2d8] hover:border-[#3c2415]/40"
                       }`}
                     >
                       <span>
@@ -612,33 +649,14 @@ export function WeaverLoginScreen({
                           {d.businessType} · {d.focus}
                         </span>
                       </span>
-                      <code className="shrink-0 rounded bg-[#eef2f7] px-2 py-1 text-xs font-semibold text-[#1e3a5f]">
-                        {d.phone}
+                      <code className="shrink-0 rounded bg-[#f3efe6] px-2 py-1 text-xs font-semibold text-[#3c2415]">
+                        +91 {d.phone}
                       </code>
                     </button>
                   </li>
                 ))}
           </ul>
         </div>
-
-        <p className="text-center text-sm text-[#5c6570]">
-          <Link href="/about" className="underline">
-            About / pitch
-          </Link>
-          {" · "}
-          {role === "WEAVER" ? (
-            <Link
-              href="/buyer"
-              className="font-semibold text-[#1e3a5f] underline"
-            >
-              Buyer portal desk
-            </Link>
-          ) : (
-            <Link href="/" className="font-semibold text-[#3c2415] underline">
-              Weaver app
-            </Link>
-          )}
-        </p>
       </div>
     </div>
   );

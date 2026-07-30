@@ -97,7 +97,7 @@ export default function AdminPaymentsPage() {
     <div className="mx-auto max-w-3xl px-4 py-8">
       <h1 className="text-2xl font-semibold">Payments state machine</h1>
       <div className="mt-3 rounded border-2 border-amber-400 bg-amber-50 p-3 text-sm text-amber-950">
-        <strong>Prototype / simulated.</strong> {PROTOTYPE_PAYMENT_NOTE}
+        <strong>Note.</strong> {PROTOTYPE_PAYMENT_NOTE}
       </div>
       <p className="mt-3 text-sm text-slate-600">
         Happy path: Order Created → Advance Requested → Advance Paid (Escrow
@@ -130,7 +130,10 @@ export default function AdminPaymentsPage() {
               className="rounded-lg border border-slate-200 bg-white p-4 text-sm"
             >
               <p className="font-semibold">
-                {order.id} · {buyer?.name ?? order.buyerId} · ₹{order.amount}
+                {order.id} · {order.buyerName ?? buyer?.name ?? order.buyerId} (
+                {order.buyerId})
+                {order.requirementId ? ` · need ${order.requirementId}` : ""} · ₹
+                {order.amount}
               </p>
               <p className="mt-1">
                 State: <strong>{adminStateLabel(order.state)}</strong>

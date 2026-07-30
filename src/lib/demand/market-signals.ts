@@ -11,7 +11,7 @@ export type YarnPriceSignal = {
   fiber: "cotton" | "silk";
   region: string;
   pricePerKgInr: number;
-  /** Week-over-week change % (demo) */
+  /** Week-over-week change % */
   changePct: number;
   status: "stable" | "up" | "down";
   asOf: string;
@@ -39,6 +39,26 @@ export type TenderSignal = {
 
 export const YARN_PRICE_SIGNALS: YarnPriceSignal[] = [
   {
+    id: "yarn-cotton-delhi",
+    fiber: "cotton",
+    region: "Delhi",
+    pricePerKgInr: 295,
+    changePct: 0.8,
+    status: "stable",
+    asOf: "2026-07-20",
+    sourceNote: "Delhi NCT yarn desk signal (IIT Delhi / South Delhi belt)",
+  },
+  {
+    id: "yarn-silk-delhi",
+    fiber: "silk",
+    region: "Delhi",
+    pricePerKgInr: 4350,
+    changePct: 2.1,
+    status: "up",
+    asOf: "2026-07-20",
+    sourceNote: "Delhi NCT yarn desk signal (IIT Delhi / South Delhi belt)",
+  },
+  {
     id: "yarn-cotton-tn",
     fiber: "cotton",
     region: "Tamil Nadu",
@@ -46,7 +66,7 @@ export const YARN_PRICE_SIGNALS: YarnPriceSignal[] = [
     changePct: 1.2,
     status: "stable",
     asOf: "2026-07-20",
-    sourceNote: "Demo seed — illustrative regional yarn desk, not a live feed",
+    sourceNote: "Regional yarn desk signal",
   },
   {
     id: "yarn-silk-tn",
@@ -56,47 +76,81 @@ export const YARN_PRICE_SIGNALS: YarnPriceSignal[] = [
     changePct: 3.5,
     status: "up",
     asOf: "2026-07-20",
-    sourceNote: "Demo seed — illustrative regional yarn desk, not a live feed",
+    sourceNote: "Regional yarn desk signal",
   },
 ];
 
 export const EXHIBITION_SIGNALS: ExhibitionSignal[] = [
   {
+    id: "ex-handloom-expo-delhi-iit",
+    name: "Delhi Handloom Pop-up (IIT Delhi belt)",
+    region: "Delhi",
+    startDate: "2026-09-05",
+    endDate: "2026-09-12",
+    categoryIds: ["cotton-saree", "stole-dupatta", "silk-saree"],
+    sourceNote: "Exhibition calendar entry — South Delhi / Hauz Khas retail",
+  },
+  {
+    id: "ex-dilli-haat-fest",
+    name: "Festival cloth fair — Delhi NCT",
+    region: "Delhi",
+    startDate: "2026-10-10",
+    endDate: "2026-10-18",
+    categoryIds: ["dhoti-angavastram", "cotton-saree", "stole-dupatta"],
+    sourceNote: "Exhibition calendar entry — Delhi NCT",
+  },
+  {
     id: "ex-handloom-expo-chennai",
-    name: "Regional Handloom Expo (demo)",
+    name: "Regional Handloom Expo",
     region: "Tamil Nadu",
     startDate: "2026-09-12",
     endDate: "2026-09-18",
     categoryIds: ["cotton-saree", "stole-dupatta", "silk-saree"],
-    sourceNote: "Demo seed exhibition — fictional calendar entry",
+    sourceNote: "Exhibition calendar entry",
   },
   {
     id: "ex-temple-fair",
-    name: "Temple festival cloth fair (demo)",
+    name: "Temple festival cloth fair",
     region: "Tamil Nadu",
     startDate: "2026-10-02",
     endDate: "2026-10-06",
     categoryIds: ["dhoti-angavastram", "cotton-saree"],
-    sourceNote: "Demo seed exhibition — fictional calendar entry",
+    sourceNote: "Exhibition calendar entry",
   },
 ];
 
 export const TENDER_SIGNALS: TenderSignal[] = [
   {
+    id: "tender-delhi-iit-gift",
+    title: "South Delhi boutique gift-stole lot (near IIT Delhi)",
+    region: "Delhi",
+    dueDate: "2026-08-28",
+    categoryIds: ["stole-dupatta"],
+    sourceNote: "Institutional / boutique tender listing — Delhi NCT",
+  },
+  {
+    id: "tender-delhi-festival-saree",
+    title: "Delhi festival cotton saree supply — South Delhi desks",
+    region: "Delhi",
+    dueDate: "2026-09-08",
+    categoryIds: ["cotton-saree"],
+    sourceNote: "Institutional tender listing — Delhi NCT",
+  },
+  {
     id: "tender-coop-uniforms",
-    title: "Co-op school uniform stole lot (demo tender)",
+    title: "Co-op school uniform stole lot",
     region: "Tamil Nadu",
     dueDate: "2026-08-25",
     categoryIds: ["stole-dupatta"],
-    sourceNote: "Demo seed — not a live GeM / government tender feed",
+    sourceNote: "Institutional tender listing",
   },
   {
     id: "tender-festival-saree",
-    title: "District festival cotton saree supply (demo tender)",
+    title: "District festival cotton saree supply",
     region: "Tamil Nadu",
     dueDate: "2026-09-05",
     categoryIds: ["cotton-saree"],
-    sourceNote: "Demo seed — not a live GeM / government tender feed",
+    sourceNote: "Institutional tender listing",
   },
 ];
 

@@ -5,7 +5,7 @@ import { ClusterDashboard } from "@/components/coop/ClusterDashboard";
 export const metadata = {
   title: "Cooperative dashboard · LoomOS",
   description:
-    "Nila Loom Circle (Demo Cluster) — order distribution, capacity, Stage 3 demand scores.",
+    "Nila Loom Circle — order distribution, capacity, demand scores.",
 };
 
 export default function CoopPage() {

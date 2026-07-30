@@ -36,6 +36,8 @@ export const STATE_GEO: Record<string, HubCoord> = {
   "Uttar Pradesh": { lat: 26.8467, lng: 80.9462 },
   Uttarakhand: { lat: 30.0668, lng: 79.0193 },
   "West Bengal": { lat: 22.9868, lng: 87.855 },
+  /** NCT — primary demand geography; center near IIT Delhi / South Delhi */
+  Delhi: { lat: 28.5454, lng: 77.1926 },
 };
 
 /** District / town hubs used in register dropdowns. */
@@ -177,12 +179,51 @@ export const DISTRICT_GEO: Record<string, HubCoord> = {
   Baluchari: { lat: 23.24, lng: 88.43 },
   Nadia: { lat: 23.47, lng: 88.56 },
   Hooghly: { lat: 22.9, lng: 88.39 },
+  // Delhi NCT — IIT Delhi is the primary pitch pin
+  "IIT Delhi": { lat: 28.5454, lng: 77.1926 },
+  "South Delhi": { lat: 28.5245, lng: 77.2066 },
+  "Hauz Khas": { lat: 28.5494, lng: 77.2001 },
+  Saket: { lat: 28.5244, lng: 77.2065 },
+  "New Delhi": { lat: 28.6139, lng: 77.209 },
+  "South East Delhi": { lat: 28.5621, lng: 77.2505 },
+  "Central Delhi": { lat: 28.6448, lng: 77.2167 },
+  "Karol Bagh": { lat: 28.6517, lng: 77.1909 },
+  "Chandni Chowk": { lat: 28.6506, lng: 77.2303 },
+  "East Delhi": { lat: 28.628, lng: 77.295 },
+  "West Delhi": { lat: 28.6663, lng: 77.068 },
+  "North Delhi": { lat: 28.7041, lng: 77.1025 },
+  "North West Delhi": { lat: 28.7186, lng: 77.068 },
+  "South West Delhi": { lat: 28.5324, lng: 77.088 },
+  Shahdara: { lat: 28.673, lng: 77.289 },
 };
 
 export const INDIA_MAP_CENTER: HubCoord = { lat: 22.5, lng: 82.0 };
 export const INDIA_MAP_ZOOM = 5;
 export const STATE_ZOOM = 7;
-export const DISTRICT_ZOOM = 10;
+/** Tight zoom for district / IIT Delhi micro-hub view */
+export const DISTRICT_ZOOM = 12;
+/** Delhi NCT overview (between district and full state zoom) */
+export const DELHI_STATE_ZOOM = 11;
+
+/** Primary LoomOS map cluster pin — IIT Delhi campus area */
+export const PRIMARY_DEMAND = {
+  region: "Delhi",
+  district: "IIT Delhi",
+  lat: 28.5454,
+  lng: 77.1926,
+} as const;
+
+/** Micro-hubs treated as one IIT Delhi cluster on the map */
+export const IIT_CLUSTER = new Set([
+  "iit delhi",
+  "hauz khas",
+  "south delhi",
+  "saket",
+]);
+
+export function isIitClusterDistrict(district: string): boolean {
+  return IIT_CLUSTER.has(district.trim().toLowerCase());
+}
 
 export function jitterAround(
   hub: HubCoord,

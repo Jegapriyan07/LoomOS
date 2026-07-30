@@ -83,29 +83,12 @@ export const DEFAULT_PRODUCTION: ProductionDefaults = {
   },
 };
 
+/** @deprecated Use getPlanFestivalChips from public-festivals.ts */
 export type SampleFestival = {
   id: string;
-  /** Plain label — sample calendar only, not an official festival feed */
   name: string;
-  /** YYYY-MM-DD */
   date: string;
 };
-
-/** Relative sample dates so a "nearby" festival always exists in the demo. */
-export function getSampleFestivalCalendar(from: Date = new Date()): SampleFestival[] {
-  return [
-    {
-      id: "sample-near",
-      name: "Nearby festival season (sample)",
-      date: toDateOnly(addCalendarDays(from, 21)),
-    },
-    {
-      id: "sample-later",
-      name: "Later festival season (sample)",
-      date: toDateOnly(addCalendarDays(from, 45)),
-    },
-  ];
-}
 
 export function toDateOnly(d: Date): string {
   const y = d.getFullYear();

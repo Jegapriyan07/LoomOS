@@ -55,7 +55,7 @@ export default function BuyerAuthPage() {
         <button
           type="button"
           onClick={() => setShowDesk((v) => !v)}
-          className="w-full text-center text-xs font-semibold text-[#1e3a5f] underline"
+          className="w-full text-center text-xs font-semibold text-[#3c2415] underline"
         >
           {showDesk ? "Hide sample buyer desk" : "Preview sample buyer desk"}
         </button>

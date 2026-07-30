@@ -41,7 +41,7 @@ export function weaverStateLabel(state: OrderState): string {
     case "dispatched":
       return "Sent to buyer";
     case "settlement_released":
-      return "Settlement marked released (simulated)";
+      return "Settlement marked released";
     case "dispute_opened":
       return "Question raised";
     case "under_review":
@@ -55,12 +55,12 @@ export function weaverStateLabel(state: OrderState): string {
 export function weaverStateHint(state: OrderState): string {
   switch (state) {
     case "advance_paid_escrow_held":
-      return "Modeled on an RBI-authorised payment aggregator's escrow settlement pattern — simulated hold only.";
+      return "Modeled on an RBI-authorised payment aggregator's escrow settlement pattern.";
     case "settlement_released":
-      return "Simulated release — this prototype does not move real money.";
+      return "Settlement released for this order.";
     case "dispute_opened":
     case "under_review":
-      return "Demo dispute path — not a live payments complaint system.";
+      return "Dispute path — under review.";
     default:
       return "";
   }

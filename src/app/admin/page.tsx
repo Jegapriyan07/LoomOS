@@ -25,7 +25,7 @@ const LINKS = [
   {
     href: "/admin/payments",
     title: "Payments state machine",
-    body: "Walk simulated escrow states. Prototype only — not a licensed financial product.",
+    body: "Walk escrow payment states for orders.",
   },
   {
     href: "/coop",
