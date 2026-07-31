@@ -97,7 +97,7 @@ export default function OrdersPage() {
       const me = await cachedJson<{
         user?: { weaver?: { region?: string; categories?: string[] } };
       }>("/api/auth/me");
-      // Pitch demand geography is Delhi / IIT Delhi — not the weaver's craft-origin state
+      // Pitch demand geography is Tamil Nadu / Kanchipuram — primary demo cluster
       setRegion(PRIMARY_DEMAND.region);
       const fromCat = (me.user?.weaver?.categories ?? [])
         .find((c) => c.toLowerCase().startsWith("district:"))

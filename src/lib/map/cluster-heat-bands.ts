@@ -45,7 +45,14 @@ export type GovClusterHeatHub = {
   weight: number;
   band: ClusterHeatBand;
   categoryHints: DemandCategoryId[];
+  /** Campaign-listed rows matched to hub — not census */
   weaverCount: number | null;
+  products: string[];
+  weaves: string[];
+  giProductCount: number;
+  awardCount: number;
+  societyNames: string[];
+  sourceUrl: string;
   lat: number;
   lng: number;
   sourceNote: string;

@@ -17,10 +17,10 @@
 
 | Role   | Phone      | Person / org                          |
 |--------|------------|----------------------------------------|
-| Weaver | 9876543210 | Kavita (North Indian)                   |
-| Weaver | 9876543211 | Selvi (South Indian)                    |
-| Weaver | 9876543212 | Kamala                                 |
-| Weaver | 9876543213 | Lakshmi                                |
+| Weaver | 9876543210 | Kavita (South Indian · Kanchipuram)     |
+| Weaver | 9876543211 | Selvi (South Indian · Madurai)          |
+| Weaver | 9876543212 | Kamala (South Indian · Salem)          |
+| Weaver | 9876543213 | Lakshmi (South Indian · Erode)         |
 | Buyer  | 9840010001 | Saffron Thread Boutique                |
 | Buyer  | 9840010002 | Festival Cloth Desk                    |
 | Buyer  | 9840010003 | Loom Link Resellers                    |

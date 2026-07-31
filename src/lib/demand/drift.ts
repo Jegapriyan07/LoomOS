@@ -17,7 +17,7 @@
  * before committing yarn / production time.
  *
  * Demo pins (simulated for pitch — tagged Demo / Simulated in UI):
- *   Kavita (weaver-demo-001, North Indian) → ≥90 band
+ *   Kavita (weaver-demo-001, South Indian) → ≥90 band
  *   Selvi (weaver-demo-002, South Indian) → ~70 band with explicit why-low + mindfulness
  */
 
@@ -268,7 +268,7 @@ function packResult(
 }
 
 /**
- * Kavita (North Indian) pitch story — high intelligence accuracy (≥90).
+ * Kavita (South Indian) pitch story — high intelligence accuracy (≥90).
  * Demo / Simulated pin so the first default login always shows trustable advice.
  */
 function kavitaDemoDrift(base: DriftFactor[]): DriftScoreResult {
@@ -287,7 +287,7 @@ function kavitaDemoDrift(base: DriftFactor[]): DriftScoreResult {
       weight: DRIFT_WEIGHTS.buyerCoverage,
       rawScore: 92,
       weightedContribution: round1(DRIFT_WEIGHTS.buyerCoverage * 92),
-      note: "Strong open boutique demand in IIT Delhi cluster.",
+      note: "Strong open boutique demand in Kanchipuram cluster.",
     },
     {
       id: "historicalDepth",
@@ -320,7 +320,7 @@ function kavitaDemoDrift(base: DriftFactor[]): DriftScoreResult {
   return packResult(factors, Math.max(percentage, 93), {
     simulated: true,
     simulatedNote:
-      "Demo / Simulated — Kavita (North Indian) login pinned to a high-trust (≥90%) drift band for the pitch.",
+      "Demo / Simulated — Kavita (South Indian) login pinned to a high-trust (≥90%) drift band for the pitch.",
   });
 }
 
@@ -345,7 +345,7 @@ function selviDemoDrift(base: DriftFactor[]): DriftScoreResult {
       weight: DRIFT_WEIGHTS.buyerCoverage,
       rawScore: 55,
       weightedContribution: round1(DRIFT_WEIGHTS.buyerCoverage * 55),
-      note: "Only moderate open requirements in South Delhi for her mix.",
+      note: "Only moderate open requirements in Madurai for her mix.",
     },
     {
       id: "historicalDepth",

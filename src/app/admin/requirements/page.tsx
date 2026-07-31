@@ -9,8 +9,8 @@ export default function AdminRequirementsPage() {
   const [form, setForm] = useState({
     buyerName: "Sample buyer",
     categoryId: "cotton-saree",
-    region: "Delhi",
-    district: "IIT Delhi",
+    region: "Tamil Nadu",
+    district: "Kanchipuram",
     quantity: 20,
     neededBy: "2026-11-01",
     status: "open" as const,

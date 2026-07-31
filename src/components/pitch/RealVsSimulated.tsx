@@ -49,14 +49,15 @@ const ROWS: { area: string; real: string; simulated: string }[] = [
   },
   {
     area: "Buyer portal",
-    real: "Posts write the same DB that feeds demand scores; phone session auth; Official Cluster Match ranks curated DC(HL) Weavers Database clusters with transparent Why? reasons",
-    simulated: "Fictional demo buyers in seed; SMS delivery not wired; cluster seed is manually curated — not a live government scrape/API",
+    real: "Posts write the same DB that feeds demand scores; phone session auth; Official Cluster Match ranks DC(HL) campaign clusters with product/GI/weave Why? reasons",
+    simulated:
+      "Fictional demo buyers in seed; SMS delivery not wired; cluster seed is checked-in PDF ingest — not a live government scrape/API",
   },
   {
     area: "DC (Handlooms) Weavers Database",
-    real: "Curated co-op / PC / district coverage seed powers Cluster Match + weaver profile listing signal; source URL cited in UI",
+    real: "Campaign PDFs ingested into hub seed (district listing counts, products, weaves, GI, society names); powers Cluster Match + heatmap + profile listing; state PDF links in UI",
     simulated:
-      "Not live; no individual weaver-name matching; density weights are demo ranking aids, not census headcounts",
+      "Not live on each request; phones/emails not stored; density = campaign listing rank, not Fourth Handloom Census headcounts; no personal identity verification",
   },
   {
     area: "Voice",
@@ -123,10 +124,10 @@ export function RealVsSimulated() {
         People &amp; orgs in this build (Kavita, Selvi, Kamala, Saffron Thread
         Boutique, Nila Loom Circle) are labeled fictional Demo Mode — not real
         persons or cooperatives. Auth uses real PostgreSQL + phone login (no OTP /
-        SMS not wired). Official Cluster Match uses a curated seed from the public
-        DC (Handlooms) Weavers Database — not a live API. LoomOS does not claim RBI
-        licensing, NHDC/ONDC/Bhashini integration, or a credit score / CIBIL
-        product.
+        SMS not wired). Official Cluster Match uses a checked-in seed parsed from
+        public DC (Handlooms) Weavers Database campaign PDFs — not a live API and
+        not census population. LoomOS does not claim RBI licensing,
+        NHDC/ONDC/Bhashini integration, or a credit score / CIBIL product.
       </p>
     </section>
   );

@@ -3,7 +3,7 @@
  * with stable ids so JSON payment/wallet rows still match.
  *
  * Demo phones:
- *   Weavers: 9876543210 Kavita (North), 9876543211 Selvi (South), 9876543212 Kamala, 9876543213 Lakshmi
+ *   Weavers: 9876543210 Kavita (South), 9876543211 Selvi (South), 9876543212 Kamala, 9876543213 Lakshmi
  *   Buyers:  9840010001 Saffron, 9840010002 Festival, 9840010003 Loom Link
  */
 import dotenv from "dotenv";
@@ -31,7 +31,7 @@ const prisma = new PrismaClient({ adapter });
 
 async function main() {
   const { DEMO_COOPS } = await import("../src/lib/auth/regions");
-  const coopId = "demo-cluster-delhi";
+  const coopId = "cluster-tamil-nadu-kanchipuram";
 
   for (const coop of DEMO_COOPS) {
     await prisma.cooperative.upsert({
@@ -61,12 +61,13 @@ async function main() {
       phone: "9876543210",
       name: "Kavita",
       givenName: "Kavita",
-      primaryLanguage: "hi",
+      primaryLanguage: "ta",
+      region: "Tamil Nadu",
       categories: [
         "cotton saree",
         "silk saree",
         "cotton lungi",
-        "district:IIT Delhi",
+        "district:Kanchipuram",
       ],
     },
     {
@@ -76,7 +77,8 @@ async function main() {
       name: "Selvi",
       givenName: "Selvi",
       primaryLanguage: "ta",
-      categories: ["cotton saree", "stole / dupatta", "district:South Delhi"],
+      region: "Tamil Nadu",
+      categories: ["cotton saree", "stole / dupatta", "district:Madurai"],
     },
     {
       id: "weaver-demo-003",
@@ -84,8 +86,9 @@ async function main() {
       phone: "9876543212",
       name: "Kamala",
       givenName: "Kamala",
-      primaryLanguage: "hi",
-      categories: ["silk saree", "dhoti / angavastram", "district:Hauz Khas"],
+      primaryLanguage: "ta",
+      region: "Tamil Nadu",
+      categories: ["silk saree", "dhoti / angavastram", "district:Salem"],
     },
     {
       id: "weaver-demo-004",
@@ -93,12 +96,13 @@ async function main() {
       phone: "9876543213",
       name: "Lakshmi",
       givenName: "Lakshmi",
-      primaryLanguage: "hi",
+      primaryLanguage: "ta",
+      region: "Tamil Nadu",
       categories: [
         "stole / dupatta",
         "dhoti / angavastram",
         "cotton saree",
-        "district:Saket",
+        "district:Erode",
       ],
     },
   ];
@@ -116,14 +120,14 @@ async function main() {
           id: w.id,
           userId: w.userId,
           cooperativeId: coopId,
-          region: "Delhi",
+          region: w.region,
           primaryLanguage: w.primaryLanguage,
           categoriesJson: JSON.stringify(w.categories),
           givenName: w.givenName,
         },
         update: {
           cooperativeId: coopId,
-          region: "Delhi",
+          region: w.region,
           primaryLanguage: w.primaryLanguage,
           categoriesJson: JSON.stringify(w.categories),
           givenName: w.givenName,
@@ -140,7 +144,7 @@ async function main() {
             create: {
               id: w.id,
               cooperativeId: coopId,
-              region: "Delhi",
+              region: w.region,
               primaryLanguage: w.primaryLanguage,
               categoriesJson: JSON.stringify(w.categories),
               givenName: w.givenName,
@@ -187,12 +191,12 @@ async function main() {
         create: {
           id: b.id,
           userId: b.userId,
-          region: "Delhi",
+          region: "Tamil Nadu",
           businessName: b.businessName,
           email: b.email,
         },
         update: {
-          region: "Delhi",
+          region: "Tamil Nadu",
           businessName: b.businessName,
           email: b.email,
         },
@@ -207,7 +211,7 @@ async function main() {
           buyer: {
             create: {
               id: b.id,
-              region: "Delhi",
+              region: "Tamil Nadu",
               businessName: b.businessName,
               email: b.email,
             },

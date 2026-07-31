@@ -133,7 +133,7 @@ function tipForFactor(
     return {
       id: "buyer-weak",
       title: "Strengthen buyer signal",
-      detail: `${f.label} is ${f.rawScore}/100.${gainNote} Open Orders filtered to IIT / Delhi and accept posts that match your weave categories.`,
+      detail: `${f.label} is ${f.rawScore}/100.${gainNote} Open Orders filtered to Kanchipuram / Tamil Nadu and accept posts that match your weave categories.`,
       estimatedGainPts: gain > 0 ? gain : undefined,
       href: "/orders",
     };

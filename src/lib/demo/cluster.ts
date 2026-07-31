@@ -2,22 +2,21 @@
  * Stage 10 — Day-one bootstrap / Demo Mode.
  *
  * ONE fictional demo cluster only. Not a real cooperative, not real people,
- * not live ledger numbers. Primary map cluster is Delhi NCT around
- * IIT Delhi — craft tradition may still reference classic handloom styles.
+ * not live ledger numbers. Primary craft cluster is Tamil Nadu / Kanchipuram.
  */
 
 export const DEMO_MODE = true;
 
 /** Primary demo cluster — society name matches cluster name. */
 export const DEMO_CLUSTER = {
-  id: "demo-cluster-delhi",
-  name: "IIT Delhi",
-  shortName: "IIT Delhi",
-  /** Primary map cluster — IIT Delhi → Delhi NCT → nation */
+  id: "cluster-tamil-nadu-kanchipuram",
+  name: "Kanchipuram",
+  shortName: "Kanchipuram",
+  /** Primary craft cluster — Kanchipuram → Tamil Nadu → nation */
   flavor:
-    "Delhi NCT handloom cluster centered on IIT Delhi and South Delhi retail.",
-  region: "Delhi",
-  district: "IIT Delhi",
+    "Tamil Nadu handloom cluster centered on Kanchipuram silk and cotton sarees.",
+  region: "Tamil Nadu",
+  district: "Kanchipuram",
   disclaimer: "",
 } as const;
 
@@ -47,9 +46,9 @@ export const DEMO_CLUSTER_WEAVERS: DemoWeaverProfile[] = [
     id: "weaver-demo-001",
     name: "Kavita",
     givenName: "Kavita",
-    primaryLanguage: "hi",
+    primaryLanguage: "ta",
     region: DEMO_CLUSTER.region,
-    district: "IIT Delhi",
+    district: "Kanchipuram",
     categories: ["cotton saree", "silk saree", "cotton lungi"],
     cooperativeName: DEMO_CLUSTER.name,
   },
@@ -59,7 +58,7 @@ export const DEMO_CLUSTER_WEAVERS: DemoWeaverProfile[] = [
     givenName: "Selvi",
     primaryLanguage: "ta",
     region: DEMO_CLUSTER.region,
-    district: "South Delhi",
+    district: "Madurai",
     categories: ["cotton saree", "stole / dupatta"],
     cooperativeName: DEMO_CLUSTER.name,
   },
@@ -67,9 +66,9 @@ export const DEMO_CLUSTER_WEAVERS: DemoWeaverProfile[] = [
     id: "weaver-demo-003",
     name: "Kamala",
     givenName: "Kamala",
-    primaryLanguage: "hi",
+    primaryLanguage: "ta",
     region: DEMO_CLUSTER.region,
-    district: "Hauz Khas",
+    district: "Salem",
     categories: ["silk saree", "dhoti / angavastram"],
     cooperativeName: DEMO_CLUSTER.name,
   },
@@ -77,9 +76,9 @@ export const DEMO_CLUSTER_WEAVERS: DemoWeaverProfile[] = [
     id: "weaver-demo-004",
     name: "Lakshmi",
     givenName: "Lakshmi",
-    primaryLanguage: "hi",
+    primaryLanguage: "ta",
     region: DEMO_CLUSTER.region,
-    district: "Saket",
+    district: "Erode",
     categories: ["stole / dupatta", "dhoti / angavastram", "cotton saree"],
     cooperativeName: DEMO_CLUSTER.name,
   },
@@ -94,13 +93,13 @@ export const DEMO_BUYERS = [
     name: "Saffron Thread Boutique",
     shortName: "Saffron Thread Boutique",
     region: DEMO_CLUSTER.region,
-    district: "IIT Delhi",
+    district: "Kanchipuram",
     email: "saffron@demo.loom",
     phone: "9840010001",
     businessType: "Festival retail boutique",
-    focus: "Cotton & silk sarees for walk-in festive shoppers near IIT Delhi",
+    focus: "Cotton & silk sarees for walk-in festive shoppers near Kanchipuram",
     typicalOrder: "10–25 pieces per post",
-    city: "South Delhi",
+    city: "Kanchipuram",
     simulatedNote: "",
   },
   {
@@ -108,13 +107,13 @@ export const DEMO_BUYERS = [
     name: "Festival Cloth Desk",
     shortName: "Festival Cloth Desk",
     region: DEMO_CLUSTER.region,
-    district: "Hauz Khas",
+    district: "Madurai",
     email: "festival@demo.loom",
     phone: "9840010002",
     businessType: "Seasonal wholesale desk",
-    focus: "Bulk cotton sarees ahead of festival windows across South Delhi",
+    focus: "Bulk cotton sarees ahead of festival windows across Tamil Nadu",
     typicalOrder: "8–40 pieces per post",
-    city: "Hauz Khas",
+    city: "Madurai",
     simulatedNote: "",
   },
   {
@@ -122,13 +121,13 @@ export const DEMO_BUYERS = [
     name: "Loom Link Resellers",
     shortName: "Loom Link Resellers",
     region: DEMO_CLUSTER.region,
-    district: "Karol Bagh",
+    district: "Salem",
     email: "loomlink@demo.loom",
     phone: "9840010003",
     businessType: "Online reseller aggregator",
-    focus: "Stoles / dupattas and ready gift sets for Delhi buyers",
+    focus: "Stoles / dupattas and ready gift sets for South Indian buyers",
     typicalOrder: "15–30 pieces per post",
-    city: "Karol Bagh",
+    city: "Salem",
     simulatedNote: "",
   },
 ] as const;
@@ -138,6 +137,6 @@ export const DEMO_BUYERS = [
  * Answers: what does weaver #1 see with no history?
  */
 export const BOOTSTRAP_PLAN_NOTE =
-  "Before LoomOS has enough live settlements, the first buyer requirements are sourced by hand around IIT Delhi / South Delhi — calls, co-op visits, WhatsApp — and entered so weaver #1 still gets a useful Buyer Signal.";
+  "Before LoomOS has enough live settlements, the first buyer requirements are sourced by hand around Kanchipuram / Tamil Nadu — calls, co-op visits, WhatsApp — and entered so weaver #1 still gets a useful Buyer Signal.";
 
 export const DEMO_MODE_BANNER_TEXT = "";

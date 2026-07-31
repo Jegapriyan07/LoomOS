@@ -1,0 +1,310 @@
+{
+  "meta": {
+    "title": "DC (Handlooms) Weavers Database — state campaign rollups",
+    "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+    "sourcePdf": "https://handlooms.nic.in/assets/img/Weavers%20Database/Complete%20list%20district.pdf",
+    "sourceLabel": "State-wise districts / weavers / agencies for National Handloom Day",
+    "sourceNote": "Parsed from Complete list district.pdf. Campaign coverage counts for social media — not Fourth Handloom Census headcounts.",
+    "asOf": "2026-07-31",
+    "disclaimer": "Campaign listing totals — not census population."
+  },
+  "states": [
+    {
+      "state": "Andhra Pradesh",
+      "sourceLabels": [
+        "Andhra Pradesh"
+      ],
+      "districtsCovered": 14,
+      "weaversCovered": 31,
+      "agenciesCovered": 0,
+      "totalListed": 32
+    },
+    {
+      "state": "Arunachal Pradesh",
+      "sourceLabels": [
+        "Arunachal Pradesh"
+      ],
+      "districtsCovered": 13,
+      "weaversCovered": 27,
+      "agenciesCovered": 6,
+      "totalListed": 33
+    },
+    {
+      "state": "Assam",
+      "sourceLabels": [
+        "Assam"
+      ],
+      "districtsCovered": 29,
+      "weaversCovered": 58,
+      "agenciesCovered": 4,
+      "totalListed": 62
+    },
+    {
+      "state": "Bihar",
+      "sourceLabels": [
+        "Bihar"
+      ],
+      "districtsCovered": 8,
+      "weaversCovered": 8,
+      "agenciesCovered": 0,
+      "totalListed": 8
+    },
+    {
+      "state": "Chhattisgarh",
+      "sourceLabels": [
+        "Chhattisgarh"
+      ],
+      "districtsCovered": 16,
+      "weaversCovered": 22,
+      "agenciesCovered": 1,
+      "totalListed": 23
+    },
+    {
+      "state": "Delhi",
+      "sourceLabels": [
+        "Delhi"
+      ],
+      "districtsCovered": 1,
+      "weaversCovered": 5,
+      "agenciesCovered": 0,
+      "totalListed": 3
+    },
+    {
+      "state": "Gujarat",
+      "sourceLabels": [
+        "Gujarat"
+      ],
+      "districtsCovered": 9,
+      "weaversCovered": 50,
+      "agenciesCovered": 1,
+      "totalListed": 51
+    },
+    {
+      "state": "Haryana",
+      "sourceLabels": [
+        "Haryana"
+      ],
+      "districtsCovered": 2,
+      "weaversCovered": 2,
+      "agenciesCovered": 0,
+      "totalListed": 2
+    },
+    {
+      "state": "Himachal Pradesh",
+      "sourceLabels": [
+        "H.P."
+      ],
+      "districtsCovered": 4,
+      "weaversCovered": 7,
+      "agenciesCovered": 0,
+      "totalListed": 7
+    },
+    {
+      "state": "Jammu and Kashmir",
+      "sourceLabels": [
+        "J&K"
+      ],
+      "districtsCovered": 8,
+      "weaversCovered": 12,
+      "agenciesCovered": 0,
+      "totalListed": 12
+    },
+    {
+      "state": "Jharkhand",
+      "sourceLabels": [
+        "Jharkhand"
+      ],
+      "districtsCovered": 11,
+      "weaversCovered": 10,
+      "agenciesCovered": 9,
+      "totalListed": 19
+    },
+    {
+      "state": "Karnataka",
+      "sourceLabels": [
+        "Karnataka"
+      ],
+      "districtsCovered": 9,
+      "weaversCovered": 5,
+      "agenciesCovered": 7,
+      "totalListed": 12
+    },
+    {
+      "state": "Kerala",
+      "sourceLabels": [
+        "Kerala"
+      ],
+      "districtsCovered": 10,
+      "weaversCovered": 42,
+      "agenciesCovered": 0,
+      "totalListed": 42
+    },
+    {
+      "state": "Madhya Pradesh",
+      "sourceLabels": [
+        "M.P."
+      ],
+      "districtsCovered": 7,
+      "weaversCovered": 10,
+      "agenciesCovered": 7,
+      "totalListed": 17
+    },
+    {
+      "state": "Maharashtra",
+      "sourceLabels": [
+        "Maharashtra (Mumbai)",
+        "Maharashtra (Nagpur)"
+      ],
+      "districtsCovered": 11,
+      "weaversCovered": 33,
+      "agenciesCovered": 0,
+      "totalListed": 33
+    },
+    {
+      "state": "Manipur",
+      "sourceLabels": [
+        "Manipur"
+      ],
+      "districtsCovered": 7,
+      "weaversCovered": 24,
+      "agenciesCovered": 4,
+      "totalListed": 28
+    },
+    {
+      "state": "Meghalaya",
+      "sourceLabels": [
+        "Meghalaya"
+      ],
+      "districtsCovered": 6,
+      "weaversCovered": 15,
+      "agenciesCovered": 0,
+      "totalListed": 15
+    },
+    {
+      "state": "Mizoram",
+      "sourceLabels": [
+        "Mizoram"
+      ],
+      "districtsCovered": 5,
+      "weaversCovered": 11,
+      "agenciesCovered": 0,
+      "totalListed": 11
+    },
+    {
+      "state": "Nagaland",
+      "sourceLabels": [
+        "Nagaland"
+      ],
+      "districtsCovered": 8,
+      "weaversCovered": 15,
+      "agenciesCovered": 1,
+      "totalListed": 16
+    },
+    {
+      "state": "Odisha",
+      "sourceLabels": [
+        "Odisha"
+      ],
+      "districtsCovered": 26,
+      "weaversCovered": 27,
+      "agenciesCovered": 9,
+      "totalListed": 36
+    },
+    {
+      "state": "Punjab",
+      "sourceLabels": [
+        "Punjab"
+      ],
+      "districtsCovered": 1,
+      "weaversCovered": 2,
+      "agenciesCovered": 0,
+      "totalListed": 2
+    },
+    {
+      "state": "Rajasthan",
+      "sourceLabels": [
+        "Rajasthan"
+      ],
+      "districtsCovered": 19,
+      "weaversCovered": 22,
+      "agenciesCovered": 0,
+      "totalListed": 22
+    },
+    {
+      "state": "Sikkim",
+      "sourceLabels": [
+        "Sikkim"
+      ],
+      "districtsCovered": 1,
+      "weaversCovered": 0,
+      "agenciesCovered": 1,
+      "totalListed": 1
+    },
+    {
+      "state": "Tamil Nadu",
+      "sourceLabels": [
+        "Tamil Nadu"
+      ],
+      "districtsCovered": 26,
+      "weaversCovered": 13,
+      "agenciesCovered": 30,
+      "totalListed": 43
+    },
+    {
+      "state": "Telangana",
+      "sourceLabels": [
+        "Telangana"
+      ],
+      "districtsCovered": 14,
+      "weaversCovered": 30,
+      "agenciesCovered": 6,
+      "totalListed": 36
+    },
+    {
+      "state": "Tripura",
+      "sourceLabels": [
+        "Tripura"
+      ],
+      "districtsCovered": 8,
+      "weaversCovered": 12,
+      "agenciesCovered": 0,
+      "totalListed": 12
+    },
+    {
+      "state": "Uttar Pradesh",
+      "sourceLabels": [
+        "U.P."
+      ],
+      "districtsCovered": 23,
+      "weaversCovered": 28,
+      "agenciesCovered": 9,
+      "totalListed": 37
+    },
+    {
+      "state": "Uttarakhand",
+      "sourceLabels": [
+        "Uttarakhand"
+      ],
+      "districtsCovered": 7,
+      "weaversCovered": 13,
+      "agenciesCovered": 0,
+      "totalListed": 13
+    },
+    {
+      "state": "West Bengal",
+      "sourceLabels": [
+        "West Bengal"
+      ],
+      "districtsCovered": 13,
+      "weaversCovered": 16,
+      "agenciesCovered": 6,
+      "totalListed": 22
+    }
+  ],
+  "national": {
+    "districtsCovered": 316,
+    "weaversCovered": 550,
+    "agenciesCovered": 101,
+    "totalListed": 650
+  }
+}

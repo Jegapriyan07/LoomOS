@@ -353,7 +353,7 @@ export default function BuyerPortalPage() {
       {tab === "map" ? (
         <div className="mt-6 space-y-3">
           <p className="text-sm text-slate-600">
-            Default cluster is IIT Delhi. Use IIT / District / Nation to zoom
+            Default cluster is Kanchipuram. Use Local / District / Nation to zoom
             out — tap a district hub or weaver for rating and ready-stock menu.
           </p>
           {mapData ? (
@@ -383,8 +383,7 @@ export default function BuyerPortalPage() {
                   Official Cluster Match
                 </h2>
                 <p className="mt-1 text-sm text-slate-600">
-                  Density heatmap + ranked match for co-operative / producer-company
-                  clusters from the{" "}
+                  Density heatmap + ranked match for clusters from the{" "}
                   <a
                     href="https://handlooms.nic.in/weavers_database.php"
                     target="_blank"
@@ -392,8 +391,9 @@ export default function BuyerPortalPage() {
                     className="font-semibold text-[#1e3a5f] underline"
                   >
                     DC (Handlooms) Weavers Database
-                  </a>
-                  . Curated seed for this demo — not a live government API.
+                  </a>{" "}
+                  campaign PDFs — products, GI, and weaves included. Checked-in
+                  seed — not a live government API or census headcount.
                 </p>
               </div>
             </div>
@@ -521,6 +521,12 @@ export default function BuyerPortalPage() {
 
               {matchPayload.results.map((row) => {
                 const open = expandedRank === row.rank;
+                const products = row.entry.products ?? [];
+                const weaves = row.entry.weaves ?? [];
+                const societies = row.entry.societyNames ?? [];
+                const gi = row.entry.giProductCount ?? 0;
+                const awards = row.entry.awardCount ?? 0;
+                const listed = row.entry.weaverCount;
                 return (
                   <article
                     key={row.entry.id}
@@ -530,9 +536,12 @@ export default function BuyerPortalPage() {
                       <div>
                         <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
                           Rank #{row.rank} · score {row.score}/100
+                          {listed != null
+                            ? ` · ${listed} campaign listing row${listed === 1 ? "" : "s"}`
+                            : ""}
                         </p>
                         <h3 className="text-lg font-semibold text-[#1a1f24]">
-                          {row.entry.societyName}
+                          {row.entry.loomOsCluster || row.entry.societyName}
                         </h3>
                         <p className="text-sm text-slate-600">
                           {row.societyTypeLabel} · {row.entry.district},{" "}
@@ -567,6 +576,16 @@ export default function BuyerPortalPage() {
                         >
                           Weaver map
                         </button>
+                        {row.entry.sourceUrl ? (
+                          <a
+                            href={row.entry.sourceUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="rounded border border-slate-300 px-3 py-1.5 text-xs font-semibold text-[#1e3a5f]"
+                          >
+                            Source PDF
+                          </a>
+                        ) : null}
                         <button
                           type="button"
                           onClick={() =>
@@ -583,20 +602,64 @@ export default function BuyerPortalPage() {
                         </button>
                       </div>
                     </div>
+
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      {gi > 0 ? (
+                        <span className="rounded-full bg-[#e8f0e4] px-2.5 py-0.5 text-xs font-semibold text-[#2f5a3c]">
+                          GI ×{gi}
+                        </span>
+                      ) : null}
+                      {awards > 0 ? (
+                        <span className="rounded-full bg-[#f5e6b8] px-2.5 py-0.5 text-xs font-semibold text-[#9a5b12]">
+                          Awards ×{awards}
+                        </span>
+                      ) : null}
+                      {products.slice(0, 4).map((p) => (
+                        <span
+                          key={p}
+                          className="rounded-full bg-[#efe8d8] px-2.5 py-0.5 text-xs font-semibold text-[#3c2415]"
+                        >
+                          {p}
+                        </span>
+                      ))}
+                      {weaves.slice(0, 2).map((w) => (
+                        <span
+                          key={w}
+                          className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-semibold text-slate-600"
+                        >
+                          {w}
+                        </span>
+                      ))}
+                    </div>
+
                     <p className="mt-2 text-xs font-semibold text-amber-900">
                       {row.sourceChip}
                     </p>
                     {open ? (
-                      <ul className="mt-3 space-y-2 rounded-lg bg-slate-50 px-3 py-3 text-sm">
-                        {row.reasons.map((r) => (
-                          <li key={r.id}>
-                            <p className="font-semibold text-[#1a1f24]">
-                              {r.label}: +{r.points}
+                      <div className="mt-3 space-y-3 rounded-lg bg-slate-50 px-3 py-3 text-sm">
+                        <ul className="space-y-2">
+                          {row.reasons.map((r) => (
+                            <li key={r.id}>
+                              <p className="font-semibold text-[#1a1f24]">
+                                {r.label}: +{r.points}
+                              </p>
+                              <p className="text-slate-600">{r.detail}</p>
+                            </li>
+                          ))}
+                        </ul>
+                        {societies.length > 0 ? (
+                          <div>
+                            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                              Societies in campaign list (names only)
                             </p>
-                            <p className="text-slate-600">{r.detail}</p>
-                          </li>
-                        ))}
-                      </ul>
+                            <ul className="mt-1 list-inside list-disc text-slate-600">
+                              {societies.slice(0, 6).map((n) => (
+                                <li key={n}>{n}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        ) : null}
+                      </div>
                     ) : null}
                   </article>
                 );

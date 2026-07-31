@@ -1,7 +1,7 @@
 /**
- * DC (Handlooms) Weavers Database — curated loader.
+ * DC (Handlooms) Weavers Database — campaign-enriched loader.
  * Source: https://handlooms.nic.in/weavers_database.php
- * Demo / curated seed — not a live government API.
+ * Checked-in seed from public National Handloom Day PDFs — not a live API.
  */
 
 import { promises as fs } from "fs";
@@ -19,14 +19,26 @@ export type GovWeaversClusterEntry = {
   societyType: GovSocietyType;
   /** Maps onto STATE_CLUSTERS / register coop name */
   loomOsCluster: string;
-  /** Official headcount when known; usually null in this curated seed */
+  /**
+   * Campaign-listed rows matched to this district/hub.
+   * Null when the hub has no PDF row match — not a census headcount.
+   */
   weaverCount: number | null;
   /**
-   * Demo ranking weight 0–100 from campaign list coverage — not a census
-   * headcount. Always labeled in UI.
+   * Within-state campaign density rank 0–100 derived from listing-row counts.
+   * Always labeled in UI — not an official census headcount.
    */
   densityWeight: number;
   categoryHints: DemandCategoryId[];
+  /** Exclusive handloom products from campaign PDF rows */
+  products?: string[];
+  weaves?: string[];
+  techniques?: string[];
+  giProductCount?: number;
+  awardCount?: number;
+  /** Co-op / PC / society names only (no personal contacts) */
+  societyNames?: string[];
+  listedAgencyRows?: number;
   sourceUrl: string;
   sourceNote: string;
   asOf: string;
@@ -42,6 +54,9 @@ export type GovWeaversClusterMeta = {
   coverage?: {
     states: number;
     hubs: number;
+    hubsWithListingRows?: number;
+    campaignRowsParsed?: number;
+    nationalListed?: number;
     note: string;
   };
 };
@@ -59,12 +74,36 @@ const SEED_PATH = path.join(
 
 let cached: GovWeaversClusterSeed | null = null;
 
+/** Pitch geography labels (e.g. IIT Delhi) — never official DC(HL) heatmap hubs. */
+function isPitchOnlyHub(entry: GovWeaversClusterEntry): boolean {
+  if (entry.id === "delhi-iit-delhi") return true;
+  const label = (
+    entry.loomOsCluster ||
+    entry.district ||
+    entry.societyName ||
+    ""
+  )
+    .toLowerCase()
+    .trim();
+  return label === "iit delhi" || /^iit\b/.test(label);
+}
+
 export async function loadGovWeaversClusters(): Promise<GovWeaversClusterSeed> {
   if (cached) return cached;
   const raw = await fs.readFile(SEED_PATH, "utf8");
   const parsed = JSON.parse(raw) as GovWeaversClusterSeed;
-  cached = parsed;
-  return parsed;
+  const entries = parsed.entries.filter((e) => !isPitchOnlyHub(e));
+  cached = {
+    ...parsed,
+    entries,
+    meta: {
+      ...parsed.meta,
+      coverage: parsed.meta.coverage
+        ? { ...parsed.meta.coverage, hubs: entries.length }
+        : parsed.meta.coverage,
+    },
+  };
+  return cached;
 }
 
 /** Sync access after warm — prefer loadGovWeaversClusters in API routes. */
@@ -114,4 +153,4 @@ export function coopIdForGovEntry(entry: GovWeaversClusterEntry): string {
 }
 
 export const GOV_WEAVERS_SOURCE_CHIP =
-  "Source: DC (Handlooms) Weavers Database (curated)";
+  "Source: DC (Handlooms) Weavers Database (campaign PDFs)";

@@ -200,25 +200,25 @@ export const DISTRICT_GEO: Record<string, HubCoord> = {
 export const INDIA_MAP_CENTER: HubCoord = { lat: 22.5, lng: 82.0 };
 export const INDIA_MAP_ZOOM = 5;
 export const STATE_ZOOM = 7;
-/** Tight zoom for district / IIT Delhi micro-hub view */
+/** Tight zoom for district / primary micro-hub view */
 export const DISTRICT_ZOOM = 12;
 /** Delhi NCT overview (between district and full state zoom) */
 export const DELHI_STATE_ZOOM = 11;
 
-/** Primary LoomOS map cluster pin — IIT Delhi campus area */
+/** Primary LoomOS map cluster pin — Kanchipuram */
 export const PRIMARY_DEMAND = {
-  region: "Delhi",
-  district: "IIT Delhi",
-  lat: 28.5454,
-  lng: 77.1926,
+  region: "Tamil Nadu",
+  district: "Kanchipuram",
+  lat: 12.8342,
+  lng: 79.7036,
 } as const;
 
-/** Micro-hubs treated as one IIT Delhi cluster on the map */
+/** Micro-hubs treated as one primary Tamil Nadu cluster on the map */
 export const IIT_CLUSTER = new Set([
-  "iit delhi",
-  "hauz khas",
-  "south delhi",
-  "saket",
+  "kanchipuram",
+  "madurai",
+  "salem",
+  "erode",
 ]);
 
 export function isIitClusterDistrict(district: string): boolean {

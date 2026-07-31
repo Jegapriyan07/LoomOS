@@ -30,7 +30,7 @@ const LINKS = [
   {
     href: "/coop",
     title: "Cooperative / cluster dashboard",
-    body: "Order distribution, illustrative capacity, Stage 3 demand scores for the IIT Delhi cluster.",
+    body: "Order distribution, illustrative capacity, Stage 3 demand scores for the Kanchipuram cluster.",
   },
 ];
 

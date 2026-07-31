@@ -199,7 +199,7 @@ export const DEMO_COOPS: DemoCoopSeed[] = [
   },
 ];
 
-export const DEFAULT_COOP_ID = "demo-cluster-delhi";
+export const DEFAULT_COOP_ID = "cluster-tamil-nadu-kanchipuram";
 
 export type CoopAssignment = {
   cooperativeId: string;

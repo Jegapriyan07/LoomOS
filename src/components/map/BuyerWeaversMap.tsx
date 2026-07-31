@@ -100,7 +100,7 @@ export function BuyerWeaversMapInner({
 }: Props) {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState<BuyerMapSuggestion[]>([]);
-  /** Default cluster: IIT Delhi micro-hub */
+  /** Default cluster: Kanchipuram micro-hub */
   const [scope, setScope] = useState<DemandHeatScope>("district");
   const [region, setRegion] = useState<string | null>(PRIMARY_DEMAND.region);
   const [district, setDistrict] = useState<string | null>(
@@ -252,7 +252,7 @@ export function BuyerWeaversMapInner({
 
   const scopeLabel =
     scope === "district"
-      ? `IIT cluster · ${district || PRIMARY_DEMAND.district}, ${region || PRIMARY_DEMAND.region} · ${filtered.length} weavers`
+      ? `Local cluster · ${district || PRIMARY_DEMAND.district}, ${region || PRIMARY_DEMAND.region} · ${filtered.length} weavers`
       : scope === "state"
         ? `District clusters · ${region || PRIMARY_DEMAND.region} · ${filtered.length} weavers`
         : `Nation clusters · ${weavers.length} weavers across ${stateClusters.length} states`;
@@ -300,7 +300,7 @@ export function BuyerWeaversMapInner({
           <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-[#8a8070]" />
           <input
             className="w-full rounded-2xl border border-[#d9d2c4] bg-[#fffdf8] py-3 pl-10 pr-11 text-sm text-[#1a1f24]"
-            placeholder="Delhi, IIT Delhi…"
+            placeholder="Tamil Nadu, Kanchipuram…"
             value={query}
             onChange={(e) => void onQueryChange(e.target.value)}
             onFocus={() => {
@@ -313,7 +313,7 @@ export function BuyerWeaversMapInner({
               type="button"
               className="absolute right-2 top-1/2 flex size-8 -translate-y-1/2 items-center justify-center rounded-full text-[#5c6570] hover:bg-[#f3efe6]"
               onClick={clearFilter}
-              aria-label="Reset to IIT Delhi cluster"
+              aria-label="Reset to Kanchipuram cluster"
             >
               <X className="size-4" />
             </button>
@@ -340,7 +340,7 @@ export function BuyerWeaversMapInner({
                   className="w-full border-t border-[#e8e2d8] px-3.5 py-2.5 text-left text-sm font-semibold text-[#3c2415]"
                   onClick={() => setClusterScope("district")}
                 >
-                  Reset to IIT Delhi cluster
+                  Reset to Kanchipuram cluster
                 </button>
               </li>
             </ul>

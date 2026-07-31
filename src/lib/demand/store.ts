@@ -362,7 +362,7 @@ function seedPaymentSlice(): Pick<
   };
 }
 
-/** Seed open buyer requirements — Delhi-primary (IIT Delhi) + a few national hubs. */
+/** Seed open buyer requirements — Tamil Nadu-primary (Kanchipuram) + a few national hubs. */
 function seedStore(): LoomStore {
   const now = new Date().toISOString();
   return {
@@ -372,15 +372,15 @@ function seedStore(): LoomStore {
         buyerId: "buyer-demo-001",
         buyerName: DEMO_BUYERS[0].name,
         categoryId: "cotton-saree",
-        region: "Delhi",
-        district: "IIT Delhi",
+        region: "Tamil Nadu",
+        district: "Kanchipuram",
         quantity: 12,
         neededBy: "2026-10-15",
         priceMin: 900,
         priceMax: 1400,
         status: "open",
         notes:
-          "Saffron Thread Boutique — cotton sarees for walk-in buyers around IIT Delhi.",
+          "Saffron Thread Boutique — cotton sarees for walk-in buyers around Kanchipuram.",
         createdAt: now,
       },
       {
@@ -388,15 +388,15 @@ function seedStore(): LoomStore {
         buyerId: "buyer-demo-002",
         buyerName: DEMO_BUYERS[1].name,
         categoryId: "cotton-saree",
-        region: "Delhi",
-        district: "Hauz Khas",
+        region: "Tamil Nadu",
+        district: "Madurai",
         quantity: 8,
         neededBy: "2026-11-01",
         priceMin: 850,
         priceMax: 1200,
         status: "open",
         notes:
-          "Festival Cloth Desk — Hauz Khas wholesale fill for early November.",
+          "Festival Cloth Desk — Madurai wholesale fill for early November.",
         createdAt: now,
       },
       {
@@ -404,15 +404,15 @@ function seedStore(): LoomStore {
         buyerId: "buyer-demo-001",
         buyerName: DEMO_BUYERS[0].name,
         categoryId: "silk-saree",
-        region: "Delhi",
-        district: "South Delhi",
+        region: "Tamil Nadu",
+        district: "Kanchipuram",
         quantity: 10,
         neededBy: "2026-12-01",
         priceMin: 4500,
         priceMax: 7800,
         status: "open",
         notes:
-          "Saffron silk lot for South Delhi wedding retail racks.",
+          "Saffron silk lot for Kanchipuram wedding retail racks.",
         createdAt: now,
       },
       {
@@ -420,15 +420,15 @@ function seedStore(): LoomStore {
         buyerId: "buyer-demo-003",
         buyerName: DEMO_BUYERS[2].name,
         categoryId: "stole-dupatta",
-        region: "Delhi",
-        district: "Karol Bagh",
+        region: "Tamil Nadu",
+        district: "Salem",
         quantity: 24,
         neededBy: "2026-09-20",
         priceMin: 450,
         priceMax: 750,
         status: "open",
         notes:
-          "Loom Link Resellers — Karol Bagh gift-set stoles for Delhi drop.",
+          "Loom Link Resellers — Salem gift-set stoles for Tamil Nadu drop.",
         createdAt: now,
       },
       {
@@ -436,15 +436,15 @@ function seedStore(): LoomStore {
         buyerId: "buyer-demo-002",
         buyerName: DEMO_BUYERS[1].name,
         categoryId: "dhoti-angavastram",
-        region: "Delhi",
-        district: "Saket",
+        region: "Tamil Nadu",
+        district: "Erode",
         quantity: 15,
         neededBy: "2026-10-05",
         priceMin: 600,
         priceMax: 950,
         status: "open",
         notes:
-          "Festival Cloth Desk — Saket temple-season dhoti set.",
+          "Festival Cloth Desk — Erode temple-season dhoti set.",
         createdAt: now,
       },
       {
@@ -452,15 +452,15 @@ function seedStore(): LoomStore {
         buyerId: "buyer-demo-001",
         buyerName: DEMO_BUYERS[0].name,
         categoryId: "cotton-saree",
-        region: "Delhi",
-        district: "New Delhi",
+        region: "Tamil Nadu",
+        district: "Coimbatore",
         quantity: 18,
         neededBy: "2026-10-22",
         priceMin: 950,
         priceMax: 1500,
         status: "open",
         notes:
-          "New Delhi boutique restock — Connaught Place belt, Delhi district cluster.",
+          "Coimbatore boutique restock — Tamil Nadu district cluster.",
         createdAt: now,
       },
       {
@@ -468,15 +468,15 @@ function seedStore(): LoomStore {
         buyerId: "buyer-demo-003",
         buyerName: DEMO_BUYERS[2].name,
         categoryId: "stole-dupatta",
-        region: "Delhi",
-        district: "Chandni Chowk",
+        region: "Tamil Nadu",
+        district: "Salem",
         quantity: 30,
         neededBy: "2026-09-28",
         priceMin: 400,
         priceMax: 700,
         status: "open",
         notes:
-          "Chandni Chowk wholesale stoles — Delhi district cluster hub.",
+          "Salem wholesale stoles — Tamil Nadu district cluster hub.",
         createdAt: now,
       },
       // National / other-state demand (visible on National scope)
@@ -485,14 +485,14 @@ function seedStore(): LoomStore {
         buyerId: "buyer-demo-002",
         buyerName: DEMO_BUYERS[1].name,
         categoryId: "cotton-saree",
-        region: "Tamil Nadu",
-        district: "Kanchipuram",
+        region: "Delhi",
+        district: "IIT Delhi",
         quantity: 10,
         neededBy: "2026-11-15",
         priceMin: 800,
         priceMax: 1300,
         status: "open",
-        notes: "National signal — Kanchipuram cotton lot (outside Delhi).",
+        notes: "National signal — Delhi cotton lot (outside Tamil Nadu).",
         createdAt: now,
       },
       {
@@ -566,7 +566,8 @@ function normalizeStore(raw: Partial<LoomStore>): LoomStore {
               ...r,
               buyerName: demoBuyer.name,
               region: seed?.region ?? demoBuyer.region ?? r.region,
-              district: r.district ?? seed?.district ?? demoBuyer.district,
+              district: seed?.district ?? r.district ?? demoBuyer.district,
+              notes: seed?.notes ?? r.notes,
             };
           }
           if (r.id.startsWith("req-00") && !r.buyerId) {
@@ -575,8 +576,8 @@ function normalizeStore(raw: Partial<LoomStore>): LoomStore {
               ...r,
               buyerId: fallback.id,
               buyerName: fallback.name,
-              region: seed?.region ?? "Delhi",
-              district: r.district ?? seed?.district ?? "IIT Delhi",
+              region: seed?.region ?? "Tamil Nadu",
+              district: r.district ?? seed?.district ?? "Kanchipuram",
               notes: r.notes?.includes("Demo Mode") || r.notes?.includes("Simulated")
                 ? r.notes
                 : "Open buyer requirement",
@@ -671,7 +672,7 @@ function storeNeedsMigration(parsed: Partial<LoomStore>): boolean {
     !(parsed.buyerRequirements ?? []).some(
       (r) =>
         r.id === "req-001" &&
-        normalizeStateName(r.region) === "Delhi" &&
+        normalizeStateName(r.region) === "Tamil Nadu" &&
         Boolean(r.district),
     ) ||
     !(parsed.buyerRequirements ?? []).some((r) => r.id === "req-006") ||
@@ -682,6 +683,13 @@ function storeNeedsMigration(parsed: Partial<LoomStore>): boolean {
 function normalizeStateName(region: string): string {
   const cleaned = region.trim().toLowerCase();
   if (cleaned === "delhi" || cleaned.includes("delhi")) return "Delhi";
+  if (
+    cleaned === "tamil nadu" ||
+    cleaned === "tamilnadu" ||
+    cleaned.includes("tamil")
+  ) {
+    return "Tamil Nadu";
+  }
   return region;
 }
 
@@ -1241,7 +1249,7 @@ export async function getBuyerWeaverMapData() {
     stateClusters: clusterByState(pins),
     demoMode: true as const,
     disclaimer:
-      "Default cluster: IIT Delhi · Delhi. Hub coordinates are approximate. Ratings from Settlement Released counts + verified badge.",
+      "Default cluster: Kanchipuram · Tamil Nadu. Hub coordinates are approximate. Ratings from Settlement Released counts + verified badge.",
   };
 }
 
@@ -1277,9 +1285,9 @@ export async function getWeaverOrdersHeatmap(opts?: {
     demoMode: true as const,
     disclaimer:
       scope === "district"
-        ? `IIT cluster — hubs near ${district ?? "IIT Delhi"}, Delhi (open requirements + pipeline).`
+        ? `Local cluster — hubs near ${district ?? "Kanchipuram"}, Tamil Nadu (open requirements + pipeline).`
         : scope === "state"
-          ? `District cluster — Delhi NCT hubs (open requirements + pipeline).`
+          ? `District cluster — Tamil Nadu hubs (open requirements + pipeline).`
           : "Nation cluster — hubs across India (open requirements + pipeline).",
   };
 }

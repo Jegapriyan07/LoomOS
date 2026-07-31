@@ -5,95 +5,95 @@
       "buyerId": "buyer-demo-001",
       "buyerName": "Saffron Thread Boutique",
       "categoryId": "cotton-saree",
-      "region": "Delhi",
+      "region": "Tamil Nadu",
       "quantity": 12,
       "neededBy": "2026-10-15",
       "status": "open",
-      "notes": "Open buyer requirement",
+      "notes": "Saffron Thread Boutique — cotton sarees for walk-in buyers around Kanchipuram.",
       "createdAt": "2026-07-28T11:09:30.403Z",
-      "district": "IIT Delhi"
+      "district": "Kanchipuram"
     },
     {
       "id": "req-002",
       "buyerId": "buyer-demo-002",
       "buyerName": "Festival Cloth Desk",
       "categoryId": "cotton-saree",
-      "region": "Delhi",
+      "region": "Tamil Nadu",
       "quantity": 8,
       "neededBy": "2026-11-01",
       "status": "open",
-      "notes": "Open buyer requirement",
+      "notes": "Festival Cloth Desk — Madurai wholesale fill for early November.",
       "createdAt": "2026-07-28T11:09:30.403Z",
-      "district": "Hauz Khas"
+      "district": "Madurai"
     },
     {
       "id": "req-003",
       "buyerId": "buyer-demo-001",
       "buyerName": "Saffron Thread Boutique",
       "categoryId": "silk-saree",
-      "region": "Delhi",
+      "region": "Tamil Nadu",
       "quantity": 10,
       "neededBy": "2026-12-01",
       "status": "open",
-      "notes": "Open buyer requirement",
+      "notes": "Saffron silk lot for Kanchipuram wedding retail racks.",
       "createdAt": "2026-07-28T11:09:30.403Z",
-      "district": "South Delhi"
+      "district": "Kanchipuram"
     },
     {
       "id": "req-004",
       "buyerId": "buyer-demo-003",
       "buyerName": "Loom Link Resellers",
       "categoryId": "stole-dupatta",
-      "region": "Delhi",
+      "region": "Tamil Nadu",
       "quantity": 24,
       "neededBy": "2026-09-20",
       "priceMin": 450,
       "priceMax": 750,
       "status": "open",
-      "notes": "Loom Link Resellers gift-set stoles for online drop.",
+      "notes": "Loom Link Resellers — Salem gift-set stoles for Tamil Nadu drop.",
       "createdAt": "2026-07-28T11:24:34.618Z",
-      "district": "Karol Bagh"
+      "district": "Salem"
     },
     {
       "id": "req-005",
       "buyerId": "buyer-demo-002",
       "buyerName": "Festival Cloth Desk",
       "categoryId": "dhoti-angavastram",
-      "region": "Delhi",
+      "region": "Tamil Nadu",
       "quantity": 15,
       "neededBy": "2026-10-05",
       "priceMin": 600,
       "priceMax": 950,
       "status": "open",
-      "notes": "Festival Cloth Desk temple-season dhoti set.",
+      "notes": "Festival Cloth Desk — Erode temple-season dhoti set.",
       "createdAt": "2026-07-28T11:24:34.618Z",
-      "district": "Saket"
+      "district": "Erode"
     },
     {
       "id": "req-006",
       "buyerId": "buyer-demo-001",
       "buyerName": "Saffron Thread Boutique",
       "categoryId": "silk-saree",
-      "region": "Delhi",
+      "region": "Tamil Nadu",
       "quantity": 18,
       "neededBy": "2026-11-20",
       "status": "open",
-      "notes": "Banaras-belt silk demand for nationwide heatmap.",
+      "notes": "Coimbatore boutique restock — Tamil Nadu district cluster.",
       "createdAt": "2026-07-29T06:00:00.000Z",
-      "district": "New Delhi"
+      "district": "Coimbatore"
     },
     {
       "id": "req-007",
       "buyerId": "buyer-demo-003",
       "buyerName": "Loom Link Resellers",
       "categoryId": "cotton-saree",
-      "region": "Delhi",
+      "region": "Tamil Nadu",
       "quantity": 20,
       "neededBy": "2026-10-30",
       "status": "open",
-      "notes": "Pochampally cotton demand.",
+      "notes": "Salem wholesale stoles — Tamil Nadu district cluster hub.",
       "createdAt": "2026-07-29T06:00:00.000Z",
-      "district": "Chandni Chowk"
+      "district": "Salem"
     },
     {
       "id": "req-008",
@@ -139,14 +139,14 @@
       "buyerId": "buyer-demo-002",
       "buyerName": "Festival Cloth Desk",
       "categoryId": "cotton-saree",
-      "region": "Tamil Nadu",
-      "district": "Kanchipuram",
+      "region": "Delhi",
+      "district": "IIT Delhi",
       "quantity": 10,
       "neededBy": "2026-11-15",
       "priceMin": 800,
       "priceMax": 1300,
       "status": "open",
-      "notes": "National signal — Kanchipuram cotton lot (outside Delhi).",
+      "notes": "National signal — Delhi cotton lot (outside Tamil Nadu).",
       "createdAt": "2026-07-30T15:41:22.931Z"
     },
     {
@@ -390,92 +390,92 @@
       ]
     },
     {
-      "id": "sim-weaver-demo-001-ms8f9zzi-1",
+      "id": "sim-weaver-demo-001-ms9h5f9e-1",
       "weaverId": "weaver-demo-001",
       "buyerId": "buyer-demo-001",
       "buyerName": "Saffron Thread Boutique",
-      "category": "cotton-saree",
-      "amount": 9500,
-      "advanceAmount": 2850,
+      "category": "silk-saree",
+      "amount": 11000,
+      "advanceAmount": 3300,
       "state": "production_in_progress",
-      "createdAt": "2026-07-28T04:08:25.713Z",
+      "createdAt": "2026-07-28T21:48:37.639Z",
       "stateHistory": [
         {
           "state": "production_in_progress",
-          "at": "2026-07-28T04:08:25.713Z"
+          "at": "2026-07-28T21:48:37.639Z"
         }
       ]
     },
     {
-      "id": "sim-weaver-demo-001-ms8f9zzi-2",
+      "id": "sim-weaver-demo-001-ms9h5f9e-2",
       "weaverId": "weaver-demo-001",
       "buyerId": "buyer-demo-002",
       "buyerName": "Festival Cloth Desk",
-      "category": "silk-saree",
-      "amount": 12000,
-      "advanceAmount": 3600,
+      "category": "dhoti-angavastram",
+      "amount": 11000,
+      "advanceAmount": 3300,
       "state": "advance_paid_escrow_held",
-      "createdAt": "2026-07-25T04:08:25.713Z",
+      "createdAt": "2026-07-25T21:48:37.639Z",
       "stateHistory": [
         {
           "state": "advance_paid_escrow_held",
-          "at": "2026-07-25T04:08:25.713Z"
+          "at": "2026-07-25T21:48:37.639Z"
         }
       ]
     },
     {
-      "id": "sim-weaver-demo-001-ms8f9zzi-3",
+      "id": "sim-weaver-demo-001-ms9h5f9e-3",
       "weaverId": "weaver-demo-001",
       "buyerId": "buyer-demo-003",
       "buyerName": "Loom Link Resellers",
       "category": "stole-dupatta",
-      "amount": 14500,
-      "advanceAmount": 4350,
+      "amount": 15000,
+      "advanceAmount": 4500,
       "state": "dispatched",
-      "createdAt": "2026-07-22T04:08:25.713Z",
-      "dispatchedAt": "2026-07-31T04:08:25.713Z",
+      "createdAt": "2026-07-22T21:48:37.639Z",
+      "dispatchedAt": "2026-07-31T21:48:37.639Z",
       "expectedSettlementAt": "2026-08-01",
       "stateHistory": [
         {
           "state": "dispatched",
-          "at": "2026-07-22T04:08:25.713Z"
+          "at": "2026-07-22T21:48:37.639Z"
         }
       ]
     },
     {
-      "id": "sim-weaver-demo-001-ms8f9zzi-4",
+      "id": "sim-weaver-demo-001-ms9h5f9e-4",
       "weaverId": "weaver-demo-001",
       "buyerId": "buyer-demo-001",
       "buyerName": "Saffron Thread Boutique",
-      "category": "silk-saree",
-      "amount": 18500,
-      "advanceAmount": 5550,
+      "category": "dhoti-angavastram",
+      "amount": 20500,
+      "advanceAmount": 6150,
       "state": "settlement_released",
-      "createdAt": "2026-06-21T04:08:25.713Z",
-      "dispatchedAt": "2026-07-25T04:08:25.713Z",
+      "createdAt": "2026-06-21T21:48:37.639Z",
+      "dispatchedAt": "2026-07-25T21:48:37.639Z",
       "expectedSettlementAt": "2026-07-26",
-      "settledAt": "2026-07-26T04:08:25.713Z",
+      "settledAt": "2026-07-26T21:48:37.639Z",
       "stateHistory": [
         {
           "state": "settlement_released",
-          "at": "2026-06-21T04:08:25.713Z"
+          "at": "2026-06-21T21:48:37.639Z"
         }
       ]
     },
     {
-      "id": "sim-weaver-demo-001-ms8f9zzi-5",
+      "id": "sim-weaver-demo-001-ms9h5f9e-5",
       "weaverId": "weaver-demo-001",
       "buyerId": "buyer-demo-002",
       "buyerName": "Festival Cloth Desk",
       "category": "silk-saree",
-      "amount": 23000,
-      "advanceAmount": 6900,
+      "amount": 22500,
+      "advanceAmount": 6750,
       "state": "order_created",
-      "createdAt": "2026-07-16T04:08:25.713Z",
+      "createdAt": "2026-07-16T21:48:37.639Z",
       "stateHistory": [
         {
           "state": "order_created",
-          "at": "2026-07-16T04:08:25.713Z"
+          "at": "2026-07-16T21:48:37.639Z"
         }
       ]
     }
@@ -485,24 +485,28 @@
     {
       "id": "buyer-demo-001",
       "name": "Saffron Thread Boutique",
-      "region": "Delhi",
-      "email": "saffron@demo.loom"
+      "region": "Tamil Nadu",
+      "email": "saffron@demo.loom",
+      "district": "Kanchipuram",
+      "city": "Kanchipuram"
     },
     {
       "id": "buyer-demo-002",
       "name": "Festival Cloth Desk",
-      "region": "Delhi",
-      "email": "festival@demo.loom"
+      "region": "Tamil Nadu",
+      "email": "festival@demo.loom",
+      "district": "Madurai",
+      "city": "Madurai"
     }
   ],
   "wallets": [
     {
       "weaverId": "weaver-demo-001",
-      "available": 226000,
+      "available": 246500,
       "reserve": 0,
       "reserveFloor": 2000,
       "surplusSavePercent": 40,
-      "updatedAt": "2026-07-31T04:03:38.925Z"
+      "updatedAt": "2026-07-31T21:51:20.561Z"
     },
     {
       "weaverId": "weaver-6ceeb0e1",
@@ -573,6 +577,10 @@
     {
       "weaverId": "weaver-demo-001",
       "orderId": "sim-weaver-demo-001-ms8f3hmg-4"
+    },
+    {
+      "weaverId": "weaver-demo-001",
+      "orderId": "sim-weaver-demo-001-ms9h5f9e-4"
     }
   ],
   "weaverStock": [

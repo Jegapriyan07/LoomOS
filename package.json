@@ -14,6 +14,7 @@
     "db:studio": "prisma studio",
     "db:neon-init": "prisma migrate diff --from-empty --to-schema prisma/schema.prisma --script -o prisma/neon-init.sql && tsx scripts/apply-neon-schema.ts && tsx prisma/seed.ts",
     "db:deploy": "tsx scripts/apply-neon-schema.ts && tsx prisma/seed.ts",
+    "gov:ingest": "python scripts/ingest_gov_weavers_db.py",
     "postinstall": "prisma generate"
   },
   "prisma": {

@@ -349,7 +349,7 @@ export default function ProfilePage() {
           {match.openNearCluster.length > 0 ? (
             <div className="mt-3 border-t border-loom-border pt-3">
               <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-loom-muted">
-                Open near IIT / Delhi
+                Open near Kanchipuram / Tamil Nadu
               </p>
               <ul className="space-y-1.5">
                 {match.openNearCluster.map((r, i) => (

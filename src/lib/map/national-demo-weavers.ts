@@ -278,8 +278,8 @@ export const DEMO_WEAVER_DISTRICTS: Record<
   string,
   { region: string; district: string }
 > = {
-  "weaver-demo-001": { region: "Delhi", district: "IIT Delhi" },
-  "weaver-demo-002": { region: "Delhi", district: "South Delhi" },
-  "weaver-demo-003": { region: "Delhi", district: "Hauz Khas" },
-  "weaver-demo-004": { region: "Delhi", district: "Saket" },
+  "weaver-demo-001": { region: "Tamil Nadu", district: "Kanchipuram" },
+  "weaver-demo-002": { region: "Tamil Nadu", district: "Madurai" },
+  "weaver-demo-003": { region: "Tamil Nadu", district: "Salem" },
+  "weaver-demo-004": { region: "Tamil Nadu", district: "Erode" },
 };

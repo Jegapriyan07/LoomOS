@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { LanguageToggle } from "./LanguageToggle";
+import { VoiceNavFab } from "./VoiceNavFab";
 import { useI18n } from "@/lib/i18n/context";
 import { cachedJson, invalidateCached } from "@/lib/client-cache";
 
@@ -30,6 +31,7 @@ export function TopBar() {
       sessionStorage.removeItem("loomos-assistant-session-opened");
       sessionStorage.removeItem("loomos-assistant-auto-open-v2");
       sessionStorage.removeItem("loomos-assistant-intro-v3");
+      sessionStorage.removeItem("loomos-assistant-intro-v4");
     } catch {
       /* ignore */
     }
@@ -58,6 +60,7 @@ export function TopBar() {
           ) : null}
         </div>
         <div className="flex items-center gap-1.5">
+          <VoiceNavFab variant="topbar" />
           <LanguageToggle />
           <button
             type="button"

@@ -1,6 +1,7 @@
 /**
  * Official Cluster Match — rank DC(HL) Weavers Database clusters for a buyer need.
- * Transparent reasons; every score component labeled. Demo / curated seed only.
+ * Transparent reasons; every score component labeled.
+ * Density / GI / products grounded in campaign PDF seed — not census.
  */
 
 import { normalizeState } from "@/lib/auth/regions";
@@ -74,10 +75,12 @@ function categoryLabel(id: DemandCategoryId): string {
  *
  * Components (sum → clamp 100):
  * - Geographic fit (0–40): district exact > state exact > other
- * - Official listing (0–20): always present for seed rows
- * - Density weight (0–25): curated campaign coverage weight / 100 × 25
- * - Category affinity (0–10): hint list includes category
- * - LoomOS soft signal (0–5): open requirements in that state (separate label)
+ * - Official listing (0–15): campaign PDF presence
+ * - Campaign density (0–20): listing-row density rank / 100 × 20
+ * - Category / product affinity (0–10)
+ * - GI product signal (0–7)
+ * - Award presence (0–3)
+ * - LoomOS soft signal (0–5): open requirements in that state
  */
 export function scoreGovCluster(
   entry: GovWeaversClusterEntry,
@@ -116,32 +119,67 @@ export function scoreGovCluster(
     detail: geoDetail,
   });
 
-  const listing = 20;
+  const listing = 15;
+  const listed = entry.weaverCount ?? 0;
   reasons.push({
     id: "listing",
-    label: "Official listing",
+    label: "Official campaign listing",
     points: listing,
-    detail: `${societyTypeLabel(entry.societyType)} “${entry.societyName}” appears in curated Weavers Database seed.`,
+    detail:
+      listed > 0
+        ? `${societyTypeLabel(entry.societyType)} “${entry.societyName}” — ${listed} district-matched campaign listing row(s) in the Weavers Database PDF.`
+        : `${societyTypeLabel(entry.societyType)} “${entry.societyName}” appears in the LoomOS hub seed mapped to DC(HL) Weavers Database coverage.`,
   });
 
-  const density = clamp100((entry.densityWeight / 100) * 25);
+  const density = clamp100((entry.densityWeight / 100) * 20);
   reasons.push({
     id: "density",
-    label: "Coverage density (curated)",
+    label: "Campaign listing density",
     points: density,
-    detail: `Demo density weight ${entry.densityWeight}/100 → ${density} pts. Not an official census headcount.`,
+    detail:
+      listed > 0
+        ? `${listed} matched listing row(s); within-state density rank ${entry.densityWeight}/100 → ${density} pts. Campaign showcase — not a census headcount.`
+        : `Soft state-level density floor ${entry.densityWeight}/100 → ${density} pts (no district row match). Not a census headcount.`,
   });
 
   const hints = entry.categoryHints ?? [];
-  const catPts = hints.includes(input.categoryId) ? 10 : 3;
+  const products = entry.products ?? [];
+  const catHit = hints.includes(input.categoryId);
+  const catPts = catHit ? 10 : products.length > 0 ? 4 : 3;
   reasons.push({
     id: "category",
-    label: "Category affinity",
+    label: "Category / product affinity",
     points: catPts,
-    detail: hints.includes(input.categoryId)
-      ? `Cluster hints include ${categoryLabel(input.categoryId)}.`
-      : `No strong hint for ${categoryLabel(input.categoryId)} — small baseline only.`,
+    detail: catHit
+      ? `Cluster products/hints include ${categoryLabel(input.categoryId)}${
+          products[0] ? ` (e.g. ${products[0]})` : ""
+        }.`
+      : products.length > 0
+        ? `Listed products (${products.slice(0, 2).join(", ")}) — no strong hint for ${categoryLabel(input.categoryId)}.`
+        : `No strong hint for ${categoryLabel(input.categoryId)} — small baseline only.`,
   });
+
+  const giCount = entry.giProductCount ?? 0;
+  const giPts = giCount > 0 ? Math.min(7, 4 + Math.min(3, giCount)) : 0;
+  if (giPts > 0) {
+    reasons.push({
+      id: "gi",
+      label: "GI product signal",
+      points: giPts,
+      detail: `${giCount} campaign row(s) marked as GI product for this hub.`,
+    });
+  }
+
+  const awards = entry.awardCount ?? 0;
+  const awardPts = awards > 0 ? Math.min(3, 1 + Math.min(2, awards > 3 ? 2 : 1)) : 0;
+  if (awardPts > 0) {
+    reasons.push({
+      id: "award",
+      label: "Award presence",
+      points: awardPts,
+      detail: `${awards} listing row(s) note National / Sant Kabir / merit awards.`,
+    });
+  }
 
   const loomOsOpen = openInState;
   const soft = clamp100(Math.min(5, openInState * 2));
@@ -155,7 +193,9 @@ export function scoreGovCluster(
         : `${openInState} open LoomOS requirement(s) in ${entry.state} (app store — separate from gov list).`,
   });
 
-  const score = clamp100(geo + listing + density + catPts + soft);
+  const score = clamp100(
+    geo + listing + density + catPts + giPts + awardPts + soft,
+  );
   return { score, reasons, loomOsOpen };
 }
 
@@ -191,6 +231,8 @@ export async function matchOfficialClusters(
 
   scored.sort((a, b) => {
     if (b.score !== a.score) return b.score - a.score;
+    const bw = (b.entry.weaverCount ?? 0) - (a.entry.weaverCount ?? 0);
+    if (bw !== 0) return bw;
     return b.entry.densityWeight - a.entry.densityWeight;
   });
 
@@ -217,7 +259,7 @@ export async function matchOfficialClusters(
     meta: seed.meta,
     sourceChip: GOV_WEAVERS_SOURCE_CHIP,
     formulaNote:
-      "Score = Geographic fit (≤40) + Official listing (20) + Coverage density curated (≤25) + Category affinity (≤10) + LoomOS soft signal (≤5), clamped to 100.",
+      "Score = Geographic fit (≤40) + Official campaign listing (15) + Campaign listing density (≤20) + Category/product (≤10) + GI (≤7) + Awards (≤3) + LoomOS soft signal (≤5), clamped to 100.",
     results,
   };
 }

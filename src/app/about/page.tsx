@@ -60,7 +60,7 @@ export default function AboutPage() {
           </h2>
           <p className="mt-2 text-sm text-[#5c6570]">
             Seed cluster in this build: <strong>{DEMO_CLUSTER.name}</strong> —{" "}
-            Delhi NCT around IIT Delhi ({DEMO_CLUSTER.district} ·{" "}
+            Tamil Nadu around Kanchipuram ({DEMO_CLUSTER.district} ·{" "}
             {DEMO_CLUSTER.region}).
           </p>
         </section>
@@ -82,11 +82,17 @@ export default function AboutPage() {
             >
               Development Commissioner (Handlooms) Weavers Database
             </a>{" "}
-            — state-wise cooperative and producer-company coverage published for
-            National Handloom Day. This build uses a curated seed from those
-            public lists (not a live government API). Weavers whose registered
-            cluster appears in the seed see a calm listing signal on Profile —
-            not a personal identity verification badge.
+            — public National Handloom Day campaign PDFs (state lists + district
+            rollups). This build ingests those PDFs into a checked-in hub seed
+            with district listing counts, products, weaves, and GI flags (phones
+            and emails are never stored). Not a live government API and not the
+            Fourth Handloom Census. Weavers whose registered cluster appears in
+            the seed see a calm listing signal on Profile — not a personal
+            identity verification badge. Refresh with{" "}
+            <code className="rounded bg-[#efe8d8] px-1.5 py-0.5 text-xs">
+              npm run gov:ingest
+            </code>
+            .
           </p>
         </section>
 

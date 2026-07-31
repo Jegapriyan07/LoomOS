@@ -197,7 +197,7 @@ const en: Catalog = {
   "auth.categories": "What you weave",
   "auth.categoriesHint": "Select at least one category for your profile.",
   "auth.seedHint":
-    "Sample weavers: 9876543210 Kavita (North), 9876543211 Selvi (South), 9876543212 Kamala. New numbers can Register.",
+    "Sample weavers: 9876543210 Kavita, 9876543211 Selvi, 9876543212 Kamala (South Indian). New numbers can Register.",
   "auth.checkingSignIn": "Checking sign-in…",
   "auth.skipToSignIn": "Skip to sign in",
   "home.question": "What should I weave this week?",
@@ -1122,7 +1122,7 @@ const bn: Catalog = {
   "auth.categories": "আপনি কী বোনেন",
   "auth.categoriesHint": "প্রোফাইলের জন্য অন্তত একটি শ্রেণি বেছে নিন।",
   "auth.seedHint":
-    "ডেমো তাঁতি: 9876543210 কবিতা (উত্তর), 9876543211 সেলভি (দক্ষিণ), 9876543212 কমলা। নতুন নম্বর নিবন্ধন করতে পারে।",
+    "ডেমো তাঁতি: 9876543210 কবিতা, 9876543211 সেলভি, 9876543212 কমলা (দক্ষিণ ভারতীয়)। নতুন নম্বর নিবন্ধন করতে পারে।",
   "auth.checkingSignIn": "সাইন-ইন যাচাই…",
   "auth.skipToSignIn": "সাইন ইনে যান",
   "home.question": "এই সপ্তাহে কী বোনব?",
@@ -1308,7 +1308,7 @@ const as: Catalog = {
   "auth.categories": "আপুনি কি বোৱে",
   "auth.categoriesHint": "প্ৰ'ফাইলৰ বাবে কমেও এটা শ্ৰেণী বাছনি কৰক।",
   "auth.seedHint":
-    "ডেম' তাঁতী: 9876543210 কবিতা (উত্তৰ), 9876543211 চেल्ভি (দক্ষিণ), 9876543212 কমলা। নতুন নম্বৰে পঞ্জীয়ন কৰিব পাৰে।",
+    "ডেম' তাঁতী: 9876543210 কবিতা, 9876543211 চেल्ভি, 9876543212 কমলা (দক্ষিণ ভাৰতীয়)। নতুন নম্বৰে পঞ্জীয়ন কৰিব পাৰে।",
   "auth.checkingSignIn": "ছাইন-ইন পৰীক্ষা…",
   "auth.skipToSignIn": "ছাইন ইনলৈ যাওক",
   "home.question": "এই সপ্তাহত কি ব'ব?",

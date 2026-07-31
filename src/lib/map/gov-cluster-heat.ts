@@ -1,6 +1,6 @@
 /**
- * Official DC(HL) cluster density heat — geo-joins curated seed to hub coords.
- * densityWeight is demo ranking coverage, not a census headcount.
+ * Official DC(HL) cluster density heat — geo-joins campaign seed to hub coords.
+ * densityWeight = within-state campaign listing density rank — not census.
  */
 
 import {
@@ -47,6 +47,12 @@ function toHub(entry: GovWeaversClusterEntry): GovClusterHeatHub {
     band: densityBand(densityWeight),
     categoryHints: entry.categoryHints,
     weaverCount: entry.weaverCount,
+    products: entry.products ?? [],
+    weaves: entry.weaves ?? [],
+    giProductCount: entry.giProductCount ?? 0,
+    awardCount: entry.awardCount ?? 0,
+    societyNames: entry.societyNames ?? [],
+    sourceUrl: entry.sourceUrl,
     lat: hub.lat,
     lng: hub.lng,
     sourceNote: entry.sourceNote,
@@ -152,6 +158,6 @@ export async function buildGovClusterHeat(opts?: {
     },
     meta: seed.meta,
     disclaimer:
-      "Demo density heatmap from curated DC (Handlooms) Weavers Database seed — weights are campaign coverage ranks, not official census headcounts.",
+      "Campaign listing density heatmap from DC (Handlooms) Weavers Database PDFs — within-state ranks from matched listing rows, not Fourth Handloom Census headcounts.",
   };
 }

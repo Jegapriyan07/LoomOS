@@ -304,9 +304,7 @@ export function SummaryChatbot({
           onClick={() => void onVoiceAsk()}
           disabled={listening || busy}
           className={`flex h-12 shrink-0 items-center justify-center gap-1.5 rounded-xl px-3 font-semibold text-white ${
-            listening
-              ? "bg-loom-warning"
-              : "bg-loom-primary"
+            listening ? "bg-loom-warning" : "bg-loom-primary"
           }`}
           aria-label={t("voice.ask")}
         >
@@ -322,6 +320,7 @@ export function SummaryChatbot({
           <Send className="size-5" aria-hidden />
         </button>
       </form>
+
       {voiceNote ? (
         <p className="mt-2 text-xs text-loom-muted" role="status">
           {voiceNote}

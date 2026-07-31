@@ -61,9 +61,9 @@ export function WeaverLoginScreen({
   const [phone, setPhone] = useState("");
   const [dialCode, setDialCode] = useState("91");
   const [name, setName] = useState("");
-  const [region, setRegion] = useState("Delhi");
+  const [region, setRegion] = useState("Tamil Nadu");
   const [district, setDistrict] = useState(
-    () => clustersForState("Delhi")[0] ?? "IIT Delhi",
+    () => clustersForState("Tamil Nadu")[0] ?? "Kanchipuram",
   );
   const [yearsWeaving, setYearsWeaving] = useState("");
   const [businessType, setBusinessType] = useState(BUYER_BUSINESS_TYPES[0]);

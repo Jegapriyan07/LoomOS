@@ -317,9 +317,9 @@ export function clusterByState(pins: MapWeaverPin[]): StateCluster[] {
 
 /** Buyer-city map for seeded buyers (order heat join) — Delhi primary. */
 const BUYER_PLACE: Record<string, { region: string; district: string }> = {
-  "buyer-demo-001": { region: "Delhi", district: "IIT Delhi" },
-  "buyer-demo-002": { region: "Delhi", district: "Hauz Khas" },
-  "buyer-demo-003": { region: "Delhi", district: "Karol Bagh" },
+  "buyer-demo-001": { region: "Tamil Nadu", district: "Kanchipuram" },
+  "buyer-demo-002": { region: "Tamil Nadu", district: "Madurai" },
+  "buyer-demo-003": { region: "Tamil Nadu", district: "Salem" },
 };
 
 /**

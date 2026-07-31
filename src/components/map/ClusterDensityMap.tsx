@@ -274,8 +274,8 @@ export function ClusterDensityMapInner({
                 Weaver density across India
               </h2>
               <p className="mt-1 max-w-xl text-sm text-[#5c6570]">
-                Curated DC (Handlooms) hubs — glow tracks demo density weight,
-                not census headcount.
+                DC (Handlooms) campaign hubs — glow tracks listing density from
+                Weavers Database PDFs, not census headcount.
               </p>
             </div>
             <div className="flex flex-wrap rounded-full border border-[#e8e2d8] bg-[#fffdf8]/90 p-1 text-xs font-semibold shadow-sm backdrop-blur-sm">
@@ -760,14 +760,19 @@ export function ClusterDensityMapInner({
             badges={
               <>
                 <span className="rounded-full bg-[#f5e6b8] px-2.5 py-1 text-xs font-semibold text-[#9a5b12]">
-                  Density {pickedHub.densityWeight}/100
+                  Campaign density {pickedHub.densityWeight}/100
                 </span>
                 <span className="rounded-full bg-[#f3efe6] px-2.5 py-1 text-xs font-semibold capitalize text-[#3c2415]">
                   {pickedHub.band} band
                 </span>
                 {pickedHub.weaverCount != null ? (
                   <span className="rounded-full bg-[#d8ebe0] px-2.5 py-1 text-xs font-semibold text-[#2f6b4f]">
-                    {pickedHub.weaverCount} weavers
+                    {pickedHub.weaverCount} listing rows
+                  </span>
+                ) : null}
+                {pickedHub.giProductCount > 0 ? (
+                  <span className="rounded-full bg-[#e8f0e4] px-2.5 py-1 text-xs font-semibold text-[#2f5a3c]">
+                    GI ×{pickedHub.giProductCount}
                   </span>
                 ) : null}
               </>
@@ -776,22 +781,51 @@ export function ClusterDensityMapInner({
           >
             <DensityBar value={pickedHub.densityWeight} />
             <p className="mt-3 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#8a8070]">
-              Category hints
+              Products &amp; weaves
             </p>
             <div className="mt-1.5 flex flex-wrap gap-1.5">
-              {pickedHub.categoryHints.length ? (
-                pickedHub.categoryHints.map((c) => (
-                  <span
-                    key={c}
-                    className="rounded-full bg-[#d9e3f0] px-2.5 py-1 text-xs font-semibold text-[#1e3a5f]"
-                  >
-                    {DEMAND_CATEGORIES.find((d) => d.id === c)?.label ?? c}
-                  </span>
-                ))
-              ) : (
+              {pickedHub.products.slice(0, 6).map((p) => (
+                <span
+                  key={p}
+                  className="rounded-full bg-[#efe8d8] px-2.5 py-1 text-xs font-semibold text-[#3c2415]"
+                >
+                  {p}
+                </span>
+              ))}
+              {pickedHub.weaves.slice(0, 3).map((w) => (
+                <span
+                  key={w}
+                  className="rounded-full bg-[#f3efe6] px-2.5 py-1 text-xs font-semibold text-[#5c6570]"
+                >
+                  {w}
+                </span>
+              ))}
+              {pickedHub.categoryHints.map((c) => (
+                <span
+                  key={c}
+                  className="rounded-full bg-[#d9e3f0] px-2.5 py-1 text-xs font-semibold text-[#1e3a5f]"
+                >
+                  {DEMAND_CATEGORIES.find((d) => d.id === c)?.label ?? c}
+                </span>
+              ))}
+              {!pickedHub.products.length &&
+              !pickedHub.weaves.length &&
+              !pickedHub.categoryHints.length ? (
                 <span className="text-sm text-[#5c6570]">None listed</span>
-              )}
+              ) : null}
             </div>
+            {pickedHub.societyNames.length > 0 ? (
+              <>
+                <p className="mt-3 text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-[#8a8070]">
+                  Societies (names only)
+                </p>
+                <ul className="mt-1.5 list-inside list-disc text-xs text-[#5c6570]">
+                  {pickedHub.societyNames.slice(0, 5).map((n) => (
+                    <li key={n}>{n}</li>
+                  ))}
+                </ul>
+              </>
+            ) : null}
             <div className="mt-3 flex flex-wrap gap-2">
               {scope === "national" || region !== pickedHub.state ? (
                 <button
@@ -802,6 +836,16 @@ export function ClusterDensityMapInner({
                   <MapPinned className="size-3.5" aria-hidden />
                   Zoom to {pickedHub.state}
                 </button>
+              ) : null}
+              {pickedHub.sourceUrl ? (
+                <a
+                  href={pickedHub.sourceUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-[#d9d2c4] bg-white px-3 py-1.5 text-xs font-semibold text-[#1e3a5f]"
+                >
+                  Source PDF
+                </a>
               ) : null}
             </div>
             <p className="mt-3 text-[11px] leading-snug text-[#8a8070]">
@@ -814,7 +858,7 @@ export function ClusterDensityMapInner({
           <MapDetailCard
             eyebrow="State rollup"
             title={pickedState.state}
-            subtitle={`${pickedState.hubCount} official hubs in curated seed`}
+            subtitle={`${pickedState.hubCount} official hubs in campaign seed`}
             badges={
               <>
                 <span className="rounded-full bg-[#f5e6b8] px-2.5 py-1 text-xs font-semibold text-[#9a5b12]">
@@ -848,7 +892,7 @@ export function ClusterDensityMapInner({
 
       <p className="border-t border-[#e8e2d8] px-4 py-2.5 text-[11px] text-[#8a8070]">
         {payload?.disclaimer ??
-          "Demo density heatmap — curated Weavers Database seed."}
+          "Campaign listing density — DC (Handlooms) Weavers Database PDFs."}
         {payload?.meta.asOf ? ` As of ${payload.meta.asOf}.` : null}
       </p>
     </div>

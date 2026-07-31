@@ -55,8 +55,12 @@ export async function GET(request: Request) {
       meta: seed.meta,
       sourceChip: GOV_WEAVERS_SOURCE_CHIP,
       message: entry
-        ? `Your cooperative cluster “${entry.societyName}” appears in the Ministry Weavers Database (curated seed).`
-        : "This cluster is not in the curated Weavers Database seed for this demo.",
+        ? `Your cooperative cluster “${entry.loomOsCluster || entry.societyName}” appears in the DC (Handlooms) Weavers Database campaign listings${
+            entry.weaverCount != null
+              ? ` (${entry.weaverCount} district-matched listing row${entry.weaverCount === 1 ? "" : "s"})`
+              : ""
+          }.`
+        : "This cluster is not in the campaign-enriched Weavers Database seed for this build.",
     });
   }
 
