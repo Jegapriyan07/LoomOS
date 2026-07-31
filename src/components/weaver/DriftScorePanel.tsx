@@ -34,11 +34,6 @@ export function DriftScorePanel({ drift }: { drift: DriftScoreResult }) {
             <span className="rounded-md border border-loom-border bg-loom-bg px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-loom-muted">
               {t("drift.estimated")}
             </span>
-            {drift.simulated ? (
-              <span className="rounded-md border border-loom-border bg-loom-bg px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-loom-muted">
-                {t("drift.demoTag")}
-              </span>
-            ) : null}
           </div>
           <p className="mt-0.5 text-sm text-loom-muted">{t("drift.subtitle")}</p>
         </div>
@@ -51,12 +46,6 @@ export function DriftScorePanel({ drift }: { drift: DriftScoreResult }) {
           {t("drift.pctOf", { pct: drift.percentage })}
         </p>
       </div>
-
-      {drift.simulated && drift.simulatedNote ? (
-        <p className="mt-2 text-xs leading-snug text-loom-muted">
-          {drift.simulatedNote}
-        </p>
-      ) : null}
 
       {drift.belowThreshold ? (
         <div className="mt-3 rounded-lg border border-loom-warning/40 bg-loom-bg/70 p-3">
@@ -114,7 +103,7 @@ export function DriftScorePanel({ drift }: { drift: DriftScoreResult }) {
         aria-expanded={showInputs}
       >
         <Info className="size-4" aria-hidden />
-        {showInputs ? t("pitch.hide") : t("pitch.show")} {t("drift.inputs")}
+        {showInputs ? t("drift.hideInputs") : t("drift.showInputs")}
       </button>
 
       {showInputs ? (

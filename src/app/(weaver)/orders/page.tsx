@@ -154,10 +154,10 @@ export default function OrdersPage() {
       <p className="rounded-xl border border-loom-border bg-loom-surface px-3 py-2 text-sm text-loom-muted">
         Primary cluster:{" "}
         <span className="font-semibold text-loom-ink">
-          {PRIMARY_DEMAND.district} · {PRIMARY_DEMAND.region}
+          {PRIMARY_DEMAND.region}
         </span>
         {" — "}
-        IIT / District / Nation.
+        Local / District / Nation.
       </p>
 
       {ready ? (

@@ -1,28 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { Mic, Square, Volume2 } from "lucide-react";
+import { Square, Volume2 } from "lucide-react";
+import { LoomAssistantMic } from "@/components/icons/LoomAssistantMic";
 import { useI18n } from "@/lib/i18n/context";
+import { openLoomAssistant } from "@/components/weaver/LoomAssistantShell";
 import {
-  isSpeechRecognitionAvailable,
   isSpeechSynthesisAvailable,
-  listenOnce,
   speakRecommendation,
   stopSpeaking,
 } from "@/lib/voice/speech";
 
 /**
- * Floating voice accessibility controls — speak main content / voice ask / stop.
+ * Floating voice accessibility controls — speak main content / open assistant / stop.
  */
-export function VoiceAccessibilityBar({
-  onVoiceCommand,
-}: {
-  /** Optional handler when user speaks a command transcript */
+export function VoiceAccessibilityBar(_props?: {
+  /** @deprecated Prefer Loom assistant sheet */
   onVoiceCommand?: (transcript: string) => void;
 }) {
   const { t, lang } = useI18n();
   const [status, setStatus] = useState<string | null>(null);
-  const [listening, setListening] = useState(false);
 
   async function speakMain() {
     if (!isSpeechSynthesisAvailable()) {
@@ -42,40 +39,6 @@ export function VoiceAccessibilityBar({
       setStatus(null);
     } catch {
       setStatus(t("voice.speakFailed"));
-    }
-  }
-
-  async function askVoice() {
-    if (!isSpeechRecognitionAvailable()) {
-      setStatus(t("voice.micUnavailable"));
-      return;
-    }
-    stopSpeaking();
-    setListening(true);
-    setStatus(t("voice.listeningHint"));
-    try {
-      const { transcript, supported } = await listenOnce(lang);
-      setListening(false);
-      if (!supported) {
-        setStatus(t("voice.micUnavailable"));
-        return;
-      }
-      if (!transcript.trim()) {
-        setStatus(t("voice.didntCatch"));
-        return;
-      }
-      setStatus(t("voice.heard", { transcript }));
-      onVoiceCommand?.(transcript);
-      // Default: speak back a short ack by reading advice region if present
-      const advice =
-        document.querySelector("[data-voice-advice]")?.textContent?.trim() ??
-        transcript;
-      if (isSpeechSynthesisAvailable()) {
-        await speakRecommendation(advice, { languageCode: lang });
-      }
-    } catch {
-      setListening(false);
-      setStatus(t("voice.micError"));
     }
   }
 
@@ -105,14 +68,11 @@ export function VoiceAccessibilityBar({
         </button>
         <button
           type="button"
-          onClick={() => void askVoice()}
-          disabled={listening}
-          className={`flex h-11 items-center gap-1.5 rounded-xl px-3 text-xs font-semibold ${
-            listening ? "text-loom-warning" : "text-loom-primary"
-          }`}
+          onClick={() => openLoomAssistant()}
+          className="flex h-11 items-center gap-1.5 rounded-xl px-3 text-xs font-semibold text-loom-primary"
           aria-label={t("voice.ask")}
         >
-          <Mic className="size-4" aria-hidden />
+          <LoomAssistantMic className="size-4" strokeWidth={2.2} />
           {t("voice.ask")}
         </button>
         <button

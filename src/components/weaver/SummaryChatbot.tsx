@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Bot, Mic, Send, Volume2 } from "lucide-react";
+import { Bot, Send, Volume2, X } from "lucide-react";
+import { LoomAssistantMic } from "@/components/icons/LoomAssistantMic";
 import { useI18n } from "@/lib/i18n/context";
 import {
   answerChat,
@@ -19,15 +20,28 @@ import {
   stopSpeaking,
 } from "@/lib/voice/speech";
 import { FiveQuestionsStrip } from "@/components/weaver/StandeeEngineUI";
+import { LOOM_ASSISTANT_VOICE_EVENT } from "@/components/weaver/LoomAssistantShell";
 
 type ChatMsg = { id: string; role: "user" | "assistant"; text: string };
 
+type SummaryChatbotProps = {
+  /** Sheet mode sits inside the expanding FAB overlay. */
+  variant?: "inline" | "sheet";
+  onClose?: () => void;
+  className?: string;
+};
+
 /**
- * Homepage chatbot — five daily questions reply in-thread from account data.
- * Never leaves buttons stuck: busy clears before TTS; snap uses cache first.
+ * Loom assistant — five daily questions reply in-thread from account data.
+ * Used as the expanding sheet from the mic FAB (and optionally inline).
  */
-export function SummaryChatbot() {
+export function SummaryChatbot({
+  variant = "inline",
+  onClose,
+  className = "",
+}: SummaryChatbotProps) {
   const { t, lang } = useI18n();
+  const isSheet = variant === "sheet";
   const [messages, setMessages] = useState<ChatMsg[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -165,11 +179,30 @@ export function SummaryChatbot() {
     }
   }
 
+  const onVoiceAskRef = useRef(onVoiceAsk);
+  onVoiceAskRef.current = onVoiceAsk;
+
+  // FAB Ask mic (while sheet is open) triggers the same voice ask
+  useEffect(() => {
+    if (!isSheet) return;
+    const onVoice = () => {
+      void onVoiceAskRef.current();
+    };
+    window.addEventListener(LOOM_ASSISTANT_VOICE_EVENT, onVoice);
+    return () => window.removeEventListener(LOOM_ASSISTANT_VOICE_EVENT, onVoice);
+  }, [isSheet]);
+
   return (
     <section
       aria-label={t("chat.title")}
-      className="mb-5 rounded-2xl border border-loom-border bg-loom-surface p-4 shadow-[var(--loom-shadow)]"
+      className={`mb-5 rounded-2xl border border-loom-border bg-loom-surface p-4 shadow-[var(--loom-shadow)] ${className}`}
     >
+      {isSheet ? (
+        <div className="mb-3 flex justify-center" aria-hidden>
+          <span className="h-1 w-10 rounded-full bg-loom-border" />
+        </div>
+      ) : null}
+
       <div className="mb-3 flex items-start gap-3">
         <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-loom-primary-soft text-loom-primary">
           <Bot className="size-6" aria-hidden />
@@ -180,6 +213,16 @@ export function SummaryChatbot() {
           </h2>
           <p className="text-sm text-loom-muted">{t("chat.subtitle")}</p>
         </div>
+        {onClose ? (
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-loom-border text-loom-muted"
+            aria-label={t("chat.close")}
+          >
+            <X className="size-5" aria-hidden />
+          </button>
+        ) : null}
       </div>
 
       <FiveQuestionsStrip
@@ -260,14 +303,15 @@ export function SummaryChatbot() {
           type="button"
           onClick={() => void onVoiceAsk()}
           disabled={listening || busy}
-          className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border ${
+          className={`flex h-12 shrink-0 items-center justify-center gap-1.5 rounded-xl px-3 font-semibold text-white ${
             listening
-              ? "border-loom-accent bg-loom-accent-soft text-loom-warning"
-              : "border-loom-border bg-loom-bg text-loom-primary"
+              ? "bg-loom-warning"
+              : "bg-loom-primary"
           }`}
           aria-label={t("voice.ask")}
         >
-          <Mic className="size-5" aria-hidden />
+          <LoomAssistantMic className="size-5" strokeWidth={2.2} />
+          <span className="text-sm">{t("chat.askLabel")}</span>
         </button>
         <button
           type="submit"

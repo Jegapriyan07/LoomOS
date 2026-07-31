@@ -1,0 +1,1286 @@
+{
+  "meta": {
+    "title": "DC (Handlooms) Weavers Database — curated cluster seed",
+    "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+    "sourceLabel": "Development Commissioner (Handlooms) Weavers Database",
+    "sourceNote": "Expanded curated seed: hubs across all LoomOS states mapped to register clusters. Drawn from public state-wise Weavers Database lists (co-ops / PCs / district coverage for National Handloom Day). Not a live government API. Individual weaver names are not ingested. Density weights are for demo ranking only — not official census headcounts. Not every society row from every state PDF.",
+    "asOf": "2026-07-31",
+    "disclaimer": "Demo / curated — refreshed manually for this LoomOS build.",
+    "coverage": {
+      "states": 30,
+      "hubs": 76,
+      "note": "Major handloom states: 3–5 hubs; smaller states: 1–2 hubs aligned to STATE_CLUSTERS."
+    }
+  },
+  "entries": [
+    {
+      "id": "tamil-nadu-kanchipuram",
+      "state": "Tamil Nadu",
+      "district": "Kanchipuram",
+      "societyName": "Kanchipuram",
+      "societyType": "cooperative",
+      "loomOsCluster": "Kanchipuram",
+      "weaverCount": null,
+      "densityWeight": 92,
+      "categoryHints": [
+        "silk-saree",
+        "cotton-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Tamil Nadu Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "tamil-nadu-salem",
+      "state": "Tamil Nadu",
+      "district": "Salem",
+      "societyName": "Salem",
+      "societyType": "cooperative",
+      "loomOsCluster": "Salem",
+      "weaverCount": null,
+      "densityWeight": 78,
+      "categoryHints": [
+        "cotton-saree",
+        "dhoti-angavastram"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Tamil Nadu Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "tamil-nadu-erode",
+      "state": "Tamil Nadu",
+      "district": "Erode",
+      "societyName": "Erode",
+      "societyType": "cooperative",
+      "loomOsCluster": "Erode",
+      "weaverCount": null,
+      "densityWeight": 74,
+      "categoryHints": [
+        "cotton-saree",
+        "stole-dupatta"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Tamil Nadu Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "tamil-nadu-madurai",
+      "state": "Tamil Nadu",
+      "district": "Madurai",
+      "societyName": "Madurai",
+      "societyType": "cooperative",
+      "loomOsCluster": "Madurai",
+      "weaverCount": null,
+      "densityWeight": 70,
+      "categoryHints": [
+        "cotton-saree",
+        "stole-dupatta"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Tamil Nadu Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "tamil-nadu-virudhunagar",
+      "state": "Tamil Nadu",
+      "district": "Virudhunagar",
+      "societyName": "Virudhunagar",
+      "societyType": "pc",
+      "loomOsCluster": "Virudhunagar",
+      "weaverCount": null,
+      "densityWeight": 68,
+      "categoryHints": [
+        "cotton-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Tamil Nadu Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "assam-sualkuchi",
+      "state": "Assam",
+      "district": "Sualkuchi",
+      "societyName": "Sualkuchi",
+      "societyType": "cooperative",
+      "loomOsCluster": "Sualkuchi",
+      "weaverCount": null,
+      "densityWeight": 95,
+      "categoryHints": [
+        "silk-saree",
+        "stole-dupatta"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Assam Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "assam-barpeta",
+      "state": "Assam",
+      "district": "Barpeta",
+      "societyName": "Barpeta",
+      "societyType": "cooperative",
+      "loomOsCluster": "Barpeta",
+      "weaverCount": null,
+      "densityWeight": 82,
+      "categoryHints": [
+        "silk-saree",
+        "cotton-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Assam Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "assam-nagaon",
+      "state": "Assam",
+      "district": "Nagaon",
+      "societyName": "Nagaon",
+      "societyType": "cooperative",
+      "loomOsCluster": "Nagaon",
+      "weaverCount": null,
+      "densityWeight": 80,
+      "categoryHints": [
+        "cotton-saree",
+        "stole-dupatta"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Assam Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "assam-jorhat",
+      "state": "Assam",
+      "district": "Jorhat",
+      "societyName": "Jorhat",
+      "societyType": "cooperative",
+      "loomOsCluster": "Jorhat",
+      "weaverCount": null,
+      "densityWeight": 76,
+      "categoryHints": [
+        "silk-saree",
+        "stole-dupatta"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Assam Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "west-bengal-shantipur",
+      "state": "West Bengal",
+      "district": "Shantipur",
+      "societyName": "Shantipur",
+      "societyType": "cooperative",
+      "loomOsCluster": "Shantipur",
+      "weaverCount": null,
+      "densityWeight": 88,
+      "categoryHints": [
+        "cotton-saree",
+        "silk-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from West Bengal Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "west-bengal-phulia",
+      "state": "West Bengal",
+      "district": "Phulia",
+      "societyName": "Phulia",
+      "societyType": "cooperative",
+      "loomOsCluster": "Phulia",
+      "weaverCount": null,
+      "densityWeight": 86,
+      "categoryHints": [
+        "cotton-saree",
+        "stole-dupatta"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from West Bengal Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "west-bengal-murshidabad",
+      "state": "West Bengal",
+      "district": "Murshidabad",
+      "societyName": "Murshidabad",
+      "societyType": "pc",
+      "loomOsCluster": "Murshidabad",
+      "weaverCount": null,
+      "densityWeight": 84,
+      "categoryHints": [
+        "silk-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from West Bengal Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "west-bengal-baluchari",
+      "state": "West Bengal",
+      "district": "Baluchari",
+      "societyName": "Baluchari",
+      "societyType": "cooperative",
+      "loomOsCluster": "Baluchari",
+      "weaverCount": null,
+      "densityWeight": 76,
+      "categoryHints": [
+        "silk-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from West Bengal Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "west-bengal-bishnupur",
+      "state": "West Bengal",
+      "district": "Bishnupur",
+      "societyName": "Bishnupur",
+      "societyType": "cooperative",
+      "loomOsCluster": "Bishnupur",
+      "weaverCount": null,
+      "densityWeight": 72,
+      "categoryHints": [
+        "silk-saree",
+        "cotton-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from West Bengal Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "uttar-pradesh-varanasi",
+      "state": "Uttar Pradesh",
+      "district": "Varanasi",
+      "societyName": "Varanasi",
+      "societyType": "pc",
+      "loomOsCluster": "Varanasi",
+      "weaverCount": null,
+      "densityWeight": 94,
+      "categoryHints": [
+        "silk-saree",
+        "stole-dupatta"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Uttar Pradesh Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "uttar-pradesh-mau",
+      "state": "Uttar Pradesh",
+      "district": "Mau",
+      "societyName": "Mau",
+      "societyType": "cooperative",
+      "loomOsCluster": "Mau",
+      "weaverCount": null,
+      "densityWeight": 72,
+      "categoryHints": [
+        "cotton-saree",
+        "dhoti-angavastram"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Uttar Pradesh Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "uttar-pradesh-tanda",
+      "state": "Uttar Pradesh",
+      "district": "Tanda",
+      "societyName": "Tanda",
+      "societyType": "cooperative",
+      "loomOsCluster": "Tanda",
+      "weaverCount": null,
+      "densityWeight": 68,
+      "categoryHints": [
+        "cotton-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Uttar Pradesh Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "uttar-pradesh-mubarakpur",
+      "state": "Uttar Pradesh",
+      "district": "Mubarakpur",
+      "societyName": "Mubarakpur",
+      "societyType": "cooperative",
+      "loomOsCluster": "Mubarakpur",
+      "weaverCount": null,
+      "densityWeight": 70,
+      "categoryHints": [
+        "silk-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Uttar Pradesh Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "telangana-pochampally",
+      "state": "Telangana",
+      "district": "Pochampally",
+      "societyName": "Pochampally",
+      "societyType": "cooperative",
+      "loomOsCluster": "Pochampally",
+      "weaverCount": null,
+      "densityWeight": 90,
+      "categoryHints": [
+        "silk-saree",
+        "cotton-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Telangana Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "telangana-gadwal",
+      "state": "Telangana",
+      "district": "Gadwal",
+      "societyName": "Gadwal",
+      "societyType": "cooperative",
+      "loomOsCluster": "Gadwal",
+      "weaverCount": null,
+      "densityWeight": 75,
+      "categoryHints": [
+        "cotton-saree",
+        "silk-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Telangana Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "telangana-narayanpet",
+      "state": "Telangana",
+      "district": "Narayanpet",
+      "societyName": "Narayanpet",
+      "societyType": "cooperative",
+      "loomOsCluster": "Narayanpet",
+      "weaverCount": null,
+      "densityWeight": 73,
+      "categoryHints": [
+        "cotton-saree",
+        "silk-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Telangana Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "telangana-warangal",
+      "state": "Telangana",
+      "district": "Warangal",
+      "societyName": "Warangal",
+      "societyType": "cooperative",
+      "loomOsCluster": "Warangal",
+      "weaverCount": null,
+      "densityWeight": 66,
+      "categoryHints": [
+        "cotton-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Telangana Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "andhra-pradesh-mangalagiri",
+      "state": "Andhra Pradesh",
+      "district": "Mangalagiri",
+      "societyName": "Mangalagiri",
+      "societyType": "cooperative",
+      "loomOsCluster": "Mangalagiri",
+      "weaverCount": null,
+      "densityWeight": 80,
+      "categoryHints": [
+        "cotton-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Andhra Pradesh Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "andhra-pradesh-uppada",
+      "state": "Andhra Pradesh",
+      "district": "Uppada",
+      "societyName": "Uppada",
+      "societyType": "cooperative",
+      "loomOsCluster": "Uppada",
+      "weaverCount": null,
+      "densityWeight": 77,
+      "categoryHints": [
+        "silk-saree",
+        "cotton-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Andhra Pradesh Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "andhra-pradesh-dharmavaram",
+      "state": "Andhra Pradesh",
+      "district": "Dharmavaram",
+      "societyName": "Dharmavaram",
+      "societyType": "cooperative",
+      "loomOsCluster": "Dharmavaram",
+      "weaverCount": null,
+      "densityWeight": 85,
+      "categoryHints": [
+        "silk-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Andhra Pradesh Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "andhra-pradesh-venkatagiri",
+      "state": "Andhra Pradesh",
+      "district": "Venkatagiri",
+      "societyName": "Venkatagiri",
+      "societyType": "cooperative",
+      "loomOsCluster": "Venkatagiri",
+      "weaverCount": null,
+      "densityWeight": 74,
+      "categoryHints": [
+        "cotton-saree",
+        "silk-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Andhra Pradesh Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "andhra-pradesh-chirala",
+      "state": "Andhra Pradesh",
+      "district": "Chirala",
+      "societyName": "Chirala",
+      "societyType": "cooperative",
+      "loomOsCluster": "Chirala",
+      "weaverCount": null,
+      "densityWeight": 71,
+      "categoryHints": [
+        "cotton-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Andhra Pradesh Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "odisha-sambalpur",
+      "state": "Odisha",
+      "district": "Sambalpur",
+      "societyName": "Sambalpur",
+      "societyType": "cooperative",
+      "loomOsCluster": "Sambalpur",
+      "weaverCount": null,
+      "densityWeight": 83,
+      "categoryHints": [
+        "cotton-saree",
+        "silk-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Odisha Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "odisha-nuapatna",
+      "state": "Odisha",
+      "district": "Nuapatna",
+      "societyName": "Nuapatna",
+      "societyType": "cooperative",
+      "loomOsCluster": "Nuapatna",
+      "weaverCount": null,
+      "densityWeight": 79,
+      "categoryHints": [
+        "silk-saree",
+        "stole-dupatta"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Odisha Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "odisha-berhampur",
+      "state": "Odisha",
+      "district": "Berhampur",
+      "societyName": "Berhampur",
+      "societyType": "cooperative",
+      "loomOsCluster": "Berhampur",
+      "weaverCount": null,
+      "densityWeight": 71,
+      "categoryHints": [
+        "cotton-saree",
+        "silk-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Odisha Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "odisha-bargarh",
+      "state": "Odisha",
+      "district": "Bargarh",
+      "societyName": "Bargarh",
+      "societyType": "cooperative",
+      "loomOsCluster": "Bargarh",
+      "weaverCount": null,
+      "densityWeight": 70,
+      "categoryHints": [
+        "cotton-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Odisha Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "karnataka-ilkal",
+      "state": "Karnataka",
+      "district": "Ilkal",
+      "societyName": "Ilkal",
+      "societyType": "cooperative",
+      "loomOsCluster": "Ilkal",
+      "weaverCount": null,
+      "densityWeight": 81,
+      "categoryHints": [
+        "cotton-saree",
+        "silk-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Karnataka Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "karnataka-molakalmuru",
+      "state": "Karnataka",
+      "district": "Molakalmuru",
+      "societyName": "Molakalmuru",
+      "societyType": "cooperative",
+      "loomOsCluster": "Molakalmuru",
+      "weaverCount": null,
+      "densityWeight": 73,
+      "categoryHints": [
+        "silk-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Karnataka Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "karnataka-mysuru",
+      "state": "Karnataka",
+      "district": "Mysuru",
+      "societyName": "Mysuru",
+      "societyType": "cooperative",
+      "loomOsCluster": "Mysuru",
+      "weaverCount": null,
+      "densityWeight": 69,
+      "categoryHints": [
+        "silk-saree",
+        "stole-dupatta"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Karnataka Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "karnataka-guledgudda",
+      "state": "Karnataka",
+      "district": "Guledgudda",
+      "societyName": "Guledgudda",
+      "societyType": "cooperative",
+      "loomOsCluster": "Guledgudda",
+      "weaverCount": null,
+      "densityWeight": 67,
+      "categoryHints": [
+        "cotton-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Karnataka Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "kerala-balaramapuram",
+      "state": "Kerala",
+      "district": "Balaramapuram",
+      "societyName": "Balaramapuram",
+      "societyType": "cooperative",
+      "loomOsCluster": "Balaramapuram",
+      "weaverCount": null,
+      "densityWeight": 78,
+      "categoryHints": [
+        "cotton-saree",
+        "dhoti-angavastram"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Kerala Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "kerala-kannur",
+      "state": "Kerala",
+      "district": "Kannur",
+      "societyName": "Kannur",
+      "societyType": "cooperative",
+      "loomOsCluster": "Kannur",
+      "weaverCount": null,
+      "densityWeight": 74,
+      "categoryHints": [
+        "cotton-saree",
+        "stole-dupatta"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Kerala Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "kerala-chendamangalam",
+      "state": "Kerala",
+      "district": "Chendamangalam",
+      "societyName": "Chendamangalam",
+      "societyType": "cooperative",
+      "loomOsCluster": "Chendamangalam",
+      "weaverCount": null,
+      "densityWeight": 72,
+      "categoryHints": [
+        "cotton-saree",
+        "dhoti-angavastram"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Kerala Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "bihar-bhagalpur",
+      "state": "Bihar",
+      "district": "Bhagalpur",
+      "societyName": "Bhagalpur",
+      "societyType": "pc",
+      "loomOsCluster": "Bhagalpur",
+      "weaverCount": null,
+      "densityWeight": 84,
+      "categoryHints": [
+        "silk-saree",
+        "stole-dupatta"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Bihar Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "bihar-madhubani",
+      "state": "Bihar",
+      "district": "Madhubani",
+      "societyName": "Madhubani",
+      "societyType": "cooperative",
+      "loomOsCluster": "Madhubani",
+      "weaverCount": null,
+      "densityWeight": 70,
+      "categoryHints": [
+        "cotton-saree",
+        "stole-dupatta"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Bihar Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "bihar-gaya",
+      "state": "Bihar",
+      "district": "Gaya",
+      "societyName": "Gaya",
+      "societyType": "cooperative",
+      "loomOsCluster": "Gaya",
+      "weaverCount": null,
+      "densityWeight": 62,
+      "categoryHints": [
+        "cotton-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Bihar Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "madhya-pradesh-chanderi",
+      "state": "Madhya Pradesh",
+      "district": "Chanderi",
+      "societyName": "Chanderi",
+      "societyType": "cooperative",
+      "loomOsCluster": "Chanderi",
+      "weaverCount": null,
+      "densityWeight": 88,
+      "categoryHints": [
+        "silk-saree",
+        "cotton-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Madhya Pradesh Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "madhya-pradesh-maheshwar",
+      "state": "Madhya Pradesh",
+      "district": "Maheshwar",
+      "societyName": "Maheshwar",
+      "societyType": "cooperative",
+      "loomOsCluster": "Maheshwar",
+      "weaverCount": null,
+      "densityWeight": 82,
+      "categoryHints": [
+        "cotton-saree",
+        "silk-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Madhya Pradesh Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "madhya-pradesh-gwalior",
+      "state": "Madhya Pradesh",
+      "district": "Gwalior",
+      "societyName": "Gwalior",
+      "societyType": "cooperative",
+      "loomOsCluster": "Gwalior",
+      "weaverCount": null,
+      "densityWeight": 60,
+      "categoryHints": [
+        "cotton-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Madhya Pradesh Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "gujarat-patan",
+      "state": "Gujarat",
+      "district": "Patan",
+      "societyName": "Patan",
+      "societyType": "cooperative",
+      "loomOsCluster": "Patan",
+      "weaverCount": null,
+      "densityWeight": 80,
+      "categoryHints": [
+        "silk-saree",
+        "stole-dupatta"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Gujarat Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "gujarat-surendranagar",
+      "state": "Gujarat",
+      "district": "Surendranagar",
+      "societyName": "Surendranagar",
+      "societyType": "cooperative",
+      "loomOsCluster": "Surendranagar",
+      "weaverCount": null,
+      "densityWeight": 68,
+      "categoryHints": [
+        "cotton-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Gujarat Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "gujarat-kutch",
+      "state": "Gujarat",
+      "district": "Kutch",
+      "societyName": "Kutch",
+      "societyType": "cooperative",
+      "loomOsCluster": "Kutch",
+      "weaverCount": null,
+      "densityWeight": 72,
+      "categoryHints": [
+        "stole-dupatta",
+        "cotton-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Gujarat Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "rajasthan-kota",
+      "state": "Rajasthan",
+      "district": "Kota",
+      "societyName": "Kota",
+      "societyType": "cooperative",
+      "loomOsCluster": "Kota",
+      "weaverCount": null,
+      "densityWeight": 76,
+      "categoryHints": [
+        "cotton-saree",
+        "stole-dupatta"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Rajasthan Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "rajasthan-bagru",
+      "state": "Rajasthan",
+      "district": "Bagru",
+      "societyName": "Bagru",
+      "societyType": "cooperative",
+      "loomOsCluster": "Bagru",
+      "weaverCount": null,
+      "densityWeight": 70,
+      "categoryHints": [
+        "stole-dupatta",
+        "cotton-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Rajasthan Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "rajasthan-jaipur",
+      "state": "Rajasthan",
+      "district": "Jaipur",
+      "societyName": "Jaipur",
+      "societyType": "cooperative",
+      "loomOsCluster": "Jaipur",
+      "weaverCount": null,
+      "densityWeight": 65,
+      "categoryHints": [
+        "stole-dupatta",
+        "cotton-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Rajasthan Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "maharashtra-paithan",
+      "state": "Maharashtra",
+      "district": "Paithan",
+      "societyName": "Paithan",
+      "societyType": "cooperative",
+      "loomOsCluster": "Paithan",
+      "weaverCount": null,
+      "densityWeight": 86,
+      "categoryHints": [
+        "silk-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Maharashtra Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "maharashtra-yeola",
+      "state": "Maharashtra",
+      "district": "Yeola",
+      "societyName": "Yeola",
+      "societyType": "cooperative",
+      "loomOsCluster": "Yeola",
+      "weaverCount": null,
+      "densityWeight": 78,
+      "categoryHints": [
+        "silk-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Maharashtra Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "maharashtra-solapur",
+      "state": "Maharashtra",
+      "district": "Solapur",
+      "societyName": "Solapur",
+      "societyType": "cooperative",
+      "loomOsCluster": "Solapur",
+      "weaverCount": null,
+      "densityWeight": 70,
+      "categoryHints": [
+        "cotton-saree",
+        "dhoti-angavastram"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Maharashtra Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "maharashtra-nagpur",
+      "state": "Maharashtra",
+      "district": "Nagpur",
+      "societyName": "Nagpur",
+      "societyType": "cooperative",
+      "loomOsCluster": "Nagpur",
+      "weaverCount": null,
+      "densityWeight": 64,
+      "categoryHints": [
+        "cotton-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Maharashtra Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "manipur-imphal",
+      "state": "Manipur",
+      "district": "Imphal",
+      "societyName": "Imphal",
+      "societyType": "cooperative",
+      "loomOsCluster": "Imphal",
+      "weaverCount": null,
+      "densityWeight": 85,
+      "categoryHints": [
+        "silk-saree",
+        "stole-dupatta",
+        "cotton-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Manipur Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "tripura-agartala",
+      "state": "Tripura",
+      "district": "Agartala",
+      "societyName": "Agartala",
+      "societyType": "cooperative",
+      "loomOsCluster": "Agartala",
+      "weaverCount": null,
+      "densityWeight": 72,
+      "categoryHints": [
+        "cotton-saree",
+        "stole-dupatta"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Tripura Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "meghalaya-shillong",
+      "state": "Meghalaya",
+      "district": "Shillong",
+      "societyName": "Shillong",
+      "societyType": "cooperative",
+      "loomOsCluster": "Shillong",
+      "weaverCount": null,
+      "densityWeight": 68,
+      "categoryHints": [
+        "stole-dupatta",
+        "cotton-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Meghalaya Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "mizoram-aizawl",
+      "state": "Mizoram",
+      "district": "Aizawl",
+      "societyName": "Aizawl",
+      "societyType": "cooperative",
+      "loomOsCluster": "Aizawl",
+      "weaverCount": null,
+      "densityWeight": 66,
+      "categoryHints": [
+        "stole-dupatta",
+        "cotton-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Mizoram Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "nagaland-kohima",
+      "state": "Nagaland",
+      "district": "Kohima",
+      "societyName": "Kohima",
+      "societyType": "cooperative",
+      "loomOsCluster": "Kohima",
+      "weaverCount": null,
+      "densityWeight": 65,
+      "categoryHints": [
+        "stole-dupatta",
+        "cotton-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Nagaland Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "arunachal-pradesh-itanagar",
+      "state": "Arunachal Pradesh",
+      "district": "Itanagar",
+      "societyName": "Itanagar",
+      "societyType": "cooperative",
+      "loomOsCluster": "Itanagar",
+      "weaverCount": null,
+      "densityWeight": 62,
+      "categoryHints": [
+        "stole-dupatta",
+        "cotton-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Arunachal Pradesh Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "sikkim-gangtok",
+      "state": "Sikkim",
+      "district": "Gangtok",
+      "societyName": "Gangtok",
+      "societyType": "cooperative",
+      "loomOsCluster": "Gangtok",
+      "weaverCount": null,
+      "densityWeight": 58,
+      "categoryHints": [
+        "stole-dupatta"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Sikkim Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "punjab-patiala",
+      "state": "Punjab",
+      "district": "Patiala",
+      "societyName": "Patiala",
+      "societyType": "cooperative",
+      "loomOsCluster": "Patiala",
+      "weaverCount": null,
+      "densityWeight": 64,
+      "categoryHints": [
+        "stole-dupatta",
+        "cotton-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Punjab Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "punjab-amritsar",
+      "state": "Punjab",
+      "district": "Amritsar",
+      "societyName": "Amritsar",
+      "societyType": "cooperative",
+      "loomOsCluster": "Amritsar",
+      "weaverCount": null,
+      "densityWeight": 66,
+      "categoryHints": [
+        "stole-dupatta",
+        "cotton-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Punjab Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "haryana-panipat",
+      "state": "Haryana",
+      "district": "Panipat",
+      "societyName": "Panipat",
+      "societyType": "cooperative",
+      "loomOsCluster": "Panipat",
+      "weaverCount": null,
+      "densityWeight": 70,
+      "categoryHints": [
+        "stole-dupatta",
+        "cotton-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Haryana Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "himachal-pradesh-kullu",
+      "state": "Himachal Pradesh",
+      "district": "Kullu",
+      "societyName": "Kullu",
+      "societyType": "cooperative",
+      "loomOsCluster": "Kullu",
+      "weaverCount": null,
+      "densityWeight": 74,
+      "categoryHints": [
+        "stole-dupatta"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Himachal Pradesh Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "jammu-and-kashmir-srinagar",
+      "state": "Jammu and Kashmir",
+      "district": "Srinagar",
+      "societyName": "Srinagar",
+      "societyType": "cooperative",
+      "loomOsCluster": "Srinagar",
+      "weaverCount": null,
+      "densityWeight": 80,
+      "categoryHints": [
+        "stole-dupatta",
+        "silk-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Jammu and Kashmir Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "jammu-and-kashmir-baramulla",
+      "state": "Jammu and Kashmir",
+      "district": "Baramulla",
+      "societyName": "Baramulla",
+      "societyType": "cooperative",
+      "loomOsCluster": "Baramulla",
+      "weaverCount": null,
+      "densityWeight": 62,
+      "categoryHints": [
+        "stole-dupatta"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Jammu and Kashmir Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "uttarakhand-almora",
+      "state": "Uttarakhand",
+      "district": "Almora",
+      "societyName": "Almora",
+      "societyType": "cooperative",
+      "loomOsCluster": "Almora",
+      "weaverCount": null,
+      "densityWeight": 60,
+      "categoryHints": [
+        "stole-dupatta",
+        "cotton-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Uttarakhand Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "chhattisgarh-bastar",
+      "state": "Chhattisgarh",
+      "district": "Bastar",
+      "societyName": "Bastar",
+      "societyType": "cooperative",
+      "loomOsCluster": "Bastar",
+      "weaverCount": null,
+      "densityWeight": 63,
+      "categoryHints": [
+        "cotton-saree",
+        "stole-dupatta"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Chhattisgarh Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "chhattisgarh-raigarh",
+      "state": "Chhattisgarh",
+      "district": "Raigarh",
+      "societyName": "Raigarh",
+      "societyType": "cooperative",
+      "loomOsCluster": "Raigarh",
+      "weaverCount": null,
+      "densityWeight": 58,
+      "categoryHints": [
+        "cotton-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Chhattisgarh Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "jharkhand-ranchi",
+      "state": "Jharkhand",
+      "district": "Ranchi",
+      "societyName": "Ranchi",
+      "societyType": "cooperative",
+      "loomOsCluster": "Ranchi",
+      "weaverCount": null,
+      "densityWeight": 60,
+      "categoryHints": [
+        "cotton-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Jharkhand Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "jharkhand-dumka",
+      "state": "Jharkhand",
+      "district": "Dumka",
+      "societyName": "Dumka",
+      "societyType": "cooperative",
+      "loomOsCluster": "Dumka",
+      "weaverCount": null,
+      "densityWeight": 58,
+      "categoryHints": [
+        "cotton-saree",
+        "stole-dupatta"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Jharkhand Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "goa-margao",
+      "state": "Goa",
+      "district": "Margao",
+      "societyName": "Margao",
+      "societyType": "cooperative",
+      "loomOsCluster": "Margao",
+      "weaverCount": null,
+      "densityWeight": 55,
+      "categoryHints": [
+        "cotton-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Goa Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "delhi-iit-delhi",
+      "state": "Delhi",
+      "district": "IIT Delhi",
+      "societyName": "IIT Delhi",
+      "societyType": "cooperative",
+      "loomOsCluster": "IIT Delhi",
+      "weaverCount": null,
+      "densityWeight": 50,
+      "categoryHints": [
+        "cotton-saree",
+        "stole-dupatta"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Delhi Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "delhi-south-delhi",
+      "state": "Delhi",
+      "district": "South Delhi",
+      "societyName": "South Delhi",
+      "societyType": "cooperative",
+      "loomOsCluster": "South Delhi",
+      "weaverCount": null,
+      "densityWeight": 48,
+      "categoryHints": [
+        "cotton-saree",
+        "silk-saree"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Delhi Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    },
+    {
+      "id": "delhi-chandni-chowk",
+      "state": "Delhi",
+      "district": "Chandni Chowk",
+      "societyName": "Chandni Chowk",
+      "societyType": "cooperative",
+      "loomOsCluster": "Chandni Chowk",
+      "weaverCount": null,
+      "densityWeight": 52,
+      "categoryHints": [
+        "silk-saree",
+        "stole-dupatta"
+      ],
+      "sourceUrl": "https://handlooms.nic.in/weavers_database.php",
+      "sourceNote": "Curated from Delhi Weavers Database list coverage (hub seed — not full PDF row dump).",
+      "asOf": "2026-07-31"
+    }
+  ]
+}

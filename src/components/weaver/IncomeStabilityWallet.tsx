@@ -145,22 +145,16 @@ export function IncomeStabilityWallet() {
       aria-labelledby="stability-heading"
       className="rounded-2xl border border-loom-border bg-loom-surface p-4"
     >
-      <div className="mb-1 flex flex-wrap items-center justify-between gap-2">
-        <div className="flex items-center gap-2 text-loom-primary">
-          <PiggyBank className="size-6" aria-hidden />
-          <h2
-            id="stability-heading"
-            className="text-base font-semibold text-loom-ink"
-          >
-            {t("wallet.title")}
-          </h2>
-        </div>
-        <span className="rounded-lg bg-loom-warning-soft px-2 py-0.5 text-xs font-semibold text-loom-warning">
-          {t("wallet.demoTag")}
-        </span>
+      <div className="mb-1 flex items-center gap-2 text-loom-primary">
+        <PiggyBank className="size-6" aria-hidden />
+        <h2
+          id="stability-heading"
+          className="text-base font-semibold text-loom-ink"
+        >
+          {t("wallet.title")}
+        </h2>
       </div>
-      <p className="mb-1 text-sm text-loom-muted">{t("wallet.subtitle")}</p>
-      <p className="mb-2 text-xs text-loom-muted">{t("wallet.demoNote")}</p>
+      <p className="mb-3 text-sm text-loom-muted">{t("wallet.subtitle")}</p>
 
       <div className="grid grid-cols-2 gap-3">
         <div className="rounded-xl bg-loom-bg px-3 py-3">

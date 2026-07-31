@@ -140,8 +140,11 @@ export type EngineReasonTag = {
 
 export type DailyAction = {
   id: string;
+  /** English fallback label */
   label: string;
   href?: string;
+  /** Template vars for i18n (e.g. kg, categoryId, when) */
+  vars?: Record<string, string | number>;
 };
 
 export type ScoredCategory = {

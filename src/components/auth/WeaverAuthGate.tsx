@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { TopBar } from "@/components/weaver/TopBar";
 import { BottomNav } from "@/components/weaver/BottomNav";
-import { VoiceNavFab } from "@/components/weaver/VoiceNavFab";
+import { LoomAssistantShell } from "@/components/weaver/LoomAssistantShell";
 import { DemoModeBanner } from "@/components/demo/DemoModeBanner";
 import { WeaverLoginScreen } from "@/components/auth/WeaverLoginScreen";
 import { AppTour } from "@/components/onboarding/AppTour";
@@ -91,7 +91,7 @@ export function WeaverAuthGate({ children }: { children: React.ReactNode }) {
         loadError={
           loadError ??
           (me.authenticated && me.user?.role === "BUYER"
-            ? "You're signed in as a buyer. Sign in as a weaver to open this app (or open Buyer from the top bar after login)."
+            ? "You're signed in as a buyer. Sign in as a weaver to open this app."
             : null)
         }
         defaultRole="WEAVER"
@@ -111,7 +111,7 @@ export function WeaverAuthGate({ children }: { children: React.ReactNode }) {
       <DemoModeBanner />
       <TopBar />
       <main className="flex flex-1 flex-col pb-28">{children}</main>
-      <VoiceNavFab />
+      <LoomAssistantShell />
       <BottomNav />
       <AppTour />
     </>

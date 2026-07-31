@@ -5,12 +5,16 @@ import { useRouter } from "next/navigation";
 import { DEMAND_CATEGORIES, type BuyerRequirement } from "@/lib/demand/types";
 import { SimulatedBuyerDesk } from "@/components/buyer/SimulatedBuyerDesk";
 import { BuyerWeaversMap } from "@/components/map/BuyerWeaversMapLazy";
+import { ClusterDensityMap } from "@/components/map/ClusterDensityMapLazy";
 import { DEMO_BUYERS } from "@/lib/demo/cluster";
 import type {
   DistrictCluster,
   MapWeaverPin,
   StateCluster,
 } from "@/lib/map/build-map-data";
+import type { ClusterMatchPayload } from "@/lib/gov/cluster-match";
+import { INDIA_STATES, clustersForState } from "@/lib/auth/regions";
+import { ChevronDown, MapPinned } from "lucide-react";
 
 type Session = {
   id: string;
@@ -42,7 +46,14 @@ type OrderRow = {
   settledAt?: string;
 };
 
-type Tab = "post" | "weavers" | "orders" | "mine" | "desks" | "map";
+type Tab =
+  | "post"
+  | "weavers"
+  | "orders"
+  | "mine"
+  | "desks"
+  | "map"
+  | "clusters";
 
 type MapPayload = {
   weavers: MapWeaverPin[];
@@ -60,14 +71,24 @@ export default function BuyerPortalPage() {
   const [weavers, setWeavers] = useState<WeaverRow[]>([]);
   const [orders, setOrders] = useState<OrderRow[]>([]);
   const [mapData, setMapData] = useState<MapPayload | null>(null);
+  const [matchPayload, setMatchPayload] = useState<ClusterMatchPayload | null>(
+    null,
+  );
+  const [matchLoading, setMatchLoading] = useState(false);
+  const [matchError, setMatchError] = useState<string | null>(null);
+  const [expandedRank, setExpandedRank] = useState<number | null>(1);
+  const [mapFocus, setMapFocus] = useState<{
+    region: string;
+    district: string;
+  } | null>(null);
   const [form, setForm] = useState({
     categoryId: "cotton-saree",
     quantity: 25,
     neededBy: "2026-10-15",
     priceMin: 800,
     priceMax: 1200,
-    region: "Delhi",
-    district: "IIT Delhi",
+    region: "Tamil Nadu",
+    district: "Kanchipuram",
     notes: "",
   });
 
@@ -90,7 +111,14 @@ export default function BuyerPortalPage() {
         region: data.user.buyer.region,
       };
       setSession(s);
-      setForm((f) => ({ ...f, region: s.region || f.region }));
+      if (s.region && INDIA_STATES.includes(s.region) && s.region !== "Delhi") {
+        const clusters = clustersForState(s.region);
+        setForm((f) => ({
+          ...f,
+          region: s.region,
+          district: clusters[0] ?? f.district,
+        }));
+      }
     })();
   }, [router]);
 
@@ -126,6 +154,43 @@ export default function BuyerPortalPage() {
     });
   }, []);
 
+  const runClusterMatch = useCallback(async () => {
+    setMatchLoading(true);
+    setMatchError(null);
+    const params = new URLSearchParams({
+      categoryId: form.categoryId,
+      region: form.region,
+      district: form.district,
+      quantity: String(form.quantity),
+      neededBy: form.neededBy,
+      limit: "8",
+    });
+    try {
+      const res = await fetch(`/api/clusters/match?${params}`, {
+        cache: "no-store",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setMatchError(data.error ?? "Match failed");
+        setMatchPayload(null);
+        return;
+      }
+      setMatchPayload(data as ClusterMatchPayload);
+      const top = (data as ClusterMatchPayload).results[0];
+      if (top) {
+        setMapFocus({
+          region: top.entry.state,
+          district: top.entry.loomOsCluster || top.entry.district,
+        });
+        setExpandedRank(1);
+      }
+    } catch {
+      setMatchError("Could not reach cluster match");
+    } finally {
+      setMatchLoading(false);
+    }
+  }, [form]);
+
   useEffect(() => {
     if (!session) return;
     void loadMine();
@@ -133,6 +198,11 @@ export default function BuyerPortalPage() {
     void loadOrders();
     void loadMap();
   }, [session, loadMine, loadWeavers, loadOrders, loadMap]);
+
+  useEffect(() => {
+    if (!session || tab !== "clusters") return;
+    void runClusterMatch();
+  }, [session, tab, runClusterMatch]);
 
   async function postRequirement(e: React.FormEvent) {
     e.preventDefault();
@@ -149,10 +219,10 @@ export default function BuyerPortalPage() {
       return;
     }
     setMessage(
-      "Requirement posted — it now feeds the weaver Home Buyer Signal. Refresh the weaver app to see demand move.",
+      "Requirement posted — it now feeds the weaver Home Buyer Signal. Open Cluster match to see official DC(HL) clusters for this need.",
     );
     await loadMine();
-    setTab("mine");
+    setTab("clusters");
   }
 
   async function logout() {
@@ -172,6 +242,8 @@ export default function BuyerPortalPage() {
   const matchedDemo = DEMO_BUYERS.find(
     (b) => b.id === session.id || b.name === session.name,
   );
+
+  const clusterOptions = clustersForState(form.region);
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
@@ -208,7 +280,8 @@ export default function BuyerPortalPage() {
 
       <p className="mt-4 rounded-xl border-l-4 border-[#1e3a5f] bg-white px-4 py-3 text-sm font-semibold text-slate-800">
         Post a requirement here → weaver Orders / Plan / Home update from the
-        same store → Money shows escrow status for orders.
+        same store → Money shows escrow status for orders. Cluster match ranks
+        official DC (Handlooms) Weavers Database clusters for your need.
       </p>
 
       <div className="mt-6 flex flex-wrap gap-2 border-b border-slate-200 pb-2">
@@ -216,6 +289,7 @@ export default function BuyerPortalPage() {
           [
             ["desks", "Sample desks"],
             ["map", "Weaver map"],
+            ["clusters", "Cluster match"],
             ["post", "Post requirement"],
             ["mine", "My requirements"],
             ["weavers", "Verified weavers"],
@@ -262,15 +336,16 @@ export default function BuyerPortalPage() {
             >
               Post requirement
             </button>{" "}
-            to publish a need weavers can plan from, or open{" "}
+            or{" "}
             <button
               type="button"
               className="font-semibold text-[#1e3a5f] underline"
-              onClick={() => setTab("map")}
+              onClick={() => setTab("clusters")}
             >
-              Weaver map
+              Cluster match
             </button>{" "}
-            for Delhi clusters (IIT → District → Nation).
+            to rank official Weavers Database clusters for a category and
+            region.
           </p>
         </div>
       ) : null}
@@ -287,12 +362,249 @@ export default function BuyerPortalPage() {
               stateClusters={mapData.stateClusters}
               districtClusters={mapData.districtClusters}
               disclaimer={mapData.disclaimer}
+              focusRegion={mapFocus?.region}
+              focusDistrict={mapFocus?.district}
             />
           ) : (
             <p className="rounded-lg border border-slate-200 bg-white px-4 py-8 text-center text-sm text-slate-600">
               Loading map data…
             </p>
           )}
+        </div>
+      ) : null}
+
+      {tab === "clusters" ? (
+        <div className="mt-6 space-y-4">
+          <div className="rounded-lg border border-slate-200 bg-white p-4">
+            <div className="flex flex-wrap items-start gap-2">
+              <MapPinned className="mt-0.5 size-5 text-[#1e3a5f]" aria-hidden />
+              <div className="min-w-0 flex-1">
+                <h2 className="font-semibold text-[#1a1f24]">
+                  Official Cluster Match
+                </h2>
+                <p className="mt-1 text-sm text-slate-600">
+                  Density heatmap + ranked match for co-operative / producer-company
+                  clusters from the{" "}
+                  <a
+                    href="https://handlooms.nic.in/weavers_database.php"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-semibold text-[#1e3a5f] underline"
+                  >
+                    DC (Handlooms) Weavers Database
+                  </a>
+                  . Curated seed for this demo — not a live government API.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              <label className="block text-sm">
+                Category
+                <select
+                  className="mt-1 w-full rounded border border-slate-300 px-3 py-2"
+                  value={form.categoryId}
+                  onChange={(e) =>
+                    setForm({ ...form, categoryId: e.target.value })
+                  }
+                >
+                  {DEMAND_CATEGORIES.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="block text-sm">
+                Quantity
+                <input
+                  type="number"
+                  min={1}
+                  className="mt-1 w-full rounded border border-slate-300 px-3 py-2"
+                  value={form.quantity}
+                  onChange={(e) =>
+                    setForm({ ...form, quantity: Number(e.target.value) })
+                  }
+                />
+              </label>
+              <label className="block text-sm">
+                State
+                <select
+                  className="mt-1 w-full rounded border border-slate-300 px-3 py-2"
+                  value={form.region}
+                  onChange={(e) => {
+                    const region = e.target.value;
+                    const clusters = clustersForState(region);
+                    setForm({
+                      ...form,
+                      region,
+                      district: clusters[0] ?? "",
+                    });
+                  }}
+                >
+                  {INDIA_STATES.map((s) => (
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="block text-sm">
+                Cluster / district
+                <select
+                  className="mt-1 w-full rounded border border-slate-300 px-3 py-2"
+                  value={form.district}
+                  onChange={(e) =>
+                    setForm({ ...form, district: e.target.value })
+                  }
+                >
+                  {clusterOptions.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+
+            <div className="mt-3 flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => void runClusterMatch()}
+                disabled={matchLoading}
+                className="rounded bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+              >
+                {matchLoading ? "Matching…" : "Match official clusters"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setTab("post")}
+                className="rounded border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-[#1e3a5f]"
+              >
+                Post this as requirement
+              </button>
+            </div>
+
+            {matchPayload ? (
+              <p className="mt-3 text-xs font-semibold text-amber-900">
+                {matchPayload.sourceChip} · {matchPayload.meta.disclaimer}
+              </p>
+            ) : null}
+            {matchError ? (
+              <p className="mt-2 text-sm text-red-700">{matchError}</p>
+            ) : null}
+          </div>
+
+          <ClusterDensityMap
+            focusRegion={mapFocus?.region}
+            focusDistrict={mapFocus?.district}
+            initialRegion={form.region}
+            initialCategoryId={form.categoryId}
+            onHubSelect={(hub) =>
+              setMapFocus({ region: hub.region, district: hub.district })
+            }
+          />
+
+          {matchPayload ? (
+            <div className="space-y-3">
+              <p className="text-sm text-slate-600">
+                Looking for{" "}
+                <strong>{matchPayload.query.categoryLabel}</strong> near{" "}
+                <strong>
+                  {matchPayload.query.district
+                    ? `${matchPayload.query.district}, `
+                    : ""}
+                  {matchPayload.query.region}
+                </strong>
+                . {matchPayload.formulaNote}
+              </p>
+
+              {matchPayload.results.map((row) => {
+                const open = expandedRank === row.rank;
+                return (
+                  <article
+                    key={row.entry.id}
+                    className="rounded-lg border border-slate-200 bg-white p-4"
+                  >
+                    <div className="flex flex-wrap items-start justify-between gap-2">
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                          Rank #{row.rank} · score {row.score}/100
+                        </p>
+                        <h3 className="text-lg font-semibold text-[#1a1f24]">
+                          {row.entry.societyName}
+                        </h3>
+                        <p className="text-sm text-slate-600">
+                          {row.societyTypeLabel} · {row.entry.district},{" "}
+                          {row.entry.state}
+                        </p>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setMapFocus({
+                              region: row.entry.state,
+                              district:
+                                row.entry.loomOsCluster || row.entry.district,
+                            });
+                          }}
+                          className="rounded border border-slate-300 px-3 py-1.5 text-xs font-semibold text-[#1e3a5f]"
+                        >
+                          Focus heatmap
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setMapFocus({
+                              region: row.entry.state,
+                              district:
+                                row.entry.loomOsCluster || row.entry.district,
+                            });
+                            setTab("map");
+                          }}
+                          className="rounded border border-slate-300 px-3 py-1.5 text-xs font-semibold text-[#1e3a5f]"
+                        >
+                          Weaver map
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setExpandedRank(open ? null : row.rank)
+                          }
+                          className="inline-flex items-center gap-1 rounded border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700"
+                          aria-expanded={open}
+                        >
+                          Why?
+                          <ChevronDown
+                            className={`size-3.5 transition-transform ${open ? "rotate-180" : ""}`}
+                            aria-hidden
+                          />
+                        </button>
+                      </div>
+                    </div>
+                    <p className="mt-2 text-xs font-semibold text-amber-900">
+                      {row.sourceChip}
+                    </p>
+                    {open ? (
+                      <ul className="mt-3 space-y-2 rounded-lg bg-slate-50 px-3 py-3 text-sm">
+                        {row.reasons.map((r) => (
+                          <li key={r.id}>
+                            <p className="font-semibold text-[#1a1f24]">
+                              {r.label}: +{r.points}
+                            </p>
+                            <p className="text-slate-600">{r.detail}</p>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
+                  </article>
+                );
+              })}
+            </div>
+          ) : matchLoading ? (
+            <p className="text-sm text-slate-600">Matching official clusters…</p>
+          ) : null}
         </div>
       ) : null}
 
@@ -304,7 +616,8 @@ export default function BuyerPortalPage() {
           <h2 className="font-semibold">Post a buying requirement</h2>
           <p className="text-sm text-slate-600">
             Saves into the same requirement database Stage 3 reads for Buyer
-            Signal (weight 0.5) — not a disconnected form.
+            Signal (weight 0.5) — not a disconnected form. After publish, Cluster
+            match uses the same category/region.
           </p>
           <label className="block text-sm">
             Category
@@ -371,19 +684,39 @@ export default function BuyerPortalPage() {
           </div>
           <label className="block text-sm">
             Region (state / UT)
-            <input
+            <select
               className="mt-1 w-full rounded border border-slate-300 px-3 py-2"
               value={form.region}
-              onChange={(e) => setForm({ ...form, region: e.target.value })}
-            />
+              onChange={(e) => {
+                const region = e.target.value;
+                const clusters = clustersForState(region);
+                setForm({
+                  ...form,
+                  region,
+                  district: clusters[0] ?? "",
+                });
+              }}
+            >
+              {INDIA_STATES.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
           </label>
           <label className="block text-sm">
-            District / hub (e.g. IIT Delhi, South Delhi)
-            <input
+            District / hub
+            <select
               className="mt-1 w-full rounded border border-slate-300 px-3 py-2"
               value={form.district}
               onChange={(e) => setForm({ ...form, district: e.target.value })}
-            />
+            >
+              {clusterOptions.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
           </label>
           <label className="block text-sm">
             Notes

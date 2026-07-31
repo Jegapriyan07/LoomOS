@@ -8,11 +8,11 @@
 
 export const DEMO_MODE = true;
 
-/** Invented co-op name for the hackathon shell — fictional. */
+/** Primary demo cluster — society name matches cluster name. */
 export const DEMO_CLUSTER = {
   id: "demo-cluster-delhi",
-  name: "Yamuna Loom Desk",
-  shortName: "Yamuna Loom Desk",
+  name: "IIT Delhi",
+  shortName: "IIT Delhi",
   /** Primary map cluster — IIT Delhi → Delhi NCT → nation */
   flavor:
     "Delhi NCT handloom cluster centered on IIT Delhi and South Delhi retail.",

@@ -13,9 +13,13 @@ import {
 import type { DailyAction, EngineReasonTag } from "@/lib/demand/types";
 import type { FiveQuestionId } from "@/lib/chat/assistant";
 import { useI18n } from "@/lib/i18n/context";
+import {
+  localizedDailyActionLabel,
+  localizedReasonTagLabel,
+} from "@/lib/i18n/extras";
 
 export function ReasonTagsRow({ tags }: { tags: EngineReasonTag[] }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   if (!tags.length) return null;
   return (
     <div className="mt-4">
@@ -37,7 +41,7 @@ export function ReasonTagsRow({ tags }: { tags: EngineReasonTag[] }) {
             ) : (
               <Circle className="size-3.5 shrink-0 opacity-40" aria-hidden />
             )}
-            {tag.label}
+            {localizedReasonTagLabel(lang, tag.id, tag.label)}
           </li>
         ))}
       </ul>
@@ -46,7 +50,7 @@ export function ReasonTagsRow({ tags }: { tags: EngineReasonTag[] }) {
 }
 
 export function DailyActionPlan({ actions }: { actions: DailyAction[] }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   if (!actions.length) return null;
   return (
     <section
@@ -61,24 +65,27 @@ export function DailyActionPlan({ actions }: { actions: DailyAction[] }) {
       </h3>
       <p className="mt-1 text-sm text-loom-muted">{t("engine.dailyHint")}</p>
       <ol className="mt-3 space-y-2">
-        {actions.map((a, i) => (
-          <li key={a.id}>
-            {a.href ? (
-              <Link
-                href={a.href}
-                className="flex gap-2 rounded-lg border border-transparent px-1 py-1.5 text-base text-loom-ink underline-offset-2 hover:underline"
-              >
-                <span className="font-semibold text-loom-primary">{i + 1}.</span>
-                <span>{a.label}</span>
-              </Link>
-            ) : (
-              <p className="flex gap-2 px-1 py-1.5 text-base text-loom-ink">
-                <span className="font-semibold text-loom-primary">{i + 1}.</span>
-                <span>{a.label}</span>
-              </p>
-            )}
-          </li>
-        ))}
+        {actions.map((a, i) => {
+          const label = localizedDailyActionLabel(lang, a);
+          return (
+            <li key={a.id}>
+              {a.href ? (
+                <Link
+                  href={a.href}
+                  className="flex gap-2 rounded-lg border border-transparent px-1 py-1.5 text-base text-loom-ink underline-offset-2 hover:underline"
+                >
+                  <span className="font-semibold text-loom-primary">{i + 1}.</span>
+                  <span>{label}</span>
+                </Link>
+              ) : (
+                <p className="flex gap-2 px-1 py-1.5 text-base text-loom-ink">
+                  <span className="font-semibold text-loom-primary">{i + 1}.</span>
+                  <span>{label}</span>
+                </p>
+              )}
+            </li>
+          );
+        })}
       </ol>
     </section>
   );

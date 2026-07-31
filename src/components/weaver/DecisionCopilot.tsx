@@ -1,15 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Mic, RefreshCw, Volume2 } from "lucide-react";
+import { RefreshCw, Volume2 } from "lucide-react";
+import { LoomAssistantMic } from "@/components/icons/LoomAssistantMic";
 import type { Recommendation } from "@/lib/types";
-import { speakRecommendation, stopSpeaking } from "@/lib/tts";
-import {
-  isSpeechRecognitionAvailable,
-  isSpeechSynthesisAvailable,
-  listenOnce,
-  soundsLikeWeaveQuestion,
-} from "@/lib/voice/speech";
+import { speakRecommendation } from "@/lib/tts";
+import { isSpeechSynthesisAvailable } from "@/lib/voice/speech";
 import {
   LANGUAGE_CHANGE_EVENT,
   readStoredLanguage,
@@ -21,7 +17,7 @@ import {
   localizedCategoryLabel,
 } from "@/lib/i18n/extras";
 import { cachedJson, invalidateCached } from "@/lib/client-cache";
-import { SummaryChatbot } from "@/components/weaver/SummaryChatbot";
+import { openLoomAssistant } from "@/components/weaver/LoomAssistantShell";
 import {
   DailyActionPlan,
   ReasonTagsRow,
@@ -29,7 +25,8 @@ import {
 import { DriftScorePanel } from "@/components/weaver/DriftScorePanel";
 
 /**
- * Weaver Home — Decision Copilot + summary chatbot + Web Speech voice.
+ * Weaver Home — Decision Copilot + Web Speech for today’s advice.
+ * Loom assistant opens from the mic FAB (expand / collapse).
  */
 export function DecisionCopilot() {
   const { t, lang: uiLang } = useI18n();
@@ -38,7 +35,6 @@ export function DecisionCopilot() {
   );
   const [error, setError] = useState<string | null>(null);
   const [lang, setLang] = useState<LanguageCode>("en");
-  const [listening, setListening] = useState(false);
   const [voiceStatus, setVoiceStatus] = useState<string | null>(null);
 
   useEffect(() => {
@@ -125,42 +121,18 @@ export function DecisionCopilot() {
   }
 
   async function onAskByVoice() {
-    if (!isSpeechRecognitionAvailable()) {
-      setVoiceStatus(t("voice.micUnavailable"));
-      return;
-    }
-    stopSpeaking();
-    setListening(true);
-    setVoiceStatus(t("voice.listeningHint"));
-    try {
-      const { transcript, supported } = await listenOnce(lang);
-      setListening(false);
-      if (!supported) {
-        setVoiceStatus(t("voice.micUnavailable"));
-        return;
-      }
-      if (!transcript.trim()) {
-        setVoiceStatus(t("voice.didntCatch"));
-        return;
-      }
-      setVoiceStatus(t("voice.heard", { transcript }));
-      if (soundsLikeWeaveQuestion(transcript) && adviceText) {
-        await speakAdvice(adviceText, lang);
-      }
-    } catch {
-      setListening(false);
-      setVoiceStatus(t("voice.micError"));
-    }
+    // Expands Loom assistant from the mic FAB
+    openLoomAssistant();
   }
 
   return (
     <div className="flex flex-1 flex-col px-4 pb-6 pt-3">
-      <SummaryChatbot />
-
       <div className="flex min-h-[calc(100dvh-8.5rem)] flex-col">
-        <p className="mb-3 text-center text-base font-semibold text-loom-muted">
-          {t("home.question")}
-        </p>
+        <div className="mb-3 rounded-2xl border border-loom-border bg-loom-surface px-4 py-4 text-center shadow-[var(--loom-shadow)]">
+          <p className="font-[family-name:var(--font-loom-display)] text-weaver-lg font-semibold leading-snug text-loom-ink">
+            {t("home.question")}
+          </p>
+        </div>
 
         {error ? (
           <p className="rounded-xl border border-loom-danger bg-loom-danger-soft px-3 py-3 text-base text-loom-danger">
@@ -230,16 +202,11 @@ export function DecisionCopilot() {
               </button>
               <button
                 type="button"
-                onClick={() => void onAskByVoice()}
-                disabled={listening}
-                className={`flex h-12 items-center justify-center gap-2 rounded-xl border text-base font-semibold ${
-                  listening
-                    ? "border-loom-accent bg-loom-accent-soft text-loom-warning"
-                    : "border-loom-border bg-loom-bg text-loom-primary"
-                }`}
+                onClick={() => onAskByVoice()}
+                className="flex h-12 items-center justify-center gap-2 rounded-xl border border-loom-border bg-loom-bg text-base font-semibold text-loom-primary"
               >
-                <Mic className="size-5" aria-hidden />
-                {listening ? t("home.listening") : t("home.askByVoice")}
+                <LoomAssistantMic className="size-5" strokeWidth={2.2} />
+                {t("home.askByVoice")}
               </button>
             </div>
             {voiceStatus ? (

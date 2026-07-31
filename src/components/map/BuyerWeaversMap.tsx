@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   CircleMarker,
   MapContainer,
@@ -43,6 +43,9 @@ type Props = {
   stateClusters: StateCluster[];
   districtClusters: DistrictCluster[];
   disclaimer: string;
+  /** Optional external focus (e.g. Official Cluster Match). */
+  focusRegion?: string | null;
+  focusDistrict?: string | null;
 };
 
 function weaverIcon(verified: boolean) {
@@ -92,6 +95,8 @@ export function BuyerWeaversMapInner({
   stateClusters,
   districtClusters,
   disclaimer,
+  focusRegion,
+  focusDistrict,
 }: Props) {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState<BuyerMapSuggestion[]>([]);
@@ -103,6 +108,19 @@ export function BuyerWeaversMapInner({
   );
   const [selected, setSelected] = useState<MapWeaverPin | null>(null);
   const [suggestOpen, setSuggestOpen] = useState(false);
+
+  useEffect(() => {
+    if (!focusRegion) return;
+    setRegion(focusRegion);
+    if (focusDistrict) {
+      setDistrict(focusDistrict);
+      setScope("district");
+    } else {
+      setDistrict(null);
+      setScope("state");
+    }
+    setSelected(null);
+  }, [focusRegion, focusDistrict]);
 
   const filtered = useMemo(() => {
     return weavers.filter((w) => {

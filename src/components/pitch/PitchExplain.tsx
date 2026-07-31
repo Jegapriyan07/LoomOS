@@ -28,23 +28,23 @@ export function PitchHero({
 export function PitchSteps({
   steps,
   active,
+  onSelect,
 }: {
   steps: { n: number; label: string }[];
   active?: number;
+  onSelect?: (n: number) => void;
 }) {
   return (
     <ol className="flex flex-wrap gap-2" aria-label="How this screen works">
       {steps.map((s) => {
         const on = active === s.n;
-        return (
-          <li
-            key={s.n}
-            className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm ${
-              on
-                ? "border-loom-primary bg-loom-primary text-white"
-                : "border-loom-border bg-loom-surface text-loom-ink"
-            }`}
-          >
+        const className = `flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm transition ${
+          on
+            ? "border-loom-primary bg-loom-primary text-white"
+            : "border-loom-border bg-loom-surface text-loom-ink"
+        } ${onSelect ? "cursor-pointer hover:border-loom-primary" : ""}`;
+        const inner = (
+          <>
             <span
               className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${
                 on ? "bg-white/20" : "bg-loom-primary-soft text-loom-primary"
@@ -53,6 +53,22 @@ export function PitchSteps({
               {s.n}
             </span>
             {s.label}
+          </>
+        );
+        return (
+          <li key={s.n}>
+            {onSelect ? (
+              <button
+                type="button"
+                onClick={() => onSelect(s.n)}
+                aria-current={on ? "step" : undefined}
+                className={className}
+              >
+                {inner}
+              </button>
+            ) : (
+              <span className={className}>{inner}</span>
+            )}
           </li>
         );
       })}
@@ -64,16 +80,20 @@ export function PitchStepBlock({
   step,
   title,
   hint,
+  id,
   children,
 }: {
   step?: number;
   title: string;
   hint?: string;
+  id?: string;
   children: React.ReactNode;
 }) {
   return (
-    <section className="rounded-2xl border border-loom-border bg-loom-surface p-4">
-      <div className="mb-3 flex items-start gap-3">
+    <section
+      id={id}
+      className="scroll-mt-20 rounded-2xl border border-loom-border bg-loom-surface p-4"
+    >      <div className="mb-3 flex items-start gap-3">
         {step != null ? (
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-loom-primary text-sm font-bold text-white">
             {step}

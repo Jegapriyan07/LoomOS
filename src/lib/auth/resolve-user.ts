@@ -10,7 +10,8 @@ import {
 
 /**
  * After phone auth: resolve existing user, or create weaver/buyer on register.
- * Weaver cooperative is auto-assigned from selected state + district.
+ * Weaver cooperative society is assigned from selected state + cluster
+ * (society name matches the cluster name).
  */
 export async function resolveUserAfterOtp(args: {
   phone: string;

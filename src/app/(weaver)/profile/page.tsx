@@ -3,6 +3,7 @@
 import { useEffect, useId, useState } from "react";
 import Link from "next/link";
 import {
+  BadgeCheck,
   ChevronDown,
   ClipboardList,
   HelpCircle,
@@ -19,7 +20,6 @@ import type { PaymentOrder } from "@/lib/payments/types";
 import { weaverStateLabel } from "@/lib/payments/states";
 import { formatDisplayDate } from "@/lib/production-defaults";
 import { PitchHero } from "@/components/pitch/PitchExplain";
-import { IncomeStabilityWallet } from "@/components/weaver/IncomeStabilityWallet";
 import { cachedJson } from "@/lib/client-cache";
 import type { ProfileMatchPayload } from "@/lib/profile/match";
 import { localizedCategoryLabel } from "@/lib/i18n/extras";
@@ -37,6 +37,24 @@ type MeUser = {
   } | null;
 };
 
+type GovListingPayload = {
+  listed: boolean;
+  message: string;
+  sourceChip: string;
+  societyTypeLabel: string | null;
+  entry: {
+    societyName: string;
+    state: string;
+    district: string;
+    sourceUrl: string;
+    sourceNote: string;
+  } | null;
+  meta: {
+    sourceLabel: string;
+    disclaimer: string;
+  };
+};
+
 /**
  * Weaver profile — personal Profile score + cluster tips (session only).
  */
@@ -45,6 +63,7 @@ export default function ProfilePage() {
   const [user, setUser] = useState<MeUser | null>(null);
   const [orders, setOrders] = useState<PaymentOrder[]>([]);
   const [match, setMatch] = useState<ProfileMatchPayload | null>(null);
+  const [govListing, setGovListing] = useState<GovListingPayload | null>(null);
   const [whyOpen, setWhyOpen] = useState(false);
   const whyId = useId();
 
@@ -59,6 +78,27 @@ export default function ProfilePage() {
         setUser(me.user);
         setOrders(ord.orders.map((r) => r.order));
         setMatch(profileMatch);
+
+        const region = me.user.weaver?.region ?? "";
+        const districtTag = me.user.weaver?.categories.find((c) =>
+          c.startsWith("district:"),
+        );
+        const cluster =
+          districtTag?.replace(/^district:/, "") ||
+          me.user.weaver?.cooperativeName ||
+          "";
+        if (region) {
+          const params = new URLSearchParams({
+            lookupState: region,
+            lookupCluster: cluster,
+          });
+          const govRes = await fetch(`/api/clusters/match?${params}`, {
+            cache: "no-store",
+          });
+          if (govRes.ok) {
+            setGovListing((await govRes.json()) as GovListingPayload);
+          }
+        }
       } catch {
         /* keep prior */
       }
@@ -96,9 +136,78 @@ export default function ProfilePage() {
         title={user?.weaver?.name?.split("(")[0]?.trim() ?? user?.name ?? "…"}
         body={
           demo?.blurb ??
-          "Your LoomOS profile — personal score, income stability, verified settlement history, and past stats for this login only."
+          "Your LoomOS profile — personal score, verified settlement history, and past stats for this login only."
         }
       />
+
+      {user?.weaver ? (
+        <section className="rounded-2xl border border-loom-border bg-loom-surface p-4">
+          <div className="mb-3 flex items-center gap-2 text-loom-primary">
+            <UserRound className="size-6" aria-hidden />
+            <h2 className="text-base font-semibold">Profile details</h2>
+          </div>
+          <dl className="space-y-2 text-sm">
+            <div className="flex justify-between gap-3">
+              <dt className="text-loom-muted">Phone</dt>
+              <dd className="font-semibold text-loom-ink">{user.phone}</dd>
+            </div>
+            <div className="flex justify-between gap-3">
+              <dt className="text-loom-muted">Region</dt>
+              <dd className="font-semibold text-loom-ink">
+                {user.weaver.region}
+              </dd>
+            </div>
+            <div className="flex justify-between gap-3">
+              <dt className="text-loom-muted">Language</dt>
+              <dd className="font-semibold text-loom-ink">
+                {user.weaver.primaryLanguage} · UI {lang}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-loom-muted">What you weave</dt>
+              <dd className="mt-1 flex flex-wrap gap-1.5">
+                {displayCategories.map((c) => (
+                  <span
+                    key={c}
+                    className="rounded-lg bg-loom-primary-soft px-2 py-1 text-xs font-semibold text-loom-primary"
+                  >
+                    {c}
+                  </span>
+                ))}
+              </dd>
+            </div>
+          </dl>
+        </section>
+      ) : null}
+
+      {govListing?.listed && govListing.entry ? (
+        <section className="rounded-2xl border border-loom-border bg-loom-surface p-4">
+          <div className="mb-2 flex items-center gap-2 text-loom-primary">
+            <BadgeCheck className="size-6" aria-hidden />
+            <h2 className="text-base font-semibold">Ministry cluster listing</h2>
+          </div>
+          <p className="text-sm text-loom-ink">{govListing.message}</p>
+          <p className="mt-2 text-sm text-loom-muted">
+            {govListing.societyTypeLabel} · {govListing.entry.district},{" "}
+            {govListing.entry.state}
+          </p>
+          <p className="mt-2 text-xs font-semibold text-amber-900">
+            {govListing.sourceChip} · {govListing.meta.disclaimer}
+          </p>
+          <a
+            href={govListing.entry.sourceUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-2 inline-block text-sm font-semibold text-loom-primary underline"
+          >
+            Open {govListing.meta.sourceLabel}
+          </a>
+          <p className="mt-2 text-xs text-loom-muted">
+            This is a cluster listing signal — not a personal identity check or
+            verified weaver ID.
+          </p>
+        </section>
+      ) : null}
 
       {match ? (
         <section className="rounded-2xl border border-loom-border bg-loom-surface p-4">
@@ -110,9 +219,6 @@ export default function ProfilePage() {
               <span className="inline-flex items-center gap-1 rounded-lg bg-loom-primary-soft px-2 py-0.5 text-xs font-semibold text-loom-primary">
                 <Lock className="size-3" aria-hidden />
                 Only you
-              </span>
-              <span className="rounded-lg bg-loom-warning-soft px-2 py-0.5 text-xs font-semibold text-loom-warning">
-                Demo / Simulated inputs
               </span>
             </div>
           </div>
@@ -338,49 +444,6 @@ export default function ProfilePage() {
           <p className="mt-2 text-xs text-loom-muted">
             {match.verified.incomeHistoryNote}
           </p>
-        </section>
-      ) : null}
-
-      {/* Stage 5 — income stability + monthly history / settlement log */}
-      <IncomeStabilityWallet />
-
-      {user?.weaver ? (
-        <section className="rounded-2xl border border-loom-border bg-loom-surface p-4">
-          <div className="mb-3 flex items-center gap-2 text-loom-primary">
-            <UserRound className="size-6" aria-hidden />
-            <h2 className="text-base font-semibold">Profile details</h2>
-          </div>
-          <dl className="space-y-2 text-sm">
-            <div className="flex justify-between gap-3">
-              <dt className="text-loom-muted">Phone</dt>
-              <dd className="font-semibold text-loom-ink">{user.phone}</dd>
-            </div>
-            <div className="flex justify-between gap-3">
-              <dt className="text-loom-muted">Region</dt>
-              <dd className="font-semibold text-loom-ink">
-                {user.weaver.region}
-              </dd>
-            </div>
-            <div className="flex justify-between gap-3">
-              <dt className="text-loom-muted">Language</dt>
-              <dd className="font-semibold text-loom-ink">
-                {user.weaver.primaryLanguage} · UI {lang}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-loom-muted">What you weave</dt>
-              <dd className="mt-1 flex flex-wrap gap-1.5">
-                {displayCategories.map((c) => (
-                  <span
-                    key={c}
-                    className="rounded-lg bg-loom-primary-soft px-2 py-1 text-xs font-semibold text-loom-primary"
-                  >
-                    {c}
-                  </span>
-                ))}
-              </dd>
-            </div>
-          </dl>
         </section>
       ) : null}
 

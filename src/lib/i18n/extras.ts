@@ -98,6 +98,19 @@ export type ExtraKey =
   | "engine.q5"
   | "engine.a5"
   | "engine.chipHint"
+  | "engine.tag.festival"
+  | "engine.tag.localDemand"
+  | "engine.tag.yarn"
+  | "engine.tag.historical"
+  | "engine.tag.expert"
+  | "engine.action.orders"
+  | "engine.action.weave"
+  | "engine.action.yarnCottonOk"
+  | "engine.action.yarnCottonLow"
+  | "engine.action.yarnSilkOk"
+  | "engine.action.yarnSilkLow"
+  | "engine.action.money"
+  | "engine.action.moneyQuiet"
   | "drift.title"
   | "drift.subtitle"
   | "drift.pctOf"
@@ -106,6 +119,8 @@ export type ExtraKey =
   | "drift.whyLow"
   | "drift.mindfulness"
   | "drift.inputs"
+  | "drift.showInputs"
+  | "drift.hideInputs"
   | "drift.formula"
   | "drift.estimated"
   | "drift.demoTag"
@@ -222,6 +237,23 @@ const en: ExtraCatalog = {
   "engine.a5": "What should I do today?",
   "engine.chipHint":
     "Tap a question — then walk the tabs: Home → Orders → Plan → Money.",
+  "engine.tag.festival": "Festival Approaching",
+  "engine.tag.localDemand": "Local Demand Increasing",
+  "engine.tag.yarn": "Stable Yarn Prices",
+  "engine.tag.historical": "Historical Demand",
+  "engine.tag.expert": "Expert Weaver Knowledge",
+  "engine.action.orders":
+    "Check open buyer requirements in your region (Orders tab)",
+  "engine.action.weave": "Plan {category} — start {when}",
+  "engine.action.yarnCottonOk": "Cotton yarn on hand: {kg} kg",
+  "engine.action.yarnCottonLow":
+    "Cotton yarn low ({kg} kg) — buy before starting",
+  "engine.action.yarnSilkOk": "Silk yarn on hand: {kg} kg",
+  "engine.action.yarnSilkLow":
+    "Silk yarn low ({kg} kg) — buy before starting",
+  "engine.action.money": "Review money coming your way / escrow status",
+  "engine.action.moneyQuiet":
+    "No urgent payment action — keep production on track",
   "drift.title": "Drift score",
   "drift.subtitle": "Intelligence accuracy for this advice",
   "drift.pctOf": "{pct}%",
@@ -231,6 +263,8 @@ const en: ExtraCatalog = {
   "drift.whyLow": "Why drift is low",
   "drift.mindfulness": "What weavers should keep in mind",
   "drift.inputs": "Inputs behind this %",
+  "drift.showInputs": "Show inputs behind this %",
+  "drift.hideInputs": "Hide inputs behind this %",
   "drift.formula": "Formula",
   "drift.estimated": "Estimated",
   "drift.demoTag": "Demo / Simulated",
@@ -325,11 +359,57 @@ const hi: ExtraCatalog = {
   "drift.whyLow": "ड्रिफ्ट कम क्यों है",
   "drift.mindfulness": "बुनकरों को क्या ध्यान में रखना चाहिए",
   "drift.inputs": "इस % के पीछे के इनपुट",
+  "drift.showInputs": "इस % के पीछे के इनपुट दिखाएँ",
+  "drift.hideInputs": "इस % के पीछे के इनपुट छिपाएँ",
   "drift.formula": "सूत्र",
   "drift.estimated": "अनुमानित",
   "drift.demoTag": "डेमो / सिम्युलेटेड",
   "drift.thresholdNote":
     "90% से कम का मतलब सलाह कम निश्चित है — सूत या पूरी बुनाई से पहले रुकें।",
+  "stock.title": "स्टॉक और संसाधन",
+  "stock.hint": "हाथ में सूत और तैयार टुकड़े — आज की सलाह में जाते हैं।",
+  "stock.simNote": "आपकी इन्वेंटरी — सलाह अपडेट करने के लिए मात्रा बदलें।",
+  "stock.yarnCotton": "सूती सूत (किलो)",
+  "stock.yarnSilk": "रेशमी सूत (किलो)",
+  "stock.finishedCotton": "तैयार सूती साड़ियाँ",
+  "stock.finishedSilk": "तैयार रेशमी साड़ियाँ",
+  "stock.finishedStole": "तैयार स्टोल / दुपट्टे",
+  "stock.finishedDhoti": "तैयार धोती / अंगवस्त्रम",
+  "stock.feedsEngine": "बदलाव होम की सलाह को प्रभावित करते हैं।",
+  "engine.whyTags": "यह सलाह क्यों",
+  "engine.dailyTitle": "आज क्या करूँ?",
+  "engine.dailyHint":
+    "बाज़ार, व्यवसाय और मास्टर-बुनकर संकेतों से आज की कार्य योजना।",
+  "engine.fiveLabel": "पाँच रोज़ के सवाल",
+  "engine.q1": "माँग",
+  "engine.a1": "क्या मेरे पास काम आ रहा है?",
+  "engine.q2": "उत्पाद",
+  "engine.a2": "आगे क्या बुनूँ?",
+  "engine.q3": "समय",
+  "engine.a3": "कब शुरू करूँ?",
+  "engine.q4": "पैसे",
+  "engine.a4": "पैसे कब मिलेंगे?",
+  "engine.q5": "आज",
+  "engine.a5": "आज क्या करूँ?",
+  "engine.chipHint":
+    "सवाल टैप करें — फिर टैब घूमें: होम → ऑर्डर → योजना → पैसे।",
+  "engine.tag.festival": "त्योहार नज़दीक",
+  "engine.tag.localDemand": "स्थानीय माँग बढ़ रही है",
+  "engine.tag.yarn": "सूत की कीमतें स्थिर",
+  "engine.tag.historical": "ऐतिहासिक माँग",
+  "engine.tag.expert": "मास्टर बुनकर ज्ञान",
+  "engine.action.orders":
+    "अपने क्षेत्र में खुली खरीदार ज़रूरतें देखें (ऑर्डर टैब)",
+  "engine.action.weave": "{category} की योजना बनाएँ — {when} शुरू करें",
+  "engine.action.yarnCottonOk": "हाथ में सूती सूत: {kg} किलो",
+  "engine.action.yarnCottonLow":
+    "सूती सूत कम ({kg} किलो) — शुरू करने से पहले खरीदें",
+  "engine.action.yarnSilkOk": "हाथ में रेशमी सूत: {kg} किलो",
+  "engine.action.yarnSilkLow":
+    "रेशमी सूत कम ({kg} किलो) — शुरू करने से पहले खरीदें",
+  "engine.action.money": "आने वाले पैसे / एस्क्रो स्थिति देखें",
+  "engine.action.moneyQuiet":
+    "कोई जरूरी भुगतान काम नहीं — उत्पादन जारी रखें",
 };
 
 /** Tamil — complete pitch chrome */
@@ -408,6 +488,56 @@ const ta: ExtraCatalog = {
   "state.dispute_opened": "கேள்வி எழுப்பப்பட்டது",
   "state.under_review": "ஆய்வில்",
   "state.resolved": "தீர்க்கப்பட்டது",
+  "engine.whyTags": "இந்த பரிந்துரை ஏன்",
+  "engine.dailyTitle": "இன்று நான் என்ன செய்ய வேண்டும்?",
+  "engine.dailyHint":
+    "சந்தை, வணிகம் மற்றும் முதன்மை நெசவாளர் சமிக்ஞைகளின் அடிப்படையில் இன்றைய திட்டம்.",
+  "engine.fiveLabel": "ஐந்து தினசரி கேள்விகள்",
+  "engine.q1": "தேவை",
+  "engine.a1": "எனக்கு வேலை வருகிறதா?",
+  "engine.q2": "பொருள்",
+  "engine.a2": "அடுத்து என்ன நெசவு செய்ய வேண்டும்?",
+  "engine.q3": "நேரம்",
+  "engine.a3": "எப்போது தொடங்க வேண்டும்?",
+  "engine.q4": "பணம்",
+  "engine.a4": "பணம் எப்போது கிடைக்கும்?",
+  "engine.q5": "இன்று",
+  "engine.a5": "இன்று நான் என்ன செய்ய வேண்டும்?",
+  "engine.chipHint":
+    "கேள்வியைத் தட்டவும் — பிறகு தாவல்கள்: முகப்பு → ஆர்டர் → திட்டம் → பணம்.",
+  "engine.tag.festival": "திருவிழா நெருங்குகிறது",
+  "engine.tag.localDemand": "உள்ளூர் தேவை அதிகரிக்கிறது",
+  "engine.tag.yarn": "நூல் விலை நிலையானது",
+  "engine.tag.historical": "வரலாற்றுத் தேவை",
+  "engine.tag.expert": "முதன்மை நெசவாளர் அறிவு",
+  "engine.action.orders":
+    "உங்கள் பகுதியில் திறந்த வாங்குநர் தேவைகளைப் பாருங்கள் (ஆர்டர் தாவல்)",
+  "engine.action.weave": "{category} திட்டமிடுங்கள் — {when} தொடங்குங்கள்",
+  "engine.action.yarnCottonOk": "கையில் பருத்தி நூல்: {kg} கிலோ",
+  "engine.action.yarnCottonLow":
+    "பருத்தி நூல் குறைவு ({kg} கிலோ) — தொடங்கும் முன் வாங்குங்கள்",
+  "engine.action.yarnSilkOk": "கையில் பட்டு நூல்: {kg} கிலோ",
+  "engine.action.yarnSilkLow":
+    "பட்டு நூல் குறைவு ({kg} கிலோ) — தொடங்கும் முன் வாங்குங்கள்",
+  "engine.action.money": "வரும் பணம் / எஸ்க்ரோ நிலையைப் பாருங்கள்",
+  "engine.action.moneyQuiet":
+    "அவசர பண நடவடிக்கை இல்லை — உற்பத்தியைத் தொடருங்கள்",
+  "drift.title": "டிரிஃப்ட் மதிப்பெண்",
+  "drift.subtitle": "இந்த ஆலோசனையின் நுண்ணறிவு துல்லியம்",
+  "drift.pctOf": "{pct}%",
+  "drift.highTrust":
+    "சமிக்ஞைகள் ஒத்துப்போகின்றன — இந்த ஆலோசனை 90% நம்பகக் கோட்டிற்கு மேல். அதிக நம்பிக்கையுடன் திட்டமிடலாம் (இன்னும் மதிப்பீடு).",
+  "drift.thinkTitle": "கவனமாக சிந்தியுங்கள் — டிரிஃப்ட் 90%க்கு கீழ்",
+  "drift.whyLow": "டிரிஃப்ட் ஏன் குறைவு",
+  "drift.mindfulness": "நெசவாளர்கள் கவனத்தில் கொள்ள வேண்டியவை",
+  "drift.inputs": "இந்த % பின்னால் உள்ள உள்ளீடுகள்",
+  "drift.showInputs": "இந்த % பின்னால் உள்ள உள்ளீடுகளைக் காட்டு",
+  "drift.hideInputs": "இந்த % பின்னால் உள்ள உள்ளீடுகளை மறை",
+  "drift.formula": "சூத்திரம்",
+  "drift.estimated": "மதிப்பீடு",
+  "drift.demoTag": "டெமோ / உருவகம்",
+  "drift.thresholdNote":
+    "90%க்கு கீழ் என்றால் ஆலோசனை குறைந்த உறுதி — நூல் அல்லது முழு நெசவுக்கு முன் இடைநிறுத்துங்கள்.",
 };
 
 const te: ExtraCatalog = {
@@ -484,6 +614,56 @@ const te: ExtraCatalog = {
   "state.dispute_opened": "ప్రశ్న వేశారు",
   "state.under_review": "సమీక్షలో",
   "state.resolved": "పరిష్కరించబడింది",
+  "engine.whyTags": "ఈ సలహా ఎందుకు",
+  "engine.dailyTitle": "ఈరోజు నేను ఏమి చేయాలి?",
+  "engine.dailyHint":
+    "మార్కెట్, వ్యాపారం మరియు మాస్టర్-నేత సంకేతాల నుండి ఈరోజు చర్య ప్రణాళిక.",
+  "engine.fiveLabel": "ఐదు రోజువారీ ప్రశ్నలు",
+  "engine.q1": "డిమాండ్",
+  "engine.a1": "నాకు పని వస్తోందా?",
+  "engine.q2": "ఉత్పత్తి",
+  "engine.a2": "తర్వాత ఏమి నేయాలి?",
+  "engine.q3": "సమయం",
+  "engine.a3": "ఎప్పుడు ప్రారంభించాలి?",
+  "engine.q4": "డబ్బు",
+  "engine.a4": "డబ్బు ఎప్పుడు వస్తుంది?",
+  "engine.q5": "ఈరోజు",
+  "engine.a5": "ఈరోజు నేను ఏమి చేయాలి?",
+  "engine.chipHint":
+    "ప్రశ్నను టాప్ చేయండి — తర్వాత ట్యాబ్‌లు: హోమ్ → ఆర్డర్లు → ప్లాన్ → డబ్బు.",
+  "engine.tag.festival": "పండుగ సమీపంలో",
+  "engine.tag.localDemand": "స్థానిక డిమాండ్ పెరుగుతోంది",
+  "engine.tag.yarn": "నూలు ధరలు స్థిరం",
+  "engine.tag.historical": "చారిత్రక డిమాండ్",
+  "engine.tag.expert": "మాస్టర్ నేత జ్ఞానం",
+  "engine.action.orders":
+    "మీ ప్రాంతంలో తెరిచిన కొనుగోలుదారు అవసరాలు చూడండి (ఆర్డర్లు ట్యాబ్)",
+  "engine.action.weave": "{category} ప్లాన్ చేయండి — {when} ప్రారంభించండి",
+  "engine.action.yarnCottonOk": "చేతిలో పత్తి నూలు: {kg} కిలో",
+  "engine.action.yarnCottonLow":
+    "పత్తి నూలు తక్కువ ({kg} కిలో) — ప్రారంభించే ముందు కొనండి",
+  "engine.action.yarnSilkOk": "చేతిలో పట్టు నూలు: {kg} కిలో",
+  "engine.action.yarnSilkLow":
+    "పట్టు నూలు తక్కువ ({kg} కిలో) — ప్రారంభించే ముందు కొనండి",
+  "engine.action.money": "వచ్చే డబ్బు / ఎస్క్రో స్థితి చూడండి",
+  "engine.action.moneyQuiet":
+    "అత్యవసర చెల్లింపు చర్య లేదు — ఉత్పత్తి కొనసాగించండి",
+  "drift.title": "డ్రిఫ్ట్ స్కోర్",
+  "drift.subtitle": "ఈ సలహా యొక్క ఇంటెలిజెన్స్ ఖచ్చితత్వం",
+  "drift.pctOf": "{pct}%",
+  "drift.highTrust":
+    "సంకేతాలు ఏకీభవిస్తున్నాయి — ఈ సలహా 90% నమ్మక రేఖకు పైన. ఎక్కువ నమ్మకంతో ప్లాన్ చేయవచ్చు (ఇంకా అంచనా).",
+  "drift.thinkTitle": "జాగ్రత్తగా ఆలోచించండి — డ్రిఫ్ట్ 90% కంటే తక్కువ",
+  "drift.whyLow": "డ్రిఫ్ట్ ఎందుకు తక్కువ",
+  "drift.mindfulness": "నేతగాళ్లు గమనించాల్సినవి",
+  "drift.inputs": "ఈ % వెనుక ఉన్న ఇన్‌పుట్‌లు",
+  "drift.showInputs": "ఈ % వెనుక ఉన్న ఇన్‌పుట్‌లు చూపించు",
+  "drift.hideInputs": "ఈ % వెనుక ఉన్న ఇన్‌పుట్‌లు దాచు",
+  "drift.formula": "ఫార్ములా",
+  "drift.estimated": "అంచనా",
+  "drift.demoTag": "డెమో / సిమ్యులేటెడ్",
+  "drift.thresholdNote":
+    "90% కంటే తక్కువ అంటే సలహా తక్కువ నిశ్చయం — నూలు లేదా పూర్తి నేతకు ముందు ఆగండి.",
 };
 
 const kn: ExtraCatalog = {
@@ -560,6 +740,56 @@ const kn: ExtraCatalog = {
   "state.dispute_opened": "ಪ್ರಶ್ನೆ ಎತ್ತಲಾಗಿದೆ",
   "state.under_review": "ಪರಿಶೀಲನೆಯಲ್ಲಿ",
   "state.resolved": "ಪರಿಹರಿಸಲಾಗಿದೆ",
+  "engine.whyTags": "ಈ ಸಲಹೆ ಏಕೆ",
+  "engine.dailyTitle": "ಇಂದು ನಾನು ಏನು ಮಾಡಬೇಕು?",
+  "engine.dailyHint":
+    "ಮಾರುಕಟ್ಟೆ, ವ್ಯಾಪಾರ ಮತ್ತು ಮಾಸ್ಟರ್-ನೇಕಾರ ಸಂಕೇತಗಳಿಂದ ಇಂದಿನ ಕಾರ್ಯ ಯೋಜನೆ.",
+  "engine.fiveLabel": "ಐದು ದೈನಂದಿನ ಪ್ರಶ್ನೆಗಳು",
+  "engine.q1": "ಬೇಡಿಕೆ",
+  "engine.a1": "ನನಗೆ ಕೆಲಸ ಬರುತ್ತಿದೆಯೇ?",
+  "engine.q2": "ಉತ್ಪನ್ನ",
+  "engine.a2": "ಮುಂದೆ ಏನು ನೇಯಬೇಕು?",
+  "engine.q3": "ಸಮಯ",
+  "engine.a3": "ಯಾವಾಗ ಪ್ರಾರಂಭಿಸಬೇಕು?",
+  "engine.q4": "ಹಣ",
+  "engine.a4": "ಹಣ ಯಾವಾಗ ಬರುತ್ತದೆ?",
+  "engine.q5": "ಇಂದು",
+  "engine.a5": "ಇಂದು ನಾನು ಏನು ಮಾಡಬೇಕು?",
+  "engine.chipHint":
+    "ಪ್ರಶ್ನೆಯನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ — ನಂತರ ಟ್ಯಾಬ್‌ಗಳು: ಮನೆ → ಆರ್ಡರ್ → ಯೋಜನೆ → ಹಣ.",
+  "engine.tag.festival": "ಹಬ್ಬ ಹತ್ತಿರ",
+  "engine.tag.localDemand": "ಸ್ಥಳೀಯ ಬೇಡಿಕೆ ಹೆಚ್ಚುತ್ತಿದೆ",
+  "engine.tag.yarn": "ನೂಲು ಬೆಲೆ ಸ್ಥಿರ",
+  "engine.tag.historical": "ಐತಿಹಾಸಿಕ ಬೇಡಿಕೆ",
+  "engine.tag.expert": "ಮಾಸ್ಟರ್ ನೇಕಾರ ಜ್ಞಾನ",
+  "engine.action.orders":
+    "ನಿಮ್ಮ ಪ್ರದೇಶದಲ್ಲಿ ತೆರೆದ ಖರೀದಿದಾರ ಅಗತ್ಯಗಳನ್ನು ನೋಡಿ (ಆರ್ಡರ್ ಟ್ಯಾಬ್)",
+  "engine.action.weave": "{category} ಯೋಜಿಸಿ — {when} ಪ್ರಾರಂಭಿಸಿ",
+  "engine.action.yarnCottonOk": "ಕೈಯಲ್ಲಿ ಹತ್ತಿ ನೂಲು: {kg} ಕೆಜಿ",
+  "engine.action.yarnCottonLow":
+    "ಹತ್ತಿ ನೂಲು ಕಡಿಮೆ ({kg} ಕೆಜಿ) — ಪ್ರಾರಂಭಿಸುವ ಮೊದಲು ಖರೀದಿಸಿ",
+  "engine.action.yarnSilkOk": "ಕೈಯಲ್ಲಿ ರೇಷ್ಮೆ ನೂಲು: {kg} ಕೆಜಿ",
+  "engine.action.yarnSilkLow":
+    "ರೇಷ್ಮೆ ನೂಲು ಕಡಿಮೆ ({kg} ಕೆಜಿ) — ಪ್ರಾರಂಭಿಸುವ ಮೊದಲು ಖರೀದಿಸಿ",
+  "engine.action.money": "ಬರುವ ಹಣ / ಎಸ್ಕ್ರೋ ಸ್ಥಿತಿ ನೋಡಿ",
+  "engine.action.moneyQuiet":
+    "ತುರ್ತು ಪಾವತಿ ಕ್ರಿಯೆ ಇಲ್ಲ — ಉತ್ಪಾದನೆ ಮುಂದುವರಿಸಿ",
+  "drift.title": "ಡ್ರಿಫ್ಟ್ ಸ್ಕೋರ್",
+  "drift.subtitle": "ಈ ಸಲಹೆಯ ಬುದ್ಧಿಮತ್ತೆ ನಿಖರತೆ",
+  "drift.pctOf": "{pct}%",
+  "drift.highTrust":
+    "ಸಂಕೇತಗಳು ಒಪ್ಪುತ್ತವೆ — ಈ ಸಲಹೆ 90% ನಂಬಿಕೆ ರೇಖೆಗಿಂತ ಮೇಲೆ. ಹೆಚ್ಚು ನಂಬಿಕೆಯಿಂದ ಯೋಜಿಸಬಹುದು (ಇನ್ನೂ ಅಂದಾಜು).",
+  "drift.thinkTitle": "ಎಚ್ಚರಿಕೆಯಿಂದ ಯೋಚಿಸಿ — ಡ್ರಿಫ್ಟ್ 90%ಕ್ಕಿಂತ ಕಡಿಮೆ",
+  "drift.whyLow": "ಡ್ರಿಫ್ಟ್ ಏಕೆ ಕಡಿಮೆ",
+  "drift.mindfulness": "ನೇಕಾರರು ಗಮನಿಸಬೇಕಾದುದು",
+  "drift.inputs": "ಈ % ಹಿಂದಿನ ಇನ್‌ಪುಟ್‌ಗಳು",
+  "drift.showInputs": "ಈ % ಹಿಂದಿನ ಇನ್‌ಪುಟ್‌ಗಳನ್ನು ತೋರಿಸು",
+  "drift.hideInputs": "ಈ % ಹಿಂದಿನ ಇನ್‌ಪುಟ್‌ಗಳನ್ನು ಮರೆಮಾಡು",
+  "drift.formula": "ಸೂತ್ರ",
+  "drift.estimated": "ಅಂದಾಜು",
+  "drift.demoTag": "ಡೆಮೋ / ಸಿಮ್ಯುಲೇಟೆಡ್",
+  "drift.thresholdNote":
+    "90%ಕ್ಕಿಂತ ಕಡಿಮೆ ಎಂದರೆ ಸಲಹೆ ಕಡಿಮೆ ಖಚಿತ — ನೂಲು ಅಥವಾ ಪೂರ್ಣ ನೇಯ್ಗೆ ಮೊದಲು ನಿಲ್ಲಿಸಿ.",
 };
 
 const bn: ExtraCatalog = {
@@ -636,6 +866,56 @@ const bn: ExtraCatalog = {
   "state.dispute_opened": "প্রশ্ন তোলা হয়েছে",
   "state.under_review": "পর্যালোচনায়",
   "state.resolved": "সমাধান হয়েছে",
+  "engine.whyTags": "এই পরামর্শ কেন",
+  "engine.dailyTitle": "আজ আমি কী করব?",
+  "engine.dailyHint":
+    "বাজার, ব্যবসা এবং মাস্টার-বুনকর সংকেত থেকে আজকের কাজের পরিকল্পনা।",
+  "engine.fiveLabel": "পাঁচটি দৈনিক প্রশ্ন",
+  "engine.q1": "চাহিদা",
+  "engine.a1": "আমার কি কাজ আসছে?",
+  "engine.q2": "পণ্য",
+  "engine.a2": "এরপর কী বুনব?",
+  "engine.q3": "সময়",
+  "engine.a3": "কখন শুরু করব?",
+  "engine.q4": "টাকা",
+  "engine.a4": "টাকা কখন পাব?",
+  "engine.q5": "আজ",
+  "engine.a5": "আজ আমি কী করব?",
+  "engine.chipHint":
+    "প্রশ্ন ট্যাপ করুন — তারপর ট্যাব: হোম → অর্ডার → পরিকল্পনা → টাকা।",
+  "engine.tag.festival": "উৎসব কাছে",
+  "engine.tag.localDemand": "স্থানীয় চাহিদা বাড়ছে",
+  "engine.tag.yarn": "সুতার দাম স্থিতিশীল",
+  "engine.tag.historical": "ঐতিহাসিক চাহিদা",
+  "engine.tag.expert": "মাস্টার বুনকর জ্ঞান",
+  "engine.action.orders":
+    "আপনার এলাকায় খোলা ক্রেতা চাহিদা দেখুন (অর্ডার ট্যাব)",
+  "engine.action.weave": "{category} পরিকল্পনা করুন — {when} শুরু করুন",
+  "engine.action.yarnCottonOk": "হাতে সুতি সুতো: {kg} কেজি",
+  "engine.action.yarnCottonLow":
+    "সুতি সুতো কম ({kg} কেজি) — শুরুর আগে কিনুন",
+  "engine.action.yarnSilkOk": "হাতে রেশম সুতো: {kg} কেজি",
+  "engine.action.yarnSilkLow":
+    "রেশম সুতো কম ({kg} কেজি) — শুরুর আগে কিনুন",
+  "engine.action.money": "আসছে টাকা / এসক্রো অবস্থা দেখুন",
+  "engine.action.moneyQuiet":
+    "জরুরি পেমেন্ট কাজ নেই — উৎপাদন চালিয়ে যান",
+  "drift.title": "ড্রিফ্ট স্কোর",
+  "drift.subtitle": "এই পরামর্শের বুদ্ধিমত্তার নির্ভুলতা",
+  "drift.pctOf": "{pct}%",
+  "drift.highTrust":
+    "সংকেত মিলছে — এই পরামর্শ ৯০% বিশ্বাসের রেখার উপরে। আরও আত্মবিশ্বাসে পরিকল্পনা করুন (এখনও অনুমান)।",
+  "drift.thinkTitle": "সাবধানে ভাবুন — ড্রিফ্ট ৯০%-এর নিচে",
+  "drift.whyLow": "ড্রিফ্ট কম কেন",
+  "drift.mindfulness": "বুনকরদের যা মনে রাখা উচিত",
+  "drift.inputs": "এই %-এর পেছনের ইনপুট",
+  "drift.showInputs": "এই %-এর পেছনের ইনপুট দেখান",
+  "drift.hideInputs": "এই %-এর পেছনের ইনপুট লুকান",
+  "drift.formula": "সূত্র",
+  "drift.estimated": "অনুমানিত",
+  "drift.demoTag": "ডেমো / সিমুলেটেড",
+  "drift.thresholdNote":
+    "৯০%-এর নিচে মানে পরামর্শ কম নিশ্চিত — সুতো বা পুরো বুননের আগে থামুন।",
 };
 
 const as: ExtraCatalog = {
@@ -712,6 +992,56 @@ const as: ExtraCatalog = {
   "state.dispute_opened": "প্ৰশ্ন তোলা হৈছে",
   "state.under_review": "পৰ্যালোচনাত",
   "state.resolved": "সমাধান হৈছে",
+  "engine.whyTags": "এই পৰামৰ্শ কিয়",
+  "engine.dailyTitle": "আজি মই কি কৰিম?",
+  "engine.dailyHint":
+    "বজাৰ, ব্যৱসায় আৰু মাষ্টাৰ-বোৱনী সংকেতৰ পৰা আজিৰ কাৰ্য পৰিকল্পনা।",
+  "engine.fiveLabel": "পাঁচটা দৈনিক প্ৰশ্ন",
+  "engine.q1": "চাহিদা",
+  "engine.a1": "মোৰ কাম আহি আছে নেকি?",
+  "engine.q2": "সামগ্ৰী",
+  "engine.a2": "পৰৱৰ্তী কি ব'ম?",
+  "engine.q3": "সময়",
+  "engine.a3": "কেতিয়া আৰম্ভ কৰিম?",
+  "engine.q4": "টকা",
+  "engine.a4": "টকা কেতিয়া পাম?",
+  "engine.q5": "আজি",
+  "engine.a5": "আজি মই কি কৰিম?",
+  "engine.chipHint":
+    "প্ৰশ্ন টেপ কৰক — তাৰ পিছত টেব: হোম → অৰ্ডাৰ → পৰিকল্পনা → টকা।",
+  "engine.tag.festival": "উৎসৱ ওচৰত",
+  "engine.tag.localDemand": "স্থানীয় চাহিদা বাঢ়িছে",
+  "engine.tag.yarn": "সূতাৰ দাম স্থিৰ",
+  "engine.tag.historical": "ঐতিহাসিক চাহিদা",
+  "engine.tag.expert": "মাষ্টাৰ বোৱনী জ্ঞান",
+  "engine.action.orders":
+    "আপোনাৰ অঞ্চলত খোলা ক্ৰেতা চাহিদা চাওক (অৰ্ডাৰ টেব)",
+  "engine.action.weave": "{category} পৰিকল্পনা কৰক — {when} আৰম্ভ কৰক",
+  "engine.action.yarnCottonOk": "হাতত কপাহী সূতা: {kg} কেজি",
+  "engine.action.yarnCottonLow":
+    "কপাহী সূতা কম ({kg} কেজি) — আৰম্ভৰ আগতে কিনক",
+  "engine.action.yarnSilkOk": "হাতত ৰেচম সূতা: {kg} কেজি",
+  "engine.action.yarnSilkLow":
+    "ৰেচম সূতা কম ({kg} কেজি) — আৰম্ভৰ আগতে কিনক",
+  "engine.action.money": "অহা টকা / এস্ক্ৰ' অৱস্থা চাওক",
+  "engine.action.moneyQuiet":
+    "জৰুৰী পেমেণ্ট কাম নাই — উৎপাদন অব্যাহত ৰাখক",
+  "drift.title": "ড্ৰিফ্ট স্ক'ৰ",
+  "drift.subtitle": "এই পৰামৰ্শৰ বুদ্ধিমত্তাৰ সঠিকতা",
+  "drift.pctOf": "{pct}%",
+  "drift.highTrust":
+    "সংকেত মিলিছে — এই পৰামৰ্শ ৯০% বিশ্বাসৰ ৰেখাৰ ওপৰত। অধিক আত্মবিশ্বাসে পৰিকল্পনা কৰক (এতিয়াও অনুমান).",
+  "drift.thinkTitle": "সাৱধানে ভাবুক — ড্ৰিফ্ট ৯০%ৰ তলত",
+  "drift.whyLow": "ড্ৰিফ্ট কম কিয়",
+  "drift.mindfulness": "বোৱনীসকলে মনত ৰাখিবলগীয়া",
+  "drift.inputs": "এই %ৰ পিছফালৰ ইনপুট",
+  "drift.showInputs": "এই %ৰ পিছফালৰ ইনপুট দেখুৱাওক",
+  "drift.hideInputs": "এই %ৰ পিছফালৰ ইনপুট লুকুৱাওক",
+  "drift.formula": "সূত্ৰ",
+  "drift.estimated": "অনুমানিত",
+  "drift.demoTag": "ডেমো / ছিমুলেটেড",
+  "drift.thresholdNote":
+    "৯০%ৰ তলত মানে পৰামৰ্শ কম নিশ্চিত — সূতা বা সম্পূৰ্ণ বোৱাৰ আগতে ৰুকক।",
 };
 
 export const EXTRA_CATALOGS: Record<LanguageCode, ExtraCatalog> = {
@@ -763,6 +1093,71 @@ export function localizedCategoryLabel(
   if (/dhoti|angavastram/i.test(categoryIdOrLabel))
     return translateExtra(lang, "cat.dhoti-angavastram");
   return categoryIdOrLabel;
+}
+
+const REASON_TAG_KEYS: Record<string, ExtraKey> = {
+  festival: "engine.tag.festival",
+  local_demand: "engine.tag.localDemand",
+  yarn: "engine.tag.yarn",
+  historical: "engine.tag.historical",
+  expert: "engine.tag.expert",
+};
+
+export function localizedReasonTagLabel(
+  lang: LanguageCode,
+  tagId: string,
+  fallback: string,
+): string {
+  const key = REASON_TAG_KEYS[tagId];
+  return key ? translateExtra(lang, key) : fallback;
+}
+
+const START_WHEN_KEYS: Record<string, ExtraKey> = {
+  ready: "home.startReady",
+  "3days": "home.start3days",
+  "2weeks": "home.start2weeks",
+  weeks: "home.startWeeks",
+};
+
+const ACTION_KEYS: Record<string, ExtraKey> = {
+  orders: "engine.action.orders",
+  weave: "engine.action.weave",
+  yarn_cotton_ok: "engine.action.yarnCottonOk",
+  yarn_cotton_low: "engine.action.yarnCottonLow",
+  yarn_silk_ok: "engine.action.yarnSilkOk",
+  yarn_silk_low: "engine.action.yarnSilkLow",
+  money: "engine.action.money",
+  money_quiet: "engine.action.moneyQuiet",
+};
+
+/** Localize a home daily-action row from its stable id + vars. */
+export function localizedDailyActionLabel(
+  lang: LanguageCode,
+  action: {
+    id: string;
+    label: string;
+    vars?: Record<string, string | number>;
+  },
+): string {
+  const key = ACTION_KEYS[action.id];
+  if (!key) return action.label;
+
+  if (action.id === "weave") {
+    const category = localizedCategoryLabel(
+      lang,
+      String(action.vars?.categoryId ?? action.vars?.category ?? ""),
+    );
+    const whenCode = String(action.vars?.when ?? "ready");
+    const whenKey = START_WHEN_KEYS[whenCode] ?? "home.startReady";
+    return translateExtra(lang, key, {
+      category: category || String(action.vars?.category ?? ""),
+      when: translateExtra(lang, whenKey),
+    });
+  }
+
+  return translateExtra(lang, key, {
+    kg: action.vars?.kg ?? "",
+  });
 }
 
 type AdviceFactor = {

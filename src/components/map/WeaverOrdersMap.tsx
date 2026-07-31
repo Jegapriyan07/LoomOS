@@ -81,7 +81,7 @@ export function WeaverOrdersMapInner({
 
   const scopeLabel =
     scope === "district"
-      ? `IIT · ${focusDistrict || PRIMARY_DEMAND.district}`
+      ? `Local · ${focusRegion || PRIMARY_DEMAND.region}`
       : scope === "state"
         ? `District · ${focusRegion || "Delhi"}`
         : "Nation · India";
@@ -100,7 +100,7 @@ export function WeaverOrdersMapInner({
             <div className="flex flex-wrap rounded-full border border-[#e8e2d8] bg-[#f3efe6] p-1 text-xs font-semibold">
               {(
                 [
-                  ["district", "IIT"],
+                  ["district", "Local"],
                   ["state", "District"],
                   ["national", "Nation"],
                 ] as const

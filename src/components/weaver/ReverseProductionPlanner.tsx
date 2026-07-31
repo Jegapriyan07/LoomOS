@@ -81,6 +81,14 @@ export function ReverseProductionPlanner({
   const [tuneOpen, setTuneOpen] = useState(false);
   const [buyerNeeds, setBuyerNeeds] = useState<BuyerRequirement[]>([]);
   const [linked, setLinked] = useState<PlanSource | null>(null);
+  const [activeStep, setActiveStep] = useState(1);
+
+  function goToStep(n: number) {
+    setActiveStep(n);
+    if (n === 4) setTuneOpen(true);
+    const el = document.getElementById(`plan-step-${n}`);
+    el?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 
   useEffect(() => {
     setDefaults(loadDefaults());
@@ -242,7 +250,8 @@ export function ReverseProductionPlanner({
       <PitchOneLiner>{t("pitch.planOneLiner")}</PitchOneLiner>
 
       <PitchSteps
-        active={3}
+        active={activeStep}
+        onSelect={goToStep}
         steps={[
           { n: 1, label: t("pitch.stepWhat") },
           { n: 2, label: t("pitch.stepWhen") },
@@ -325,6 +334,7 @@ export function ReverseProductionPlanner({
       ) : null}
 
       <PitchStepBlock
+        id="plan-step-1"
         step={1}
         title={t("plan.whatWeave")}
         hint={t("pitch.whatHint")}
@@ -352,6 +362,7 @@ export function ReverseProductionPlanner({
       </PitchStepBlock>
 
       <PitchStepBlock
+        id="plan-step-2"
         step={2}
         title={t("plan.whenReady")}
         hint={t("plan.festivalNote")}
@@ -390,9 +401,22 @@ export function ReverseProductionPlanner({
         </div>
         <Link
           href="/plan/festivals"
-          className="mb-3 inline-flex min-h-10 items-center text-sm font-semibold text-loom-primary"
+          className="mb-3 flex w-full min-h-[4.5rem] items-center justify-between gap-3 rounded-xl border border-loom-primary bg-loom-primary-soft px-4 py-3 text-left transition-colors hover:bg-loom-primary/15 active:scale-[0.99]"
         >
-          Browse full state / district calendar →
+          <span className="min-w-0">
+            <span className="block text-base font-semibold text-loom-ink">
+              Browse full state / cluster calendar
+            </span>
+            <span className="mt-0.5 block text-sm text-loom-muted">
+              All festivals by state and weaving hub — plan yarn & loom time
+            </span>
+          </span>
+          <span
+            aria-hidden
+            className="flex size-10 shrink-0 items-center justify-center rounded-full bg-loom-primary text-lg font-bold text-white"
+          >
+            →
+          </span>
         </Link>
         <label className="block text-base font-semibold text-loom-ink">
           {t("plan.ownDate")}
@@ -413,6 +437,7 @@ export function ReverseProductionPlanner({
       </PitchStepBlock>
 
       <PitchStepBlock
+        id="plan-step-3"
         step={3}
         title={t("pitch.datesTitle")}
         hint={t("pitch.datesBody")}
@@ -423,10 +448,16 @@ export function ReverseProductionPlanner({
         />
       </PitchStepBlock>
 
-      <div className="rounded-2xl border border-dashed border-loom-border bg-loom-bg/80 p-3">
+      <div
+        id="plan-step-4"
+        className="scroll-mt-20 rounded-2xl border border-dashed border-loom-border bg-loom-bg/80 p-3"
+      >
         <button
           type="button"
-          onClick={() => setTuneOpen((v) => !v)}
+          onClick={() => {
+            setActiveStep(4);
+            setTuneOpen((v) => !v);
+          }}
           className="flex h-12 w-full items-center justify-between px-1 text-left text-base font-semibold text-loom-primary"
           aria-expanded={tuneOpen}
         >

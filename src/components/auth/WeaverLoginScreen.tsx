@@ -14,8 +14,8 @@ import { markTourPending } from "@/components/onboarding/AppTour";
 import { invalidateCached } from "@/lib/client-cache";
 import {
   INDIA_STATES,
+  clustersForState,
   coopForLocation,
-  districtsForState,
 } from "@/lib/auth/regions";
 import { PHONE_COUNTRY_OPTIONS } from "@/lib/auth/phone";
 
@@ -45,8 +45,8 @@ const BUYER_BUSINESS_TYPES = [
 
 /**
  * Unified Weaver + Buyer login — phone only (no OTP).
- * Register is a compact link; form collects richer details with state dropdown
- * and auto-assigned cooperative / sector from location.
+ * Register collects state + handloom cluster; cooperative society name
+ * matches the selected cluster.
  */
 export function WeaverLoginScreen({
   onSuccess,
@@ -63,7 +63,7 @@ export function WeaverLoginScreen({
   const [name, setName] = useState("");
   const [region, setRegion] = useState("Delhi");
   const [district, setDistrict] = useState(
-    () => districtsForState("Delhi")[0] ?? "IIT Delhi",
+    () => clustersForState("Delhi")[0] ?? "IIT Delhi",
   );
   const [yearsWeaving, setYearsWeaving] = useState("");
   const [businessType, setBusinessType] = useState(BUYER_BUSINESS_TYPES[0]);
@@ -85,8 +85,8 @@ export function WeaverLoginScreen({
     () => coopForLocation(region, district),
     [region, district],
   );
-  const districtOptions = useMemo(
-    () => districtsForState(region),
+  const clusterOptions = useMemo(
+    () => clustersForState(region),
     [region],
   );
   const selectedCountry =
@@ -96,8 +96,8 @@ export function WeaverLoginScreen({
 
   function onStateChange(nextState: string) {
     setRegion(nextState);
-    const nextDistricts = districtsForState(nextState);
-    setDistrict(nextDistricts[0] ?? "");
+    const nextClusters = clustersForState(nextState);
+    setDistrict(nextClusters[0] ?? "");
   }
 
   function toggleCategory(label: string) {
@@ -396,19 +396,19 @@ export function WeaverLoginScreen({
                 </label>
 
                 <label className="block text-sm font-medium text-[#1a1f24]">
-                  District / weaving town
+                  Cluster
                   <select
                     className="mt-1.5 w-full rounded-xl border border-[#d9d2c4] bg-[#fffdf8] px-3 py-3 text-base"
                     value={district}
                     onChange={(e) => setDistrict(e.target.value)}
                     required
                   >
-                    {districtOptions.length === 0 ? (
-                      <option value="">No districts listed</option>
+                    {clusterOptions.length === 0 ? (
+                      <option value="">No clusters listed</option>
                     ) : (
-                      districtOptions.map((d) => (
-                        <option key={d} value={d}>
-                          {d}
+                      clusterOptions.map((c) => (
+                        <option key={c} value={c}>
+                          {c}
                         </option>
                       ))
                     )}
@@ -418,16 +418,13 @@ export function WeaverLoginScreen({
                 {role === "WEAVER" ? (
                   <div className="rounded-xl border border-[#e8e2d8] bg-[#f3efe6]/70 px-3 py-3">
                     <p className="text-xs font-semibold uppercase tracking-wide text-[#5c6570]">
-                      Auto-assigned from {district || region}
+                      Cooperative society
                     </p>
                     <p className="mt-1 text-sm font-semibold text-[#1a1f24]">
-                      {coopPreview.shortName}
+                      {coopPreview.cooperativeName}
                     </p>
                     <p className="mt-0.5 text-xs text-[#5c6570]">
-                      Sector: {coopPreview.sector}
-                    </p>
-                    <p className="mt-1 text-[0.65rem] leading-snug text-[#8a8070]">
-                      {coopPreview.disclaimer}
+                      Cluster: {district || region}
                     </p>
                   </div>
                 ) : (

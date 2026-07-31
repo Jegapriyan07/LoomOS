@@ -72,6 +72,9 @@ export type MessageKey =
   | "chat.you"
   | "chat.assistant"
   | "chat.error"
+  | "chat.close"
+  | "chat.askLabel"
+  | "chat.hereHint"
   | "common.loading"
   | "common.demoSimulated"
   | "plan.title"
@@ -248,6 +251,9 @@ const en: Catalog = {
   "chat.you": "You",
   "chat.assistant": "Assistant",
   "chat.error": "Could not build a summary right now. Try again.",
+  "chat.close": "Close assistant",
+  "chat.askLabel": "Ask",
+  "chat.hereHint": "Ask — Loom assistant is here",
   "common.loading": "Loading…",
   "common.demoSimulated": "",
   "plan.title": "When to start",
@@ -294,10 +300,10 @@ const en: Catalog = {
   "money.prototypeLabel": "",
   "money.walletSnapshot": "Wallet snapshot",
   "money.advanceHeld":
-    "About ₹{amount} in advance is held for your open orders — modeled on an RBI-authorised payment aggregator's escrow settlement pattern.",
+    "About ₹{amount} in advance is held for your open orders.",
   "money.noAdvance": "No advance is currently held for open orders.",
   "money.nextProjected":
-    "Next money is projected around {date} (modeled T+1 after dispatch).",
+    "Next money is projected around {date}.",
   "money.noSettlement":
     "No projected settlement date yet — wait until an order is sent.",
   "money.yourOrders": "Your orders",
@@ -319,7 +325,7 @@ const en: Catalog = {
   "orders.buyerLink": "Buyers post these at /buyer.",
   "wallet.title": "Steady income wallet",
   "wallet.subtitle":
-    "Rule-based smoothing — not a prediction model. Only Settlement Released amounts count.",
+    "Only Settlement Released amounts count toward Available and Reserve.",
   "wallet.demoNote":
     "Available and Reserve come from Settlement Released events.",
   "wallet.available": "Available",
@@ -431,6 +437,9 @@ const hi: Catalog = {
   "chat.you": "आप",
   "chat.assistant": "सहायक",
   "chat.error": "सारांश नहीं बन सका। फिर कोशिश करें।",
+  "chat.close": "सहायक बंद करें",
+  "chat.askLabel": "पूछें",
+  "chat.hereHint": "पूछें — लूम सहायक यहाँ है",
   "common.loading": "लोड हो रहा है…",
   "common.demoSimulated": "",
   "plan.title": "कब शुरू करें",
@@ -476,10 +485,10 @@ const hi: Catalog = {
   "money.prototypeLabel": "",
   "money.walletSnapshot": "वॉलेट झलक",
   "money.advanceHeld":
-    "खुले ऑर्डर के लिए लगभग ₹{amount} एडवांस होल्ड है — RBI-अधिकृत एस्क्रो पैटर्न।",
+    "खुले ऑर्डर के लिए लगभग ₹{amount} एडवांस होल्ड है।",
   "money.noAdvance": "खुले ऑर्डर पर अभी कोई एडवांस होल्ड नहीं।",
   "money.nextProjected":
-    "अगला पैसा लगभग {date} के आसपास अनुमानित है (डिस्पैच के बाद T+1)।",
+    "अगला पैसा लगभग {date} के आसपास अनुमानित है।",
   "money.noSettlement":
     "अभी कोई निपटान तिथि नहीं — ऑर्डर भेजने तक प्रतीक्षा करें।",
   "money.yourOrders": "आपके ऑर्डर",
@@ -613,6 +622,9 @@ const ta: Catalog = {
   "chat.you": "நீங்கள்",
   "chat.assistant": "உதவியாளர்",
   "chat.error": "சுருக்கம் தயாரிக்க முடியவில்லை. மீண்டும் முயற்சிக்கவும்.",
+  "chat.close": "உதவியாளரை மூடு",
+  "chat.askLabel": "கேள்",
+  "chat.hereHint": "கேள் — லூம் உதவியாளர் இங்கே",
   "common.loading": "ஏற்றுகிறது…",
   "common.demoSimulated": "",
   "plan.title": "எப்போது தொடங்குவது",
@@ -792,6 +804,9 @@ const te: Catalog = {
   "chat.you": "మీరు",
   "chat.assistant": "సహాయకుడు",
   "chat.error": "సారాంశం తయారు కాలేదు. మళ్లీ ప్రయత్నించండి.",
+  "chat.close": "సహాయకుడిని మూసివేయి",
+  "chat.askLabel": "అడగండి",
+  "chat.hereHint": "అడగండి — లూమ్ సహాయకుడు ఇక్కడే",
   "common.loading": "లోడ్ అవుతోంది…",
   "common.demoSimulated": "",
   "plan.title": "ఎప్పుడు ప్రారంభించాలి",
@@ -970,6 +985,9 @@ const kn: Catalog = {
   "chat.you": "ನೀವು",
   "chat.assistant": "ಸಹಾಯಕ",
   "chat.error": "ಸಾರಾಂಶ ತಯಾರಾಗಲಿಲ್ಲ. ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.",
+  "chat.close": "ಸಹಾಯಕ ಮುಚ್ಚಿ",
+  "chat.askLabel": "ಕೇಳಿ",
+  "chat.hereHint": "ಕೇಳಿ — ಲೂಮ್ ಸಹಾಯಕ ಇಲ್ಲಿದೆ",
   "common.loading": "ಲೋಡ್ ಆಗುತ್ತಿದೆ…",
   "common.demoSimulated": "",
   "plan.title": "ಯಾವಾಗ ಪ್ರಾರಂಭಿಸುವುದು",
@@ -1153,6 +1171,9 @@ const bn: Catalog = {
   "chat.you": "আপনি",
   "chat.assistant": "সহায়ক",
   "chat.error": "সারাংশ তৈরি হয়নি। আবার চেষ্টা করুন।",
+  "chat.close": "সহায়ক বন্ধ করুন",
+  "chat.askLabel": "জিজ্ঞাসা",
+  "chat.hereHint": "জিজ্ঞাসা — লুম সহায়ক এখানে",
   "common.loading": "লোড হচ্ছে…",
   "common.demoSimulated": "",
   "plan.title": "কখন শুরু করবেন",
@@ -1336,6 +1357,9 @@ const as: Catalog = {
   "chat.you": "আপুনি",
   "chat.assistant": "সহায়ক",
   "chat.error": "সাৰাংশ বনাব পৰা নগ'ল। পুনৰ চেষ্টা কৰক।",
+  "chat.close": "সহায়ক বন্ধ কৰক",
+  "chat.askLabel": "সোধক",
+  "chat.hereHint": "সোধক — লুম সহায়ক ইয়াতে আছে",
   "common.loading": "ল'ড হৈ আছে…",
   "common.demoSimulated": "",
   "plan.title": "কেতিয়া আৰম্ভ কৰিব",

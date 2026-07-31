@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { HowLoomOsFits } from "@/components/pitch/HowLoomOsFits";
+import { RealVsSimulated } from "@/components/pitch/RealVsSimulated";
 import { DEMO_CLUSTER } from "@/lib/demo/cluster";
 
 export const metadata: Metadata = {
@@ -64,7 +65,34 @@ export default function AboutPage() {
           </p>
         </section>
 
+        <section className="mt-8" aria-labelledby="gov-data-heading">
+          <h2
+            id="gov-data-heading"
+            className="font-[family-name:var(--font-loom-display)] text-xl font-semibold"
+          >
+            Official Cluster Match
+          </h2>
+          <p className="mt-2 text-sm leading-relaxed text-[#5c6570]">
+            Buyer Cluster Match is grounded in the{" "}
+            <a
+              href="https://handlooms.nic.in/weavers_database.php"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-[#1e3a5f] underline"
+            >
+              Development Commissioner (Handlooms) Weavers Database
+            </a>{" "}
+            — state-wise cooperative and producer-company coverage published for
+            National Handloom Day. This build uses a curated seed from those
+            public lists (not a live government API). Weavers whose registered
+            cluster appears in the seed see a calm listing signal on Profile —
+            not a personal identity verification badge.
+          </p>
+        </section>
+
         <HowLoomOsFits />
+
+        <RealVsSimulated />
       </main>
     </div>
   );

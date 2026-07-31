@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useId, useState } from "react";
 import Link from "next/link";
 import {
-  AlertTriangle,
   Banknote,
   CheckCircle2,
   ChevronDown,
@@ -35,6 +34,7 @@ import {
   PitchHero,
   PitchOneLiner,
 } from "@/components/pitch/PitchExplain";
+import { IncomeStabilityWallet } from "@/components/weaver/IncomeStabilityWallet";
 import { cachedJson, invalidateCached } from "@/lib/client-cache";
 
 type EnrichedOrder = {
@@ -121,16 +121,7 @@ export function MoneyComingYourWay() {
 
       <PitchOneLiner>{t("pitch.moneyOneLiner")}</PitchOneLiner>
 
-      <div
-        role="note"
-        className="flex gap-2 rounded-xl border border-loom-warning bg-loom-warning-soft px-3 py-3 text-sm leading-snug text-loom-ink"
-      >
-        <AlertTriangle
-          className="mt-0.5 size-5 shrink-0 text-loom-warning"
-          aria-hidden
-        />
-        <p>{t("pitch.paymentNote")}</p>
-      </div>
+      <IncomeStabilityWallet />
 
       {error ? (
         <p className="rounded-xl bg-loom-danger-soft px-3 py-2 text-loom-danger">

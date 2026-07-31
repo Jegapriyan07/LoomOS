@@ -84,13 +84,21 @@ function buildReasonTags(args: {
 }
 
 function buildDailyActions(args: {
+  categoryId: string;
   categoryLabel: string;
-  startHint: string;
-  yarnNote: string;
+  startWhen: "ready" | "3days" | "2weeks" | "weeks";
+  yarnKg: number;
   yarnReady: boolean;
   hasOpenOrders: boolean;
   pendingPayment: boolean;
 }): DailyAction[] {
+  const whenEn = {
+    ready: "when you are ready",
+    "3days": "within the next three days",
+    "2weeks": "within the next two weeks",
+    weeks: "in the coming weeks",
+  }[args.startWhen];
+  const silk = args.categoryId === "silk-saree";
   const actions: DailyAction[] = [];
   if (args.hasOpenOrders) {
     actions.push({
@@ -101,20 +109,27 @@ function buildDailyActions(args: {
   }
   actions.push({
     id: "weave",
-    label: `Plan ${args.categoryLabel} — start ${args.startHint}`,
+    label: `Plan ${args.categoryLabel} — start ${whenEn}`,
     href: "/plan",
+    vars: { categoryId: args.categoryId, when: args.startWhen },
   });
-  if (!args.yarnReady) {
+  if (silk) {
     actions.push({
-      id: "yarn",
-      label: args.yarnNote,
+      id: args.yarnReady ? "yarn_silk_ok" : "yarn_silk_low",
+      label: args.yarnReady
+        ? `Silk yarn on hand: ${args.yarnKg} kg`
+        : `Silk yarn low (${args.yarnKg} kg) — buy before starting`,
       href: "/plan",
+      vars: { kg: args.yarnKg },
     });
   } else {
     actions.push({
-      id: "yarn_ok",
-      label: args.yarnNote,
+      id: args.yarnReady ? "yarn_cotton_ok" : "yarn_cotton_low",
+      label: args.yarnReady
+        ? `Cotton yarn on hand: ${args.yarnKg} kg`
+        : `Cotton yarn low (${args.yarnKg} kg) — buy before starting`,
       href: "/plan",
+      vars: { kg: args.yarnKg },
     });
   }
   if (args.pendingPayment) {
@@ -198,18 +213,20 @@ export async function getTodaysRecommendation(
   )?.value;
   const daysUntil = daysUntilRaw ? Number(daysUntilRaw) : null;
 
-  const hintOpts = [
-    "when you are ready",
-    "within the next three days",
-    "within the next two weeks",
-    "in the coming weeks",
-  ];
-  let startHint = hintOpts[salt % hintOpts.length]!;
+  const hintOpts = ["ready", "3days", "2weeks", "weeks"] as const;
+  let startWhen: (typeof hintOpts)[number] = hintOpts[salt % hintOpts.length]!;
   if (daysUntil !== null && Number.isFinite(daysUntil)) {
-    if (daysUntil <= 21) startHint = "within the next three days";
-    else if (daysUntil <= 45) startHint = "within the next two weeks";
-    else startHint = "in the coming weeks";
+    if (daysUntil <= 21) startWhen = "3days";
+    else if (daysUntil <= 45) startWhen = "2weeks";
+    else startWhen = "weeks";
   }
+
+  const startHintEn = {
+    ready: "when you are ready",
+    "3days": "within the next three days",
+    "2weeks": "within the next two weeks",
+    weeks: "in the coming weeks",
+  }[startWhen];
 
   const festivalClause =
     festivalName &&
@@ -220,8 +237,10 @@ export async function getTodaysRecommendation(
   const market = computeMarketExtraSignal(top.categoryId, weaver.region);
   const master = computeMasterWeaverSignal(top.categoryId, weaver.region);
   const yarn = yarnReadyFor(stock, top.categoryId);
+  const yarnKg =
+    top.categoryId === "silk-saree" ? stock.yarnSilkKg : stock.yarnCottonKg;
 
-  const spokenAction = `${top.categoryLabel}s look like your strongest match right now (demand score ${top.demandScore} of 100).${festivalClause} Start production ${startHint}.`;
+  const spokenAction = `${top.categoryLabel}s look like your strongest match right now (demand score ${top.demandScore} of 100).${festivalClause} Start production ${startHintEn}.`;
 
   const reasonTags = buildReasonTags({
     seasonalRaw: seasonal?.rawScore ?? 0,
@@ -243,9 +262,10 @@ export async function getTodaysRecommendation(
   );
 
   const dailyActions = buildDailyActions({
+    categoryId: top.categoryId,
     categoryLabel: top.categoryLabel,
-    startHint,
-    yarnNote: yarn.note,
+    startWhen,
+    yarnKg,
     yarnReady: yarn.ready,
     hasOpenOrders: openReqs.length > 0,
     pendingPayment,

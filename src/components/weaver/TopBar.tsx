@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Store } from "lucide-react";
 import { LanguageToggle } from "./LanguageToggle";
 import { useI18n } from "@/lib/i18n/context";
 import { cachedJson, invalidateCached } from "@/lib/client-cache";
@@ -27,6 +26,13 @@ export function TopBar() {
   async function logout() {
     await fetch("/api/auth/logout", { method: "POST" });
     invalidateCached();
+    try {
+      sessionStorage.removeItem("loomos-assistant-session-opened");
+      sessionStorage.removeItem("loomos-assistant-auto-open-v2");
+      sessionStorage.removeItem("loomos-assistant-intro-v3");
+    } catch {
+      /* ignore */
+    }
     window.location.href = "/";
   }
 
@@ -52,14 +58,6 @@ export function TopBar() {
           ) : null}
         </div>
         <div className="flex items-center gap-1.5">
-          <Link
-            href="/buyer"
-            className="flex h-10 items-center gap-1 rounded-lg border border-loom-border bg-loom-bg px-2 text-xs font-semibold text-loom-primary"
-            aria-label={t("pitch.openBuyerPortal")}
-          >
-            <Store className="size-4" aria-hidden />
-            {t("topbar.buyer")}
-          </Link>
           <LanguageToggle />
           <button
             type="button"

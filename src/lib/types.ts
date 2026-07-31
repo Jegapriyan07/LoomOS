@@ -50,7 +50,7 @@ export type Recommendation = {
 };
 
 /**
- * Demo weaver — fictional profile for Nila Loom Circle.
+ * Demo weaver — fictional profile for IIT Delhi cluster.
  * Not a real person; not a live profile feed.
  */
 export const DEMO_WEAVER: Weaver = {

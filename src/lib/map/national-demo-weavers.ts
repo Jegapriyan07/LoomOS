@@ -1,6 +1,7 @@
 /**
  * Extra fictional weavers for nationwide buyer map clusters (Demo Mode).
  * Stable ids — stock/rating derived deterministically; not in Postgres identity.
+ * cooperativeName matches the cluster (district) name.
  */
 
 export type MapDemoWeaver = {
@@ -20,7 +21,7 @@ export const NATIONAL_MAP_DEMO_WEAVERS: MapDemoWeaver[] = [
     region: "Delhi",
     district: "IIT Delhi",
     categories: ["cotton saree", "stole / dupatta"],
-    cooperativeName: "Yamuna Loom Desk",
+    cooperativeName: "IIT Delhi",
   },
   {
     id: "map-weaver-iit-02",
@@ -28,7 +29,7 @@ export const NATIONAL_MAP_DEMO_WEAVERS: MapDemoWeaver[] = [
     region: "Delhi",
     district: "IIT Delhi",
     categories: ["silk saree", "cotton saree"],
-    cooperativeName: "Yamuna Loom Desk",
+    cooperativeName: "IIT Delhi",
   },
   {
     id: "map-weaver-hauz-01",
@@ -36,7 +37,7 @@ export const NATIONAL_MAP_DEMO_WEAVERS: MapDemoWeaver[] = [
     region: "Delhi",
     district: "Hauz Khas",
     categories: ["cotton saree", "stole / dupatta"],
-    cooperativeName: "Yamuna Loom Desk",
+    cooperativeName: "Hauz Khas",
   },
   {
     id: "map-weaver-south-01",
@@ -44,7 +45,7 @@ export const NATIONAL_MAP_DEMO_WEAVERS: MapDemoWeaver[] = [
     region: "Delhi",
     district: "South Delhi",
     categories: ["silk saree", "dhoti / angavastram"],
-    cooperativeName: "Yamuna Loom Desk",
+    cooperativeName: "South Delhi",
   },
   {
     id: "map-weaver-saket-01",
@@ -52,7 +53,7 @@ export const NATIONAL_MAP_DEMO_WEAVERS: MapDemoWeaver[] = [
     region: "Delhi",
     district: "Saket",
     categories: ["cotton saree", "stole / dupatta"],
-    cooperativeName: "Yamuna Loom Desk",
+    cooperativeName: "Saket",
   },
   {
     id: "map-weaver-newdelhi-01",
@@ -60,7 +61,7 @@ export const NATIONAL_MAP_DEMO_WEAVERS: MapDemoWeaver[] = [
     region: "Delhi",
     district: "New Delhi",
     categories: ["cotton saree"],
-    cooperativeName: "Yamuna Loom Desk",
+    cooperativeName: "New Delhi",
   },
   {
     id: "map-weaver-karol-01",
@@ -68,7 +69,7 @@ export const NATIONAL_MAP_DEMO_WEAVERS: MapDemoWeaver[] = [
     region: "Delhi",
     district: "Karol Bagh",
     categories: ["stole / dupatta", "cotton saree"],
-    cooperativeName: "Yamuna Loom Desk",
+    cooperativeName: "Karol Bagh",
   },
   {
     id: "map-weaver-chandni-01",
@@ -76,7 +77,7 @@ export const NATIONAL_MAP_DEMO_WEAVERS: MapDemoWeaver[] = [
     region: "Delhi",
     district: "Chandni Chowk",
     categories: ["stole / dupatta", "cotton lungi"],
-    cooperativeName: "Yamuna Loom Desk",
+    cooperativeName: "Chandni Chowk",
   },
   {
     id: "map-weaver-kanchi-01",
@@ -84,7 +85,7 @@ export const NATIONAL_MAP_DEMO_WEAVERS: MapDemoWeaver[] = [
     region: "Tamil Nadu",
     district: "Kanchipuram",
     categories: ["silk saree", "cotton saree"],
-    cooperativeName: "Nila Loom Circle",
+    cooperativeName: "Kanchipuram",
   },
   {
     id: "map-weaver-kanchi-02",
@@ -92,7 +93,7 @@ export const NATIONAL_MAP_DEMO_WEAVERS: MapDemoWeaver[] = [
     region: "Tamil Nadu",
     district: "Kanchipuram",
     categories: ["silk saree"],
-    cooperativeName: "Nila Loom Circle",
+    cooperativeName: "Kanchipuram",
   },
   {
     id: "map-weaver-salem-01",
@@ -100,7 +101,7 @@ export const NATIONAL_MAP_DEMO_WEAVERS: MapDemoWeaver[] = [
     region: "Tamil Nadu",
     district: "Salem",
     categories: ["cotton saree", "stole / dupatta"],
-    cooperativeName: "Nila Loom Circle",
+    cooperativeName: "Salem",
   },
   {
     id: "map-weaver-erode-01",
@@ -108,7 +109,7 @@ export const NATIONAL_MAP_DEMO_WEAVERS: MapDemoWeaver[] = [
     region: "Tamil Nadu",
     district: "Erode",
     categories: ["cotton saree", "cotton lungi"],
-    cooperativeName: "Nila Loom Circle",
+    cooperativeName: "Erode",
   },
   {
     id: "map-weaver-madurai-01",
@@ -116,7 +117,7 @@ export const NATIONAL_MAP_DEMO_WEAVERS: MapDemoWeaver[] = [
     region: "Tamil Nadu",
     district: "Madurai",
     categories: ["silk saree", "dhoti / angavastram"],
-    cooperativeName: "Nila Loom Circle",
+    cooperativeName: "Madurai",
   },
   {
     id: "map-weaver-varanasi-01",
@@ -124,7 +125,7 @@ export const NATIONAL_MAP_DEMO_WEAVERS: MapDemoWeaver[] = [
     region: "Uttar Pradesh",
     district: "Varanasi",
     categories: ["silk saree"],
-    cooperativeName: "Ganga Plains Handloom",
+    cooperativeName: "Varanasi",
   },
   {
     id: "map-weaver-varanasi-02",
@@ -132,7 +133,7 @@ export const NATIONAL_MAP_DEMO_WEAVERS: MapDemoWeaver[] = [
     region: "Uttar Pradesh",
     district: "Varanasi",
     categories: ["silk saree", "stole / dupatta"],
-    cooperativeName: "Ganga Plains Handloom",
+    cooperativeName: "Varanasi",
   },
   {
     id: "map-weaver-mau-01",
@@ -140,7 +141,7 @@ export const NATIONAL_MAP_DEMO_WEAVERS: MapDemoWeaver[] = [
     region: "Uttar Pradesh",
     district: "Mau",
     categories: ["cotton saree", "silk saree"],
-    cooperativeName: "Ganga Plains Handloom",
+    cooperativeName: "Mau",
   },
   {
     id: "map-weaver-pochampally-01",
@@ -148,7 +149,7 @@ export const NATIONAL_MAP_DEMO_WEAVERS: MapDemoWeaver[] = [
     region: "Telangana",
     district: "Pochampally",
     categories: ["cotton saree", "stole / dupatta"],
-    cooperativeName: "Deccan Handloom Desk",
+    cooperativeName: "Pochampally",
   },
   {
     id: "map-weaver-gadwal-01",
@@ -156,7 +157,7 @@ export const NATIONAL_MAP_DEMO_WEAVERS: MapDemoWeaver[] = [
     region: "Telangana",
     district: "Gadwal",
     categories: ["silk saree", "cotton saree"],
-    cooperativeName: "Deccan Handloom Desk",
+    cooperativeName: "Gadwal",
   },
   {
     id: "map-weaver-ilkal-01",
@@ -164,7 +165,7 @@ export const NATIONAL_MAP_DEMO_WEAVERS: MapDemoWeaver[] = [
     region: "Karnataka",
     district: "Ilkal",
     categories: ["cotton saree", "silk saree"],
-    cooperativeName: "Mysore Loom Collective",
+    cooperativeName: "Ilkal",
   },
   {
     id: "map-weaver-mysuru-01",
@@ -172,7 +173,7 @@ export const NATIONAL_MAP_DEMO_WEAVERS: MapDemoWeaver[] = [
     region: "Karnataka",
     district: "Mysuru",
     categories: ["silk saree"],
-    cooperativeName: "Mysore Loom Collective",
+    cooperativeName: "Mysuru",
   },
   {
     id: "map-weaver-sualkuchi-01",
@@ -180,7 +181,7 @@ export const NATIONAL_MAP_DEMO_WEAVERS: MapDemoWeaver[] = [
     region: "Assam",
     district: "Sualkuchi",
     categories: ["silk saree", "stole / dupatta"],
-    cooperativeName: "Brahmaputra Loom Circle",
+    cooperativeName: "Sualkuchi",
   },
   {
     id: "map-weaver-shantipur-01",
@@ -188,7 +189,7 @@ export const NATIONAL_MAP_DEMO_WEAVERS: MapDemoWeaver[] = [
     region: "West Bengal",
     district: "Shantipur",
     categories: ["cotton saree", "stole / dupatta"],
-    cooperativeName: "Ganga Weave Collective",
+    cooperativeName: "Shantipur",
   },
   {
     id: "map-weaver-phulia-01",
@@ -196,7 +197,7 @@ export const NATIONAL_MAP_DEMO_WEAVERS: MapDemoWeaver[] = [
     region: "West Bengal",
     district: "Phulia",
     categories: ["cotton saree"],
-    cooperativeName: "Ganga Weave Collective",
+    cooperativeName: "Phulia",
   },
   {
     id: "map-weaver-sambalpur-01",
@@ -204,7 +205,7 @@ export const NATIONAL_MAP_DEMO_WEAVERS: MapDemoWeaver[] = [
     region: "Odisha",
     district: "Sambalpur",
     categories: ["cotton saree", "stole / dupatta"],
-    cooperativeName: "Kalinga Loom Circle",
+    cooperativeName: "Sambalpur",
   },
   {
     id: "map-weaver-nuapatna-01",
@@ -212,7 +213,7 @@ export const NATIONAL_MAP_DEMO_WEAVERS: MapDemoWeaver[] = [
     region: "Odisha",
     district: "Nuapatna",
     categories: ["silk saree", "cotton saree"],
-    cooperativeName: "Kalinga Loom Circle",
+    cooperativeName: "Nuapatna",
   },
   {
     id: "map-weaver-mangalagiri-01",
@@ -220,7 +221,7 @@ export const NATIONAL_MAP_DEMO_WEAVERS: MapDemoWeaver[] = [
     region: "Andhra Pradesh",
     district: "Mangalagiri",
     categories: ["cotton saree", "cotton lungi"],
-    cooperativeName: "Godavari Thread Circle",
+    cooperativeName: "Mangalagiri",
   },
   {
     id: "map-weaver-dharmavaram-01",
@@ -228,7 +229,7 @@ export const NATIONAL_MAP_DEMO_WEAVERS: MapDemoWeaver[] = [
     region: "Andhra Pradesh",
     district: "Dharmavaram",
     categories: ["silk saree"],
-    cooperativeName: "Godavari Thread Circle",
+    cooperativeName: "Dharmavaram",
   },
   {
     id: "map-weaver-chanderi-01",
@@ -236,7 +237,7 @@ export const NATIONAL_MAP_DEMO_WEAVERS: MapDemoWeaver[] = [
     region: "Madhya Pradesh",
     district: "Chanderi",
     categories: ["silk saree", "cotton saree"],
-    cooperativeName: "Kalinga Loom Circle",
+    cooperativeName: "Chanderi",
   },
   {
     id: "map-weaver-paithan-01",
@@ -244,7 +245,7 @@ export const NATIONAL_MAP_DEMO_WEAVERS: MapDemoWeaver[] = [
     region: "Maharashtra",
     district: "Paithan",
     categories: ["silk saree"],
-    cooperativeName: "Mysore Loom Collective",
+    cooperativeName: "Paithan",
   },
   {
     id: "map-weaver-patan-01",
@@ -252,7 +253,7 @@ export const NATIONAL_MAP_DEMO_WEAVERS: MapDemoWeaver[] = [
     region: "Gujarat",
     district: "Patan",
     categories: ["silk saree", "stole / dupatta"],
-    cooperativeName: "Mysore Loom Collective",
+    cooperativeName: "Patan",
   },
   {
     id: "map-weaver-kannur-01",
@@ -260,7 +261,7 @@ export const NATIONAL_MAP_DEMO_WEAVERS: MapDemoWeaver[] = [
     region: "Kerala",
     district: "Kannur",
     categories: ["cotton saree", "dhoti / angavastram"],
-    cooperativeName: "Nila Loom Circle",
+    cooperativeName: "Kannur",
   },
   {
     id: "map-weaver-bhagalpur-01",
@@ -268,7 +269,7 @@ export const NATIONAL_MAP_DEMO_WEAVERS: MapDemoWeaver[] = [
     region: "Bihar",
     district: "Bhagalpur",
     categories: ["silk saree", "cotton saree"],
-    cooperativeName: "Ganga Plains Handloom",
+    cooperativeName: "Bhagalpur",
   },
 ];
 
